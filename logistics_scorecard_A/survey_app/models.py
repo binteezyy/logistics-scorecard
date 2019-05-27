@@ -1,4 +1,5 @@
 from django.db import models
+import datetime
 
 # Create your models here.
 class Service(models.Model):
@@ -49,10 +50,14 @@ class Rating(models.Model):
 class Scorecard(models.Model):
     cid = models.CharField(max_length=15, unique=True)
     provider = models.ForeignKey(Provider, on_delete=models.CASCADE)
-    month_covered = models.DateTimeField()
+    month_covered = models.DateTimeField(blank=True)
     date_released = models.DateTimeField()
     account_manager = models.ForeignKey(Account_manager, on_delete=models.CASCADE)
     rating = models.ManyToManyField(Rating, blank=True)
+
+    def save(self, *args, **kwargs):
+        self.month_covered = self.date_released - datetime.timedelta(30)
+        super(Scorecard, self).save(*args, **kwargs)
     
     def __str__(self):
         return str(self.cid)
