@@ -44,7 +44,7 @@ class Rating(models.Model):
         unique_together = (('question','rate'),)
     
     def __str__(self):
-        return str(self.question)    
+        return "Question: " + str(self.question.id) + " Rating: " + str(self.rate) 
 
 class Scorecard(models.Model):
     cid = models.CharField(max_length=15, unique=True)
