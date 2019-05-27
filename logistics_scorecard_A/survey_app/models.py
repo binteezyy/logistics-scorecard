@@ -40,6 +40,8 @@ class Category(models.Model):
 class Rating(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     rate = models.IntegerField(blank=True)
+    class Meta:
+        unique_together = (('question','rate'),)
     
     def __str__(self):
         return str(self.question)    
