@@ -2,3 +2,5 @@
 
 env\
 *settings.py
+*migrations*
+*__pycache__*
