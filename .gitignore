@@ -1,0 +1,4 @@
+#ignore these
+
+env\
+*settings.py
