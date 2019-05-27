@@ -2,3 +2,7 @@
 
 env\
 *settings.py
+*migrations*
+*.pyc
+__pycache__/
+db.sqlite3
