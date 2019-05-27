@@ -3,4 +3,5 @@
 env\
 *settings.py
 *migrations*
-*__pycache__*
+__pycache__\
+*.pyc
