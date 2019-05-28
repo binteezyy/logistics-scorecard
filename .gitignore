@@ -3,4 +3,11 @@
 *migrations*
 __pycache__\
 *.pyc
-*.sqlite3
+__pycache__/
+
+
+#django
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
