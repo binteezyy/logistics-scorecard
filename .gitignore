@@ -1,7 +1,6 @@
 #ignore these
 
 env\
-*settings.py
 *migrations*
 *.pyc
 __pycache__/
