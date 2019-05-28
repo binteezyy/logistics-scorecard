@@ -1,7 +1,0 @@
-#ignore these
-
-env\
-*migrations*
-*.pyc
-__pycache__/
-*.sqlite3
