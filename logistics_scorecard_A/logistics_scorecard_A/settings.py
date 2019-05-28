@@ -32,29 +32,29 @@ AUTHENTICATION_BACKENDS = (
 )
 
 # LDAP auth settings.
-LDAP_AUTH_URL = "ldap://junesong.ecp.priv"
+LDAP_AUTH_URL = "#"
 
 # Initiate TLS on connection.
 LDAP_AUTH_USE_TLS = False
 
 # The LDAP search base for looking up users.
-LDAP_AUTH_SEARCH_BASE = "OU=Users,OU=Accounts,OU=PHORT,OU=AP,OU=Embedded Power,DC=ecp,DC=priv"
+LDAP_AUTH_SEARCH_BASE = "#"
 
 # The LDAP class that represents a user.
-LDAP_AUTH_OBJECT_CLASS = "inetOrgPerson"
+LDAP_AUTH_OBJECT_CLASS = "#"
 
 # User model fields mapped to the LDAP
 # attributes that represent them.
 LDAP_AUTH_USER_FIELDS = {
-    "username": "sAMAccountName",
-    "first_name": "givenName",
-    "last_name": "sn",
-    "email": "mail",
+    "username": "#",
+    "first_name": "#",
+    "last_name": "#",
+    "email": "#",
 }
-LDAP_AUTH_OBJECT_CLASS = "user"
+LDAP_AUTH_OBJECT_CLASS = "#"
 
 LDAP_AUTH_FORMAT_USERNAME = "django_python3_ldap.utils.format_username_active_directory"
-LDAP_AUTH_ACTIVE_DIRECTORY_DOMAIN = "ECP"
+LDAP_AUTH_ACTIVE_DIRECTORY_DOMAIN = "#"
 
 LDAP_AUTH_CONNECTION_USERNAME = ""
 LDAP_AUTH_CONNECTION_PASSWORD = ""
