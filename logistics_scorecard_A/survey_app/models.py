@@ -31,16 +31,21 @@ class Question(models.Model):
         return str(self.question_string)
 
 class Category(models.Model):
+    version = models.IntegerField(default=1)
     category_number = models.IntegerField(default=0)
     category_name = models.CharField(max_length=40)
     questions = models.ManyToManyField(Question)
+
+    class Meta:
+        unique_together = (('version','category_name','category_number'),)
     
     def __str__(self):
-        return str(self.category_name)
+        return str(self.category_number) + ". " + str(self.category_name) + " v" +  str(self.version)
     
 class Rating(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     rate = models.IntegerField(blank=True)
+    
     class Meta:
         unique_together = (('question','rate'),)
     
