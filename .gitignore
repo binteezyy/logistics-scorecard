@@ -3,4 +3,5 @@
 *migrations*
 __pycache__\
 *.pyc
+__pycache__/
 *.sqlite3
