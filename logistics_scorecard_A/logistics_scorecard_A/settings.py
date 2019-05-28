@@ -27,9 +27,40 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+AUTHENTICATION_BACKENDS = (
+    "django_python3_ldap.auth.LDAPBackend",
+)
+
+# LDAP auth settings.
+LDAP_AUTH_URL = "ldap://junesong.ecp.priv"
+
+# Initiate TLS on connection.
+LDAP_AUTH_USE_TLS = False
+
+# The LDAP search base for looking up users.
+LDAP_AUTH_SEARCH_BASE = "OU=Users,OU=Accounts,OU=PHORT,OU=AP,OU=Embedded Power,DC=ecp,DC=priv"
+
+# The LDAP class that represents a user.
+LDAP_AUTH_OBJECT_CLASS = "inetOrgPerson"
+
+# User model fields mapped to the LDAP
+# attributes that represent them.
+LDAP_AUTH_USER_FIELDS = {
+    "username": "sAMAccountName",
+    "first_name": "givenName",
+    "last_name": "sn",
+    "email": "mail",
+}
+LDAP_AUTH_OBJECT_CLASS = "user"
+
+LDAP_AUTH_FORMAT_USERNAME = "django_python3_ldap.utils.format_username_active_directory"
+LDAP_AUTH_ACTIVE_DIRECTORY_DOMAIN = "ECP"
+
+LDAP_AUTH_CONNECTION_USERNAME = ""
+LDAP_AUTH_CONNECTION_PASSWORD = ""
+
 
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -37,7 +68,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
     'survey_app',
+    'django_python3_ldap',
 ]
 
 MIDDLEWARE = [
