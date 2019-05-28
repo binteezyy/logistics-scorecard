@@ -108,18 +108,7 @@ WSGI_APPLICATION = 'logistics_scorecard_A.wsgi.application'
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'sql_server.pyodbc',
-        'NAME': 'STG',
-        'USER': 'python_sql_svc',
-        'PASSWORD': 'Artesyn!2019',
-        'HOST': 'CHAPO',
-        'PORT': '',
 
-        'OPTIONS': {
-            'driver': 'ODBC Driver 13 for SQL Server',
-        },
-    },
 }
 
 
