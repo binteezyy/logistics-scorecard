@@ -4,4 +4,10 @@
 __pycache__\
 *.pyc
 __pycache__/
-*.sqlite3
+
+
+#django
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
