@@ -26,9 +26,11 @@ class Question(models.Model):
     question_number = models.IntegerField(default=0)
     question_string = models.TextField(unique=True)
     multiplier = models.DecimalField(max_digits=3, decimal_places=2, default=0)
+    class Meta:
+        ordering = ['question_number']
     
     def __str__(self):
-        return str(self.question_string)
+        return str(self.question_number) + ". " + str(self.question_string)
 
 class Category(models.Model):
     version = models.IntegerField(default=1)
@@ -50,7 +52,7 @@ class Rating(models.Model):
         unique_together = (('question','rate'),)
     
     def __str__(self):
-        return "Question: " + str(self.question.id) + " Rating: " + str(self.rate) 
+        return "Question: " + str(self.question.question_number) + " Rating: " + str(self.rate) 
 
 class Scorecard(models.Model):
     cid = models.CharField(max_length=15, unique=True)
@@ -59,6 +61,7 @@ class Scorecard(models.Model):
     date_released = models.DateTimeField()
     account_manager = models.ForeignKey(Account_manager, on_delete=models.CASCADE)
     rating = models.ManyToManyField(Rating, blank=True)
+    category_list = models.ManyToManyField(Category, blank=True, null=True)
 
     def save(self, *args, **kwargs):
         self.month_covered = self.date_released - datetime.timedelta(30)

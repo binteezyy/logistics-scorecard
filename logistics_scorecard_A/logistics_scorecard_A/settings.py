@@ -76,9 +76,17 @@ WSGI_APPLICATION = 'logistics_scorecard_A.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
+        'ENGINE': 'sql_server.pyodbc',
+        'NAME': 'STG',
+        'USER': 'python_sql_svc',
+        'PASSWORD': 'Artesyn!2019',
+        'HOST': 'CHAPO',
+        'PORT': '',
+
+        'OPTIONS': {
+            'driver': 'ODBC Driver 13 for SQL Server',
+        },
+    },
 }
 
 
@@ -119,3 +127,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'realtantan7@gmail.com'
+EMAIL_HOST_PASSWORD = 'vhiduponbrgnwhia'
+EMAIL_PORT = 587

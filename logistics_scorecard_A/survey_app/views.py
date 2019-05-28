@@ -1,14 +1,24 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from .models import *
+from O365 import Message
+from django.core.mail import EmailMessage
+from django.core.mail import send_mail
+import smtplib
+
+
 
 # Create your views here.
 
 
-def index(request):
-    category = Category.objects.all()
+def index(request, cid):
+    scorecard = Scorecard.objects.get(cid=cid)
     context = {
-        "category": category,
+        "scorecard": scorecard,
     }
 
     return render(request, "form.html", context)
+
+def email_view(request):
+    send_mail('putangina mu subject','Tang ina mo alvin carloser','realtantan7@gmail.com', ['Alvin.Panganiban@artesyn.com'])
+    return HttpResponse("OK")

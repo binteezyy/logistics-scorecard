@@ -3,5 +3,6 @@ from . import views
 
 
 urlpatterns = [
-    path('', views.index, name='index'),
+    path('scorecards/<cid>', views.index, name='index'),
+    path('email', views.email_view, name='email'),
 ]
