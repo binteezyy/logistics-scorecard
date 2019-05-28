@@ -6,10 +6,9 @@ from .models import *
 
 
 def index(request):
-    questions1 = Category.objects.filter(category_name="Cleanliness")
-
+    category = Category.objects.all()
     context = {
-        "questions1": questions1,
+        "category": category,
     }
 
     return render(request, "form.html", context)
