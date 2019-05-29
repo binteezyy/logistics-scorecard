@@ -1,7 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from .models import *
-from O365 import Message
 from django.core.mail import EmailMessage
 from django.core.mail import send_mail
 import smtplib
