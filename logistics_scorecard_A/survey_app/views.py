@@ -19,5 +19,5 @@ def index(request, cid):
     return render(request, "form.html", context)
 
 def email_view(request):
-    send_mail('putangina mu subject','Tang ina mo alvin carloser','realtantan7@gmail.com', ['Alvin.Panganiban@artesyn.com'])
+    send_mail('test','test','realtantan7@gmail.com', ['Alvin.Panganiban@artesyn.com'])
     return HttpResponse("OK")
