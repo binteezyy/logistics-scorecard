@@ -1,63 +1,7 @@
 {% extends "base.html" %}
 
 {% block add_script %}
-<script>
-    $(document).ready(function () {
 
-        {% for category in scorecard.category_list.all %}
-        {% for question in category.questions.all %}
-        $(".radi{{ category.category_number }}").click(function () {
-            var totalcolumn = 0;
-            var totalall = 0;
-            $('.totalr{{ category.category_number }}').each(function () {
-                totalcolumn += +(this.value);
-            });
-            $(".totalc{{ category.category_number }}").html(totalcolumn);
-
-            {% for c in scorecard.category_list.all %}
-            totalall += +$(".totalc{{c.category_number}}").html();
-            {% endfor %}
-            $("#totalall").html(totalall);
-        });
-
-        var choice = $('#optradio{{question.pk}}:checked').val()
-        switch (choice) {
-            case '0': $('#totalq{{question.pk}}').val(
-                $('#weight{{question.pk}}').html() * $('.radio0').val());
-                $('#totalq{{question.pk}}').html($('#totalq{{question.pk}}').val()); break;
-            case '1': $('#totalq{{question.pk}}').val(
-                $('#weight{{question.pk}}').html() * $('.radio1').val());
-                $('#totalq{{question.pk}}').html($('#totalq{{question.pk}}').val()); break;
-            case '2': $('#totalq{{question.pk}}').val(
-                $('#weight{{question.pk}}').html() * $('.radio2').val());
-                $('#totalq{{question.pk}}').html($('#totalq{{question.pk}}').val()); break;
-            case '3': $('#totalq{{question.pk}}').val(
-                $('#weight{{question.pk}}').html() * $('.radio3').val());
-                $('#totalq{{question.pk}}').html($('#totalq{{question.pk}}').val()); break;
-            case '4': $('#totalq{{question.pk}}').val(
-                $('#weight{{question.pk}}').html() * $('.radio4').val());
-                $('#totalq{{question.pk}}').html($('#totalq{{question.pk}}').val()); break;
-        }
-        var totalcolumn = 0;
-        var totalall = 0;
-        $('.totalr{{ category.category_number }}').each(function () {
-            totalcolumn += +(this.value);
-        });
-        $(".totalc{{ category.category_number }}").html(totalcolumn);
-
-        {% for c in scorecard.category_list.all %}
-        totalall += +$(".totalc{{c.category_number}}").html();
-        {% endfor %}
-        $("#totalall").html(totalall);
-        // $("#weight{{question.pk}}").html($(this).val(););
-        {% endfor %}
-        {% endfor %}
-
-
-
-    });
-
-</script>
 {% endblock add_script %}
 
 {% block form %}
@@ -94,59 +38,64 @@
                     <tr class="h6">
                         <th class="text-center"> {{ question.question_number }} </th>
                         <td class="text-left" style="width: 12%;"> {{ question.question_string }}</td>
-                        <td class="text-center" id="weight{{question.pk}}" value="">
+                        <td class="text-center" id="weight{{question.question_number}}" value="">
                             {{question.multiplier}}
                         </td>
 
                         <td class="text-center">
                             <div class="form-check custom-control-inline">
                                 <label class="form-check-label">
-                                    <input value="0" type="radio" id="optradio{{question.pk}}"
+                                    <input value="0" type="radio" id="optradio{{question.question_number}}"
                                         class="radio0 form-check-input radi{{category.category_number}}"
-                                        name="optradio{{question.pk}}" onclick="$('#totalq{{question.pk}}').val(
-                                            $('#weight{{question.pk}}').html() * $('.radio0').val());
-                                       $('#totalq{{question.pk}}').html($('#totalq{{question.pk}}').val());" checked>0
+                                        name="optradio{{question.question_number}}"
+                                        onclick="$('#totalq{{question.question_number}}').val(
+                                            $('#weight{{question.question_number}}').html() * $('.radio0').val());
+                                       $('#totalq{{question.question_number}}').html($('#totalq{{question.question_number}}').val());" checked>0
                                 </label>
                             </div>
                             <div class=" form-check custom-control-inline">
                                 <label class="form-check-label">
-                                    <input value="1" type="radio" id="optradio{{question.pk}}"
+                                    <input value="1" type="radio" id="optradio{{question.question_number}}"
                                         class="radio1 form-check-input radi{{category.category_number}}"
-                                        name="optradio{{question.pk}}" onclick="$('#totalq{{question.pk}}').val(
-                                    $('#weight{{question.pk}}').html() * $('.radio1').val());
-                               $('#totalq{{question.pk}}').html($('#totalq{{question.pk}}').val());">1
+                                        name="optradio{{question.question_number}}"
+                                        onclick="$('#totalq{{question.question_number}}').val(
+                                    $('#weight{{question.question_number}}').html() * $('.radio1').val());
+                               $('#totalq{{question.question_number}}').html($('#totalq{{question.question_number}}').val());">1
                                 </label>
                             </div>
                             <div class="form-check custom-control-inline">
                                 <label class="form-check-label">
-                                    <input value="2" type="radio" id="optradio{{question.pk}}"
+                                    <input value="2" type="radio" id="optradio{{question.question_number}}"
                                         class="radio2 form-check-input radi{{category.category_number}}"
-                                        name="optradio{{question.pk}}" onclick="$('#totalq{{question.pk}}').val(
-                                    $('#weight{{question.pk}}').html() * $('.radio2').val());
-                               $('#totalq{{question.pk}}').html($('#totalq{{question.pk}}').val());">2
+                                        name="optradio{{question.question_number}}"
+                                        onclick="$('#totalq{{question.question_number}}').val(
+                                    $('#weight{{question.question_number}}').html() * $('.radio2').val());
+                               $('#totalq{{question.question_number}}').html($('#totalq{{question.question_number}}').val());">2
                                 </label>
                             </div>
                             <div class="form-check custom-control-inline">
                                 <label class="form-check-label">
-                                    <input value="3" type="radio" id="optradio{{question.pk}}"
+                                    <input value="3" type="radio" id="optradio{{question.question_number}}"
                                         class="radio3 form-check-input radi{{category.category_number}}"
-                                        name="optradio{{question.pk}}" onclick="$('#totalq{{question.pk}}').val(
-                                    $('#weight{{question.pk}}').html() * $('.radio3').val());
-                               $('#totalq{{question.pk}}').html($('#totalq{{question.pk}}').val());">3
+                                        name="optradio{{question.question_number}}"
+                                        onclick="$('#totalq{{question.question_number}}').val(
+                                    $('#weight{{question.question_number}}').html() * $('.radio3').val());
+                               $('#totalq{{question.question_number}}').html($('#totalq{{question.question_number}}').val());">3
                                 </label>
                             </div>
                             <div class="form-check custom-control-inline">
                                 <label class="form-check-label">
-                                    <input value="4" type="radio" id="optradio{{question.pk}}"
+                                    <input value="4" type="radio" id="optradio{{question.question_number}}"
                                         class="radio4 form-check-input radi{{category.category_number}}"
-                                        name="optradio{{question.pk}}" onclick="$('#totalq{{question.pk}}').val(
-                                    $('#weight{{question.pk}}').html() * $('.radio4').val());
-                               $('#totalq{{question.pk}}').html($('#totalq{{question.pk}}').val());">4
+                                        name="optradio{{question.question_number}}"
+                                        onclick="$('#totalq{{question.question_number}}').val(
+                                    $('#weight{{question.question_number}}').html() * $('.radio4').val());
+                               $('#totalq{{question.question_number}}').html($('#totalq{{question.question_number}}').val());">4
                                 </label>
                             </div>
                         </td>
                         <td class="text-center">
-                            <text value="0" name="totalr" id="totalq{{question.pk}}"
+                            <text value="0" name="totalr" id="totalq{{question.question_number}}"
                                 class="totalr{{category.category_number}}"></text>
                         </td>
                         </td>

@@ -38,8 +38,10 @@ class Category(models.Model):
     category_name = models.CharField(max_length=40)
     questions = models.ManyToManyField(Question)
 
+
     class Meta:
         unique_together = (('version','category_name','category_number'),)
+        ordering = ['category_number']
     
     def __str__(self):
         return str(self.category_number) + ". " + str(self.category_name) + " v" +  str(self.version)
