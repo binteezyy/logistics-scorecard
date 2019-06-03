@@ -54,6 +54,7 @@
 
 {% endblock add_script %}
 
+<<<<<<< HEAD
 {% block form %}
 <div class="container">
     <div class="card border-0 bg-light" name="scorecard">
@@ -156,6 +157,35 @@
                             </text>
                         </td>
                         <td>
+=======
+{% block content %}
+<div class="container">
+    <img src="https://www.avnet.com/opasdata/d120001/derivates/3/072/351/Artesyn_logo_web.png">
+</div>
+      <div class="container">
+            <div class="card border-0 bg-light">
+                    <div class="card-body">
+                      <h4 class="card-title">Scorecard ID: {{scorecard.cid}} - {{ scorecard.date_released|date:'M-d-Y' }}</h4>
+                      <h5 class="card-title">{{ scorecard.provider }}{% for z in scorecard.provider.services.all %}-{{z.name}}{%endfor%}</h5>
+                      <h6 class="card-subtitle mb-2 text-primary">Account Manager: {{ scorecard.account_manager }}</h6>
+                      <h6 class="card-subtitle mb-2">Email: {{ scorecard.account_manager.email }}</h6>
+                      <h6 class="card-subtitle mb-2">Month Covered: {{ scorecard.month_covered|date:'F' }}</h6>
+                    </div>
+                  </div>
+<form action="#" method="POST">
+    {% for x in scorecard.category_list.all %}
+    <h5>{{ x.category_number }}. {{ x.category_name }}</h5>
+    {% csrf_token %}
+    <table class="table table-striped table-hover table-bordered">
+        <thead class="thead-dark text-center h5 ">
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Question</th>
+                <th scope="col">Weight</th>
+                <th scope="col">Rating</th>
+                <th scope="col">Value</th>
+                <th scope="col">Feedback</th>
+>>>>>>> superdry
 
                         </td>
                     </tr>
@@ -169,4 +199,5 @@
         </form>
     </div>
 </div>
-{% endblock form %}
+<a href={% url 'logout' %}>Logout</a>
+{% endblock content %}
