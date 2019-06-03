@@ -34,7 +34,7 @@ class Question(models.Model):
 
 class Category(models.Model):
     version = models.IntegerField(default=1)
-    category_number = models.IntegerField(default=0)
+    category_number = models.CharField(max_length=1)
     category_name = models.CharField(max_length=40)
     questions = models.ManyToManyField(Question)
 

@@ -86,12 +86,14 @@
                 </thead>
                 <tbody>
                     {% for question in category.questions.all %}
+
                     <tr class="h6 text-center">
                         <th> {{ question.question_number }} </th>
-                        <td class="text-left" style="width: 12%;"> {{question.question_string}}</td>
+                        <td class="text-left" style="width: 30%;"> {{question.question_string|linebreaks}}</td>
                         <td style="width: 10%;"
                             class="weight-{{category.category_number}}-{{question.question_number}}">
                             {{question.multiplier}} </td>
+                        {% for rating in scorecard.rating.all %}
                         <td>
                             <div class=" form-check custom-control-inline">
                                 <label class="form-check-label">
@@ -143,6 +145,7 @@
                             </text>
                         </td>
                     </tr>
+                    {% endfor %}
                     {% endfor %}
                     <tr class="h6 text-center" name="total-column">
                         <td></td>
