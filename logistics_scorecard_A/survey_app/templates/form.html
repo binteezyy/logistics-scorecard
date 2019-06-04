@@ -14,7 +14,10 @@
 </script>
 {% endblock add_script %}
 
-{% block form %}
+{% block content %}
+<div class="container">
+    <img src="https://www.avnet.com/opasdata/d120001/derivates/3/072/351/Artesyn_logo_web.png">
+</div>
       <div class="container">
             <div class="card border-0 bg-light">
                     <div class="card-body">
@@ -110,4 +113,5 @@
     {% endfor %}
 </form>
 </div>
-{% endblock form %}
+<a href={% url 'logout' %}>Logout</a>
+{% endblock content %}

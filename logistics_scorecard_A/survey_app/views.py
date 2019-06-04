@@ -1,6 +1,11 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+<<<<<<< HEAD
 from .models import *
+=======
+from . models import *
+from O365 import Message
+>>>>>>> development
 from django.core.mail import EmailMessage
 from django.core.mail import send_mail
 import smtplib
@@ -19,5 +24,5 @@ def index(request, cid):
     return render(request, "form.html", context)
 
 def email_view(request):
-    send_mail('putangina mu subject','Tang ina mo alvin carloser','realtantan7@gmail.com', ['Alvin.Panganiban@artesyn.com'])
+    send_mail('subject','alvin carloser','realtantan7@gmail.com', ['Alvin.Panganiban@artesyn.com'])
     return HttpResponse("OK")
