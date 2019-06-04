@@ -3,32 +3,43 @@
 {% block add_script %}
 <script>
     $(document).ready(function () {
+
+        {% for category in scorecard.category_list.all %}
+        {% for question in category.questions.all %}
+        {% for rating in scorecard.rating.all %}
+        {% if rating.question.question_string == question.question_string %}
+        $('input[name=cat-{{category.category_number}}-row-{{question.question_number}}][value={{rating.rate}}]').prop('checked', 'checked');
+        {% endif %}
+        {% endfor %}
+        {% endfor %}
+        {% endfor %}
+
         {% for category in scorecard.category_list.all %}
         {% for question in category.questions.all %}
         $('.weight-{{category.category_number}}-{{question.question_number}}').val({{ question.multiplier }});
     $('.cat-{{category.category_number}}-row-{{question.question_number}}').click(function () {
         $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').val(
-            $('.weight-{{category.category_number}}-{{question.question_number}}').val() *
-            $('.cat-{{category.category_number}}-row-{{question.question_number}}:checked').val());
+            ($('.weight-{{category.category_number}}-{{question.question_number}}').val() / 4 *
+                $('.cat-{{category.category_number}}-row-{{question.question_number}}:checked').val()).toFixed(2));
         $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').html(
             $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').val());
         var totalColumn = 0;
         $('.total-cat-{{category.category_number}}').each(function () {
             totalColumn += +(this.value);
         });
-        $('.total-column-cat-{{category.category_number}}').html(totalColumn);
+        $('.total-column-cat-{{category.category_number}}').html(totalColumn.toFixed(2));
 
         var totalall = 0;
         {% for c in scorecard.category_list.all %}
         totalall += +$('.total-column-cat-{{c.category_number}}').html();
         {% endfor %}
-        $('.total-of-all').html(totalall);
+        $('.total-of-all').html(totalall.toFixed(2));
     });
 
 
     $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').val(
-        $('.weight-{{category.category_number}}-{{question.question_number}}').val() *
-        $('.cat-{{category.category_number}}-row-{{question.question_number}}:checked').val());
+        ($('.weight-{{category.category_number}}-{{question.question_number}}').val() / 4 *
+            $('.cat-{{category.category_number}}-row-{{question.question_number}}:checked').val()).toFixed(2));
     $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').html(
         $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').val());
 
@@ -37,7 +48,7 @@
     $('.total-cat-{{c.category_number}}').each(function () {
         totalColumnR += +(this.value);
     });
-    $('.total-column-cat-{{c.category_number}}').html(totalColumnR);
+    $('.total-column-cat-{{c.category_number}}').html(totalColumnR.toFixed(2));
     var totalAll = 0;
     {% endfor %}
 
@@ -45,10 +56,12 @@
     {% for c in scorecard.category_list.all %}
     totalall += +$('.total-column-cat-{{c.category_number}}').html();
     {% endfor %}
-    $('.total-of-all').html(totalall);
+    $('.total-of-all').html(totalall.toFixed(2));
 
     {% endfor %}
     {% endfor %}
+
+    
     });
 </script>
 
@@ -67,7 +80,7 @@
         </div>
     </div>
     <div class="container" name="form">
-        <form action="#" method="POST">
+        <form action="{% url 'index' scorecard.cid %}" method="POST">
             {% csrf_token %}
             {% for category in scorecard.category_list.all %}
             <div class="h5" name="category-name">
@@ -86,28 +99,18 @@
                 </thead>
                 <tbody>
                     {% for question in category.questions.all %}
-
                     <tr class="h6 text-center">
                         <th> {{ question.question_number }} </th>
                         <td class="text-left" style="width: 30%;"> {{question.question_string|linebreaks}}</td>
                         <td style="width: 10%;"
                             class="weight-{{category.category_number}}-{{question.question_number}}">
                             {{question.multiplier}} </td>
-                        {% for rating in scorecard.rating.all %}
                         <td>
                             <div class=" form-check custom-control-inline">
                                 <label class="form-check-label">
-                                    <input value="0" type="radio"
-                                        class="form-check-input cat-{{category.category_number}}-row-{{question.question_number}}"
-                                        name="cat-{{category.category_number}}-row-{{question.question_number}}">0
-                                </label>
-                            </div>
-                            <div class="form-check custom-control-inline">
-                                <label class="form-check-label">
                                     <input value="1" type="radio"
                                         class="form-check-input cat-{{category.category_number}}-row-{{question.question_number}}"
-                                        name="cat-{{category.category_number}}-row-{{question.question_number}}"
-                                        checked>1
+                                        name="cat-{{category.category_number}}-row-{{question.question_number}}">1
                                 </label>
                             </div>
                             <div class="form-check custom-control-inline">
@@ -117,18 +120,25 @@
                                         name="cat-{{category.category_number}}-row-{{question.question_number}}">2
                                 </label>
                             </div>
-                            <div class=" form-check custom-control-inline">
+                            <div class="form-check custom-control-inline">
                                 <label class="form-check-label">
                                     <input value="3" type="radio"
                                         class="form-check-input cat-{{category.category_number}}-row-{{question.question_number}}"
                                         name="cat-{{category.category_number}}-row-{{question.question_number}}">3
                                 </label>
                             </div>
-                            <div class="form-check custom-control-inline">
+                            <div class=" form-check custom-control-inline">
                                 <label class="form-check-label">
                                     <input value="4" type="radio"
                                         class="form-check-input cat-{{category.category_number}}-row-{{question.question_number}}"
                                         name="cat-{{category.category_number}}-row-{{question.question_number}}">4
+                                </label>
+                            </div>
+                            <div class="form-check custom-control-inline">
+                                <label class="form-check-label">
+                                    <input value="4" type="radio"
+                                        class="form-check-input cat-{{category.category_number}}-row-{{question.question_number}}"
+                                        name="cat-{{category.category_number}}-row-{{question.question_number}}">NA
                                 </label>
                             </div>
                         </td>
@@ -145,7 +155,6 @@
                             </text>
                         </td>
                     </tr>
-                    {% endfor %}
                     {% endfor %}
                     <tr class="h6 text-center" name="total-column">
                         <td></td>
@@ -169,6 +178,7 @@
                 Total:
                 <text name="total-of-columns" class="total-of-all"></text>
             </div>
+            <input type="submit" value="submit">
         </form>
     </div>
 </div>

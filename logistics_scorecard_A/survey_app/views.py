@@ -21,10 +21,9 @@ def index(request, cid):
     }
     
     if request.method == 'POST':
-        answer1 = request.POST.get('cat-A-row-2')
-        return HttpResponse(answer1)
+        return HttpResponse("POST")                
     else:
-        return render(request, "try.html", context)
+        return render(request, "form.html", context)
 
 def email_view(request):
     send_mail('test','test','realtantan7@gmail.com', ['Alvin.Panganiban@artesyn.com'])
