@@ -25,8 +25,9 @@ SECRET_KEY = 'p5y#gxf7#2-zt8-z%@l%am38bl$dp9@ehkd2eo0g#qzc&ln%by'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['*',]
+LOGIN_REDIRECT_URL = 'latest_scorecard'
+LOGIN_URL = 'login'
 AUTHENTICATION_BACKENDS = (
     "django_python3_ldap.auth.LDAPBackend",
 )
@@ -56,8 +57,8 @@ LDAP_AUTH_OBJECT_CLASS = "user"
 LDAP_AUTH_FORMAT_USERNAME = "django_python3_ldap.utils.format_username_active_directory"
 LDAP_AUTH_ACTIVE_DIRECTORY_DOMAIN = "ECP"
 
-LDAP_AUTH_CONNECTION_USERNAME = ""
-LDAP_AUTH_CONNECTION_PASSWORD = ""
+LDAP_AUTH_CONNECTION_USERNAME = "JoshuaPascual"
+LDAP_AUTH_CONNECTION_PASSWORD = "@pqapq7p7p"
 
 
 # Application definition
@@ -68,7 +69,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
+    'crispy_forms',
+    'users',
     'survey_app',
     'django_python3_ldap',
 ]
@@ -108,7 +110,10 @@ WSGI_APPLICATION = 'logistics_scorecard_A.wsgi.application'
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
 DATABASES = {
-
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    }
 }
 
 
