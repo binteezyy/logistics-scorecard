@@ -8,7 +8,6 @@ __pycache__/
 
 #django
 env
-*settings.py
 *.log
 local_settings.py
 *.sqlite3
