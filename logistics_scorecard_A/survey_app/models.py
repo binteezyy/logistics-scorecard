@@ -27,6 +27,9 @@ class Question(models.Model):
     question_string = models.TextField(unique=True)
     multiplier = models.DecimalField(max_digits=3, decimal_places=2, default=0)
     
+    class Meta:
+        ordering = ['question_number']
+        
     def __str__(self):
         return str(self.question_number) + ". " + str(self.question_string)
 
