@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+
 from .models import *
+
 from django.core.mail import EmailMessage
 from django.core.mail import send_mail
 import smtplib
@@ -28,6 +30,7 @@ def index(request, cid):
         return render(request, "form.html", context)
 
 def email_view(request):
+
     send_mail('test','test','realtantan7@gmail.com', ['Alvin.Panganiban@artesyn.com'])
     return HttpResponse("OK")
 
