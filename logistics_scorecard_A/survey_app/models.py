@@ -60,6 +60,7 @@ class Scorecard(models.Model):
     account_manager = models.ForeignKey(Account_manager, on_delete=models.CASCADE)
     rating = models.ManyToManyField(Rating, blank=True)
     category_list = models.ManyToManyField(Category, blank=True)
+    is_filled_15 = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
         self.month_covered = self.date_released - datetime.timedelta(30)
