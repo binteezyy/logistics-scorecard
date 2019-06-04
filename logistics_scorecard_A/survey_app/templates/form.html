@@ -3,115 +3,184 @@
 {% block add_script %}
 <script>
     $(document).ready(function () {
-        {% for x in scorecard.category_list.all %}
-        $(".radi{{ x.category_number }}").click(function () {
-            var total = 0;
-            $(".radi{{ x.category_number }}:checked").each(function () { total += +this.value; });
-            $("#total{{ x.category_number }}").html(total);
-        });
+
+        {% for category in scorecard.category_list.all %}
+        {% for question in category.questions.all %}
+        {% for rating in scorecard.rating.all %}
+        {% if rating.question.question_string == question.question_string %}
+        $('input[name=cat-{{category.category_number}}-row-{{question.question_number}}][value={{rating.rate}}]').prop('checked', 'checked');
+        {% endif %}
         {% endfor %}
+        {% endfor %}
+        {% endfor %}
+
+        {% for category in scorecard.category_list.all %}
+        {% for question in category.questions.all %}
+        $('.weight-{{category.category_number}}-{{question.question_number}}').val({{ question.multiplier }});
+    $('.cat-{{category.category_number}}-row-{{question.question_number}}').click(function () {
+        $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').val(
+            ($('.weight-{{category.category_number}}-{{question.question_number}}').val() / 4 *
+                $('.cat-{{category.category_number}}-row-{{question.question_number}}:checked').val()).toFixed(2));
+        $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').html(
+            $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').val());
+        var totalColumn = 0;
+        $('.total-cat-{{category.category_number}}').each(function () {
+            totalColumn += +(this.value);
+        });
+        $('.total-column-cat-{{category.category_number}}').html(totalColumn.toFixed(2));
+
+        var totalall = 0;
+        {% for c in scorecard.category_list.all %}
+        totalall += +$('.total-column-cat-{{c.category_number}}').html();
+        {% endfor %}
+        $('.total-of-all').html(totalall.toFixed(2));
+    });
+
+
+    $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').val(
+        ($('.weight-{{category.category_number}}-{{question.question_number}}').val() / 4 *
+            $('.cat-{{category.category_number}}-row-{{question.question_number}}:checked').val()).toFixed(2));
+    $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').html(
+        $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').val());
+
+    {% for c in scorecard.category_list.all %}
+    var totalColumnR = 0;
+    $('.total-cat-{{c.category_number}}').each(function () {
+        totalColumnR += +(this.value);
+    });
+    $('.total-column-cat-{{c.category_number}}').html(totalColumnR.toFixed(2));
+    var totalAll = 0;
+    {% endfor %}
+
+    var totalall = 0;
+    {% for c in scorecard.category_list.all %}
+    totalall += +$('.total-column-cat-{{c.category_number}}').html();
+    {% endfor %}
+    $('.total-of-all').html(totalall.toFixed(2));
+
+    {% endfor %}
+    {% endfor %}
+
+    
     });
 </script>
+
 {% endblock add_script %}
 
-{% block content %}
+{% block form %}
 <div class="container">
-    <img src="https://www.avnet.com/opasdata/d120001/derivates/3/072/351/Artesyn_logo_web.png">
-</div>
-      <div class="container">
-            <div class="card border-0 bg-light">
-                    <div class="card-body">
-                      <h4 class="card-title">Scorecard ID: {{scorecard.cid}} - {{ scorecard.date_released|date:'M-d-Y' }}</h4>
-                      <h5 class="card-title">{{ scorecard.provider }}{% for z in scorecard.provider.services.all %}-{{z.name}}{%endfor%}</h5>
-                      <h6 class="card-subtitle mb-2 text-primary">Account Manager: {{ scorecard.account_manager }}</h6>
-                      <h6 class="card-subtitle mb-2">Email: {{ scorecard.account_manager.email }}</h6>
-                      <h6 class="card-subtitle mb-2">Month Covered: {{ scorecard.month_covered|date:'F' }}</h6>
-                    </div>
-                  </div>
-<form action="#" method="POST">
-    {% for x in scorecard.category_list.all %}
-    <h5>{{ x.category_number }}. {{ x.category_name }}</h5>
-    {% csrf_token %}
-    <table class="table table-striped table-hover table-bordered">
-        <thead class="thead-dark text-center h5 ">
-            <tr>
-                <th scope="col">#</th>
-                <th scope="col">Question</th>
-                <th scope="col">Weight</th>
-                <th scope="col">Rating</th>
-                <th scope="col">Value</th>
-                <th scope="col">Feedback</th>
+    <div class="card border-0 bg-light" name="scorecard">
+        <div class="card-body">
+            <h4 class="card-title">Scorecard ID: {{scorecard.cid}} - {{ scorecard.date_released|date:'M-d-Y' }}</h4>
+            <h5 class="card-title">
+                {{ scorecard.provider }}{% for z in scorecard.provider.services.all %}-{{z.name}}{%endfor%}</h5>
+            <h6 class="card-subtitle mb-2 text-primary">Account Manager: {{ scorecard.account_manager }}</h6>
+            <h6 class="card-subtitle mb-2">Email: {{ scorecard.account_manager.email }}</h6>
+            <h6 class="card-subtitle mb-2">Month Covered: {{ scorecard.month_covered|date:'F' }}</h6>
+        </div>
+    </div>
+    <div class="container" name="form">
+        <form action="{% url 'index' scorecard.cid %}" method="POST">
+            {% csrf_token %}
+            {% for category in scorecard.category_list.all %}
+            <div class="h5" name="category-name">
+                {{ category.category_number }}. {{category.category_name}}
+            </div>
+            <table class="table table-striped table-hover table-bordered">
+                <thead class="thead-dark text-center h5">
+                    <tr>
+                        <th>#</th>
+                        <th>Question</th>
+                        <th>Weight</th>
+                        <th>Rating</th>
+                        <th>Value</th>
+                        <th>Feedback</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for question in category.questions.all %}
+                    <tr class="h6 text-center">
+                        <th> {{ question.question_number }} </th>
+                        <td class="text-left" style="width: 30%;"> {{question.question_string|linebreaks}}</td>
+                        <td style="width: 10%;"
+                            class="weight-{{category.category_number}}-{{question.question_number}}">
+                            {{question.multiplier}} </td>
+                        <td>
+                            <div class=" form-check custom-control-inline">
+                                <label class="form-check-label">
+                                    <input value="1" type="radio"
+                                        class="form-check-input cat-{{category.category_number}}-row-{{question.question_number}}"
+                                        name="cat-{{category.category_number}}-row-{{question.question_number}}">1
+                                </label>
+                            </div>
+                            <div class="form-check custom-control-inline">
+                                <label class="form-check-label">
+                                    <input value="2" type="radio"
+                                        class="form-check-input cat-{{category.category_number}}-row-{{question.question_number}}"
+                                        name="cat-{{category.category_number}}-row-{{question.question_number}}">2
+                                </label>
+                            </div>
+                            <div class="form-check custom-control-inline">
+                                <label class="form-check-label">
+                                    <input value="3" type="radio"
+                                        class="form-check-input cat-{{category.category_number}}-row-{{question.question_number}}"
+                                        name="cat-{{category.category_number}}-row-{{question.question_number}}">3
+                                </label>
+                            </div>
+                            <div class=" form-check custom-control-inline">
+                                <label class="form-check-label">
+                                    <input value="4" type="radio"
+                                        class="form-check-input cat-{{category.category_number}}-row-{{question.question_number}}"
+                                        name="cat-{{category.category_number}}-row-{{question.question_number}}">4
+                                </label>
+                            </div>
+                            <div class="form-check custom-control-inline">
+                                <label class="form-check-label">
+                                    <input value="0" type="radio"
+                                        class="form-check-input cat-{{category.category_number}}-row-{{question.question_number}}"
+                                        name="cat-{{category.category_number}}-row-{{question.question_number}}">NA
+                                </label>
+                            </div>
+                        </td>
+                        <td>
+                            <text name="total-every-row"
+                                id="total-cat-{{category.category_number}}-row-{{question.question_number}}"
+                                class="total-cat-{{category.category_number}}">
+                            </text>
+                        </td>
+                        <td>
+                            <text name="feedback"
+                                id="feedback-cat-{{category.category_number}}-row-{{question.question_number}}"
+                                class="feedback-cat-{{category.category_number}}">
+                            </text>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    <tr class="h6 text-center" name="total-column">
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>
+                            <text>Total:</text>
+                        </td>
+                        <td>
+                            <text name="total-of-column" class="total-column-cat-{{category.category_number}}">
+                            </text>
+                        </td>
+                        <td>
 
-            </tr>
-        </thead>
-        <tbody>
-                {% for y in x.questions.all %}
-            <tr class="h6">
-                <th class="text-center"> {{ y.question_number }} </th>
-                <!-- <td class="text-left">Are you satisfied?Are you satisfied?Are you satisfied?Are you
-                        satisfied?Are you
-                        satisfied?Are you satisfied?</td> -->
-                <td class="text-left" style="width: 12%;"> {{ y.question_string }}</td>
-                <td class="text-center"> {{ y.multiplier }} </td>
-                <td class="text-center">
-                    <div class="form-check custom-control-inline">
-                        <label class="form-check-label">
-                            <input value="1" type="radio" class="form-check-input radi{{x.category_number}}"
-                                name="optradio{{y.pk}}"
-                                onclick="document.getElementById('{{y.pk}}').innerHTML=0.1; changeThis();">1
-                        </label>
-                    </div>
-                    <div class=" form-check custom-control-inline">
-                        <label class="form-check-label">
-                            <input value="2" type="radio" class="form-check-input radi{{x.category_number}}"
-                                name="optradio{{y.pk}}"
-                                onclick="document.getElementById('{{y.pk}}').innerHTML=0.2; addTotal()">2
-                        </label>
-                    </div>
-                    <div class="form-check custom-control-inline">
-                        <label class="form-check-label">
-                            <input value="3" type="radio" class="form-check-input radi{{x.category_number}}"
-                                name="optradio{{y.pk}}"
-                                onclick="document.getElementById('{{y.pk}}').innerHTML=0.3; addTotal()">3
-                        </label>
-                    </div>
-                    <div class="form-check custom-control-inline">
-                        <label class="form-check-label">
-                            <input value="4" type="radio" class="form-check-input radi{{x.category_number}}"
-                                name="optradio{{y.pk}}"
-                                onclick="document.getElementById('{{y.pk}}').innerHTML=0.4; addTotal()">4
-                        </label>
-                    </div>
-                    <div class="form-check custom-control-inline">
-                        <label class="form-check-label">
-                            <input value="5" type="radio" class="form-check-input radi{{x.category_number}}"
-                                name="optradio{{y.pk}}"
-                                onclick="document.getElementById('{{y.pk}}').innerHTML=0.5;"> 5
-                        </label>
-                    </div>
-                </td>
-                <td class="text-center" id="{{y.pk}}"></td>
-                </td>
-                <td></td>
-            </tr>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
             {% endfor %}
-            <tr class="h6">
-                <td></td>
-                <td></td>
-                <td></td>
-                <td class="text-center">
-                    <text >Total:</text>
-                </td>
-                <td class="text-center">
-                    <text name="total" id="total{{x.category_number}}" ></text>
-                </td>
-                <td>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-    {% endfor %}
-</form>
+            <div name="total-of-form" class="h3">
+                Total:
+                <text name="total-of-columns" class="total-of-all"></text>
+            </div>
+            <input type="submit" value="submit">
+        </form>
+    </div>
 </div>
 <a href={% url 'logout' %}>Logout</a>
-{% endblock content %}
+{% endblock form %}
