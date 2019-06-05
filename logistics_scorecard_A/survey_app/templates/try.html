@@ -16,26 +16,131 @@
 
         {% for category in scorecard.category_list.all %}
         {% for question in category.questions.all %}
-        $('.weight-{{category.category_number}}-{{question.question_number}}').val({{ question.multiplier }});
-    $('.cat-{{category.category_number}}-row-{{question.question_number}}').click(function () {
-        $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').val(
-            ($('.weight-{{category.category_number}}-{{question.question_number}}').val() / 4 *
-                $('.cat-{{category.category_number}}-row-{{question.question_number}}:checked').val()).toFixed(2));
-        $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').html(
-            $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').val());
-        var totalColumn = 0;
-        $('.total-cat-{{category.category_number}}').each(function () {
-            totalColumn += +(this.value);
-        });
-        $('.total-column-cat-{{category.category_number}}').html(totalColumn.toFixed(2));
+        $('.cat-{{category.category_number}}-row-{{question.question_number}}').click(function () {
+            $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').val(
+                ($('.weight-{{category.category_number}}-{{question.question_number}}').val() / 4 *
+                    $('.cat-{{category.category_number}}-row-{{question.question_number}}:checked').val()).toFixed(2));
+            $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').html(
+                $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').val());
+            var totalColumn = 0;
+            $('.total-cat-{{category.category_number}}').each(function () {
+                totalColumn += +(this.value);
+            });
+            $('.total-column-cat-{{category.category_number}}').html(totalColumn.toFixed(2));
 
-        var totalall = 0;
-        {% for c in scorecard.category_list.all %}
-        totalall += +$('.total-column-cat-{{c.category_number}}').html();
+            var totalall = 0;
+            {% for c in scorecard.category_list.all %}
+            totalall += +$('.total-column-cat-{{c.category_number}}').html();
+            {% endfor %}
+            $('.total-of-all').html(totalall.toFixed(2));
+
+
+            {% for category in scorecard.category_list.all %}
+            var totalNA = 0;
+            var totalQ = 0;
+            var weightNA = 0;
+            {% for question in category.questions.all %}
+            $('.weight-{{category.category_number}}-{{question.question_number}}').val({{ question.multiplier }});
+        if ($('.cat-{{category.category_number}}-row-{{question.question_number}}:checked').val() == 0) {
+            totalNA++;
+            weightNA += parseFloat($('.weight-{{category.category_number}}-{{question.question_number}}').val());
+        }
+        totalQ++;
         {% endfor %}
-        $('.total-of-all').html(totalall.toFixed(2));
+
+        var distribute = totalQ - totalNA;
+        var weightd = weightNA / distribute;
+
+
+
+
+
+        {% for question in category.questions.all %}
+        if ($('.cat-{{category.category_number}}-row-{{question.question_number}}:checked').val() != 0) {
+
+            var currentweight = parseFloat($('.weight-{{category.category_number}}-{{question.question_number}}').val());
+            currentweight += parseFloat(weightd);
+
+            $('.weight-{{category.category_number}}-{{question.question_number}}').val(currentweight);
+            $('.weight-{{category.category_number}}-{{question.question_number}}').html($('.weight-{{category.category_number}}-{{question.question_number}}').val());
+
+            $('#total-cat-{{category.category_number}}-row-{{question2.question_number}}').val(
+                ($('.weight-{{category.category_number}}-{{question2.question_number}}').val() / 4 *
+                    $('.cat-{{category.category_number}}-row-{{question2.question_number}}:checked').val()).toFixed(2));
+            $('#total-cat-{{category.category_number}}-row-{{question2.question_number}}').html(
+                $('#total-cat-{{category.category_number}}-row-{{question2.question_number}}').val());
+
+        }
+        else {
+            $('.weight-{{category.category_number}}-{{question.question_number}}').html('0');
+        }
+        {% endfor %}
+
+
+        {% endfor %}
+
+
     });
 
+
+
+    {% for category in scorecard.category_list.all %}
+    var totalNA = 0;
+    var totalQ = 0;
+    var weightNA = 0;
+    {% for question in category.questions.all %}
+    $('.weight-{{category.category_number}}-{{question.question_number}}').val({{ question.multiplier }});
+    if ($('.cat-{{category.category_number}}-row-{{question.question_number}}:checked').val() == 0) {
+        totalNA++;
+        weightNA += parseFloat($('.weight-{{category.category_number}}-{{question.question_number}}').val());
+    }
+    totalQ++;
+    {% endfor %}
+    console.log(totalQ);
+    console.log(totalNA);
+    console.log(weightNA);
+    var distribute = totalQ - totalNA;
+    var weightd = weightNA / distribute;
+
+    {% for question in category.questions.all %}
+    if (totalNA == totalQ) {
+        // edit this if want default for weight
+
+        $('input[name=cat-{{category.category_number}}-row-{{question.question_number}}][value=1]').prop('checked', 'checked');
+        totalQ--;
+
+
+
+    }
+
+    else {
+
+        if ($('.cat-{{category.category_number}}-row-{{question.question_number}}:checked').val() != 0) {
+
+            var currentweight = parseFloat($('.weight-{{category.category_number}}-{{question.question_number}}').val());
+            currentweight += parseFloat(weightd);
+
+            $('.weight-{{category.category_number}}-{{question.question_number}}').val(currentweight);
+            $('.weight-{{category.category_number}}-{{question.question_number}}').html($('.weight-{{category.category_number}}-{{question.question_number}}').val());
+
+            $('#total-cat-{{category.category_number}}-row-{{question2.question_number}}').val(
+                ($('.weight-{{category.category_number}}-{{question2.question_number}}').val() / 4 *
+                    $('.cat-{{category.category_number}}-row-{{question2.question_number}}:checked').val()).toFixed(2));
+            $('#total-cat-{{category.category_number}}-row-{{question2.question_number}}').html(
+                $('#total-cat-{{category.category_number}}-row-{{question2.question_number}}').val());
+
+        }
+        else {
+            $('.weight-{{category.category_number}}-{{question.question_number}}').html('0');
+        }
+        {% endfor %}
+    }
+
+
+    {% endfor %}
+
+    {% for category in scorecard.category_list.all %}
+    {% for question in category.questions.all %}
 
     $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').val(
         ($('.weight-{{category.category_number}}-{{question.question_number}}').val() / 4 *
@@ -59,10 +164,12 @@
     $('.total-of-all').html(totalall.toFixed(2));
 
     {% endfor %}
+
     {% endfor %}
 
     
     });
+
 </script>
 
 {% endblock add_script %}
@@ -136,7 +243,7 @@
                             </div>
                             <div class="form-check custom-control-inline">
                                 <label class="form-check-label">
-                                    <input value="4" type="radio"
+                                    <input value="0" type="radio"
                                         class="form-check-input cat-{{category.category_number}}-row-{{question.question_number}}"
                                         name="cat-{{category.category_number}}-row-{{question.question_number}}">NA
                                 </label>
@@ -182,4 +289,5 @@
         </form>
     </div>
 </div>
+<a href={% url 'logout' %}>Logout</a>
 {% endblock form %}
