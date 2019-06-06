@@ -255,7 +255,7 @@
         </div>
     </div>
     <div class="container" name="form">
-        <form action="{% url 'index' scorecard.cid %}" method="POST">
+        <form action="{% url 'latest_scorecard' %}" method="POST">
             {% csrf_token %}
             {% for category in scorecard.category_list.all %}
             <div class="h5" name="category-name">
