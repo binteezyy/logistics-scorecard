@@ -25,39 +25,40 @@ SECRET_KEY = 'p5y#gxf7#2-zt8-z%@l%am38bl$dp9@ehkd2eo0g#qzc&ln%by'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['*',]
+LOGIN_REDIRECT_URL = 'latest_scorecard'
+LOGIN_URL = 'login'
 AUTHENTICATION_BACKENDS = (
     "django_python3_ldap.auth.LDAPBackend",
 )
 
-# LDAP auth settings.
-LDAP_AUTH_URL = "ldap://junesong.ecp.priv"
+# # LDAP auth settings.
+# LDAP_AUTH_URL = "#"
 
-# Initiate TLS on connection.
-LDAP_AUTH_USE_TLS = False
+# # Initiate TLS on connection.
+# LDAP_AUTH_USE_TLS = False
 
-# The LDAP search base for looking up users.
-LDAP_AUTH_SEARCH_BASE = "OU=Users,OU=Accounts,OU=PHORT,OU=AP,OU=Embedded Power,DC=ecp,DC=priv"
+# # The LDAP search base for looking up users.
+# LDAP_AUTH_SEARCH_BASE = "#"
 
-# The LDAP class that represents a user.
-LDAP_AUTH_OBJECT_CLASS = "inetOrgPerson"
+# # The LDAP class that represents a user.
+# LDAP_AUTH_OBJECT_CLASS = "#"
 
-# User model fields mapped to the LDAP
-# attributes that represent them.
-LDAP_AUTH_USER_FIELDS = {
-    "username": "sAMAccountName",
-    "first_name": "givenName",
-    "last_name": "sn",
-    "email": "mail",
-}
-LDAP_AUTH_OBJECT_CLASS = "user"
+# # User model fields mapped to the LDAP
+# # attributes that represent them.
+# LDAP_AUTH_USER_FIELDS = {
+#     "username": "#",
+#     "first_name": "#",
+#     "last_name": "#",
+#     "email": "#",
+# }
+# LDAP_AUTH_OBJECT_CLASS = "#"
 
-LDAP_AUTH_FORMAT_USERNAME = "django_python3_ldap.utils.format_username_active_directory"
-LDAP_AUTH_ACTIVE_DIRECTORY_DOMAIN = "ECP"
+# LDAP_AUTH_FORMAT_USERNAME = "django_python3_ldap.utils.format_username_active_directory"
+# LDAP_AUTH_ACTIVE_DIRECTORY_DOMAIN = "#"
 
-LDAP_AUTH_CONNECTION_USERNAME = ""
-LDAP_AUTH_CONNECTION_PASSWORD = ""
+# LDAP_AUTH_CONNECTION_USERNAME = ""
+# LDAP_AUTH_CONNECTION_PASSWORD = ""
 
 
 # Application definition
@@ -68,7 +69,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
+    'crispy_forms',
+    'users',
     'survey_app',
     'django_python3_ldap',
 ]
@@ -108,7 +110,22 @@ WSGI_APPLICATION = 'logistics_scorecard_A.wsgi.application'
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
 DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    }
+    # 'default': {
+    #     'ENGINE': 'sql_server.pyodbc',
+    #     'NAME': '#',
+    #     'USER': '#',
+    #     'PASSWORD': '#',
+    #     'HOST': '#',
+    #     'PORT': '',
 
+    #     'OPTIONS': {
+    #         'driver': 'ODBC Driver 13 for SQL Server',
+    #     },
+    # },
 }
 
 
