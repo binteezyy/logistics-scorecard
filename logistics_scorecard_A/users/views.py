@@ -56,6 +56,8 @@ def latest_scorecard(request):
         # mailserver.starttls()
         # mailserver.login(msg['From'], 'password')
         # mailserver.sendmail(msg['From'], msg['To'], msg.as_string())
+        scorecard.is_applicable = True
+        scorecard.save()
         return HttpResponse("OK")
     else:
         return render(request, "form.html", context)
