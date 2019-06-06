@@ -20,6 +20,8 @@ def latest_scorecard(request):
     current_user = request.user
     user = Account.objects.get(user=current_user)
     scorecard = user.scorecard.get(month_covered__month=get_latest())
+    if datetime.datetime.now().day == 6 && scorecard.is_applicable == False:
+       return HttpResponse("You can't change it anymore!")
     categories = scorecard.category_list.all()
     ratings = scorecard.rating.all()
     context = {
