@@ -1,7 +1,7 @@
 import datetime
 import requests
 from time import sleep
-import sys
+import sys, os
 import django
 
 
@@ -16,7 +16,6 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
 msg = MIMEMultipart()
-
 
 msg['From'] = "from@email.com"
 msg['To'] = "to@email.com"
