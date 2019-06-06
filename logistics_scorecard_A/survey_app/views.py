@@ -43,7 +43,7 @@ def index(request, cid):
                 # return HttpResponse('old-%s new-%s' % (old_rate, new_rate))
         return HttpResponse("OK")
     else:
-        return render(request, "try.html", context)
+        return render(request, "form.html", context)
 
 
 def email_view(request):
