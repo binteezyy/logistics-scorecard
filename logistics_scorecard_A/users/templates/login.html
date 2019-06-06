@@ -1,20 +1,37 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
+<<<<<<< HEAD
+{% block content %}
+<div class="d-flex justify-content-center text-center mt-4 animated fadeInDown">
+    <div id="login_form" class="col-lg-4 col-sm-6 col-md-6 col-xl-4 bg-light shadow">
+    <img class="img-fluid m-4 zoomIn animated delay-1s" src="https://www.avnet.com/opasdata/d120001/derivates/3/072/351/Artesyn_logo_web.png">
+    <div class="content-section zoomIn animated delay-1s">
+=======
 {% block form %}
 <div class="d-flex justify-content-center text-center mt-4">
     <div class="col-lg-4 col-sm-6 col-md-6 col-xl-4 bg-light shadow">
     <img class="img-fluid m-4" src="https://www.avnet.com/opasdata/d120001/derivates/3/072/351/Artesyn_logo_web.png">
     <div class="content-section">
+>>>>>>> development
         <form method="POST">
             {% csrf_token %}
             <fieldset class="form-group">
                 {{ form|crispy }}
             </fieldset>
             <div class="form-group">
-                <button class="btn btn-outline-primary border-0" type="submit">Login</button>
+                <button class="btn btn-outline-primary border-0 mt-0 mb-4" type="submit">Login</button>
             </div>
         </form>
     </div>
 </div>
 </div>
+<<<<<<< HEAD
+<script>
+    $(document).submit(function() {
+    $("#login_form").addClass(' animated slideOutUp');
+});
+</script>
+{% endblock content %}
+=======
 {% endblock form %}
+>>>>>>> development
