@@ -4,6 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 import datetime
 from django.contrib.auth import logout
+from survey_app.models import *
 # Create your views here.
 
 def get_latest():
