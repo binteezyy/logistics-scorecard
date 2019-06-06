@@ -45,21 +45,21 @@ def index(request, cid):
                     scorecard.rating.add(new_rate)
 
                 # return HttpResponse('old-%s new-%s' % (old_rate, new_rate))
-        msg = MIMEMultipart()
-        msg['From'] = "#"
-        msg['To'] = "#"
-        msg['Subject'] = "LOGISTICS MONTHLY SCORECARD"
+        # msg = MIMEMultipart()
+        # msg['From'] = "#"
+        # msg['To'] = scorecard.account_manager.email
+        # msg['Subject'] = "LOGISTICS MONTHLY SCORECARD"
 
-        message = "MenRTrashMenRTrashMenRTrashMenRTrashMenRTrash"
+        # message = "MenRTrashMenRTrashMenRTrashMenRTrashMenRTrash"
 
-        # add in the message body
-        msg.attach(MIMEText(message, 'plain'))
+        # # add in the message body
+        # msg.attach(MIMEText(message, 'plain'))
 
-        mailserver = smtplib.SMTP('smtp.office365.com',587)
-        mailserver.ehlo()
-        mailserver.starttls()
-        mailserver.login(msg['From'], 'password')
-        mailserver.sendmail(msg['From'], msg['To'], msg.as_string())
+        # mailserver = smtplib.SMTP('smtp.office365.com',587)
+        # mailserver.ehlo()
+        # mailserver.starttls()
+        # mailserver.login(msg['From'], 'password')
+        # mailserver.sendmail(msg['From'], msg['To'], msg.as_string())
         return HttpResponse(scorecard.account_manager.email)
     else:
         return render(request, "form.html", context)
