@@ -28,9 +28,9 @@ DEBUG = True
 ALLOWED_HOSTS = ['*',]
 LOGIN_REDIRECT_URL = 'latest_scorecard'
 LOGIN_URL = 'login'
-AUTHENTICATION_BACKENDS = (
-    "django_python3_ldap.auth.LDAPBackend",
-)
+# AUTHENTICATION_BACKENDS = (
+#     "django_python3_ldap.auth.LDAPBackend",
+# )
 
 # # LDAP auth settings.
 # LDAP_AUTH_URL = "#"
