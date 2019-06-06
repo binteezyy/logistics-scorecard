@@ -20,7 +20,7 @@
         {% for question in category.questions.all %}
         $('.weight-{{category.category_number}}-{{question.question_number}}').val({{ question.multiplier }});
     $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').val(
-        ($('.weight-{{category.category_number}}-{{question.question_number}}').val() / 4 *
+        ($('.weight-{{category.category_number}}-{{question.question_number}}').val() / 5 *
             $('.cat-{{category.category_number}}-row-{{question.question_number}}:checked').val()).toFixed(2));
     $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').html(
         $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').val());
@@ -70,7 +70,7 @@
         $('.weight-{{category.category_number}}-{{question.question_number}}').html($('.weight-{{category.category_number}}-{{question.question_number}}').val());
 
         $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').val(
-            ($('.weight-{{category.category_number}}-{{question.question_number}}').val() / 4 *
+            ($('.weight-{{category.category_number}}-{{question.question_number}}').val() / 5 *
                 $('.cat-{{category.category_number}}-row-{{question.question_number}}:checked').val()).toFixed(2));
         $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').html(
             $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').val());
@@ -98,7 +98,7 @@
             $('.weight-{{category.category_number}}-{{question.question_number}}').html($('.weight-{{category.category_number}}-{{question.question_number}}').val());
 
             $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').val(
-                ($('.weight-{{category.category_number}}-{{question.question_number}}').val() / 4 *
+                ($('.weight-{{category.category_number}}-{{question.question_number}}').val() / 5 *
                     $('.cat-{{category.category_number}}-row-{{question.question_number}}:checked').val()).toFixed(2));
             $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').html(
                 $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').val());
@@ -134,7 +134,7 @@
     {% for question in category.questions.all %}
     $('.cat-{{category.category_number}}-row-{{question.question_number}}').click(function () {
         $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').val(
-            ($('.weight-{{category.category_number}}-{{question.question_number}}').val() / 4 *
+            ($('.weight-{{category.category_number}}-{{question.question_number}}').val() / 5 *
                 $('.cat-{{category.category_number}}-row-{{question.question_number}}:checked').val()).toFixed(2));
         $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').html(
             $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').val());
@@ -178,7 +178,7 @@
         $('.weight-{{category.category_number}}-{{question.question_number}}').html($('.weight-{{category.category_number}}-{{question.question_number}}').val());
 
         $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').val(
-            ($('.weight-{{category.category_number}}-{{question.question_number}}').val() / 4 *
+            ($('.weight-{{category.category_number}}-{{question.question_number}}').val() / 5 *
                 $('.cat-{{category.category_number}}-row-{{question.question_number}}:checked').val()).toFixed(2));
         $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').html(
             $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').val());
@@ -206,7 +206,7 @@
             $('.weight-{{category.category_number}}-{{question.question_number}}').html($('.weight-{{category.category_number}}-{{question.question_number}}').val());
 
             $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').val(
-                ($('.weight-{{category.category_number}}-{{question.question_number}}').val() / 4 *
+                ($('.weight-{{category.category_number}}-{{question.question_number}}').val() / 5 *
                     $('.cat-{{category.category_number}}-row-{{question.question_number}}:checked').val()).toFixed(2));
             $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').html(
                 $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').val());
@@ -307,6 +307,13 @@
                                     <input value="4" type="radio"
                                         class="form-check-input cat-{{category.category_number}}-row-{{question.question_number}}"
                                         name="cat-{{category.category_number}}-row-{{question.question_number}}">4
+                                </label>
+                            </div>
+                            <div class="form-check custom-control-inline">
+                                <label class="form-check-label">
+                                    <input value="5" type="radio"
+                                        class="form-check-input cat-{{category.category_number}}-row-{{question.question_number}}"
+                                        name="cat-{{category.category_number}}-row-{{question.question_number}}">5
                                 </label>
                             </div>
                             <div class="form-check custom-control-inline">
