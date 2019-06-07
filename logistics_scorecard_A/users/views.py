@@ -35,7 +35,14 @@ def latest_scorecard(request):
             for question in category.questions.all():
                 old_rate = scorecard.rating.get(
                     question__question_string=question.question_string)
-                new_rate = Rating.objects.get(question__question_string=question.question_string, rate=request.POST.get(
+                try:
+                    new_rate = Rating.objects.get(question__question_string=question.question_string, rate=request.POST.get(
+                    'cat-%s-row-%s' % (category.category_number, question.question_number)))
+                except Rating.DoesNotExist:
+                    add_rate = Rating(question=question, rate=request.POST.get(
+                    'cat-%s-row-%s' % (category.category_number, question.question_number)))
+                    add_rate.save()
+                    new_rate = Rating.objects.get(question__question_string=question.question_string, rate=request.POST.get(
                     'cat-%s-row-%s' % (category.category_number, question.question_number)))
                                 
                 if old_rate != new_rate:
