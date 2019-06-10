@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 class Account(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     scorecard = models.ManyToManyField(Scorecard)
-
+    is_active = models.BooleanField(default=True)
+    is_sent_sc = models.BooleanField(default=False)
     def __str__(self):
         return str(self.user)
-
