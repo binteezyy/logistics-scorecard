@@ -5,6 +5,10 @@ from django.contrib.auth.decorators import login_required
 import datetime
 from django.contrib.auth import logout
 from survey_app.models import *
+
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 # Create your views here.
 
 def get_latest():
@@ -13,7 +17,7 @@ def get_latest():
 
 def logoutUser(request):
    logout(request)
-   return redirect('login')    
+   return redirect('login')
 
 @login_required
 def latest_scorecard(request):
@@ -33,8 +37,6 @@ def latest_scorecard(request):
     if request.method == 'POST':
         for category in categories:
             for question in category.questions.all():
-                old_rate = scorecard.rating.get(
-                    question__question_string=question.question_string)
                 try:
                     new_rate = Rating.objects.get(question__question_string=question.question_string, rate=request.POST.get(
                     'cat-%s-row-%s' % (category.category_number, question.question_number)))
@@ -44,27 +46,31 @@ def latest_scorecard(request):
                     add_rate.save()
                     new_rate = Rating.objects.get(question__question_string=question.question_string, rate=request.POST.get(
                     'cat-%s-row-%s' % (category.category_number, question.question_number)))
-                                
-                if old_rate != new_rate:
-                    scorecard.rating.remove(old_rate)
+                try:
+                    old_rate = scorecard.rating.get(
+                        question__question_string=question.question_string)
+                    if old_rate != new_rate:
+                        scorecard.rating.remove(old_rate)
+                        scorecard.rating.add(new_rate)
+                except Rating.DoesNotExist:
                     scorecard.rating.add(new_rate)
 
                 # return HttpResponse('old-%s new-%s' % (old_rate, new_rate))
-        # msg = MIMEMultipart()
-        # msg['From'] = "#"
-        # msg['To'] = scorecard.account_manager.email
-        # msg['Subject'] = "LOGISTICS MONTHLY SCORECARD"
+        msg = MIMEMultipart()
+        msg['From'] = "alvinpanganiban@artesyn.com"
+        msg['To'] = scorecard.account_manager.email
+        msg['Subject'] = "LOGISTICS MONTHLY SCORECARD"
 
-        # message = "MenRTrashMenRTrashMenRTrashMenRTrashMenRTrash"
+        message = "10.162.197.88/login"
 
-        # # add in the message body
-        # msg.attach(MIMEText(message, 'plain'))
+        # add in the message body
+        msg.attach(MIMEText(message, 'plain'))
 
-        # mailserver = smtplib.SMTP('smtp.office365.com',587)
-        # mailserver.ehlo()
-        # mailserver.starttls()
-        # mailserver.login(msg['From'], 'password')
-        # mailserver.sendmail(msg['From'], msg['To'], msg.as_string())
+        mailserver = smtplib.SMTP('smtp.office365.com',587)
+        mailserver.ehlo()
+        mailserver.starttls()
+        mailserver.login(msg['From'], 'Passwordmoto123')
+        mailserver.sendmail(msg['From'], msg['To'], msg.as_string())
         scorecard.is_applicable = True
         scorecard.save()
         return HttpResponse("OK")

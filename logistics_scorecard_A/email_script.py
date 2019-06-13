@@ -37,7 +37,7 @@ while True:
     sleep(5)
 
 server.quit()
-
+#Add
 # for x in Account_manager.objects.all():
 #    print (datetime.datetime.now().second)
 #    time.sleep(1)
