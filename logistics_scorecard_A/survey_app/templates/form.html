@@ -14,30 +14,49 @@
         {% endfor %}
         {% endfor %}
 
-
-
         {% for category in scorecard.category_list.all %}
         {% for question in category.questions.all %}
-        $('.weight-{{category.category_number}}-{{question.question_number}}').val({{ question.multiplier }});
+        if (!$('.cat-{{category.category_number}}-row-{{question.question_number}}:checked').val()) {
+            console.log('undefined');
+            $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').html('');
+        }
+        else {
+            $('.weight-{{category.category_number}}-{{question.question_number}}').val({{ question.multiplier }});
     $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').val(
         ($('.weight-{{category.category_number}}-{{question.question_number}}').val() / 5 *
             $('.cat-{{category.category_number}}-row-{{question.question_number}}:checked').val()).toFixed(2));
     $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').html(
         $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').val());
+        }
 
     {% for c in scorecard.category_list.all %}
     var totalColumnR = 0;
     $('.total-cat-{{c.category_number}}').each(function () {
         totalColumnR += +(this.value);
     });
-    $('.total-column-cat-{{c.category_number}}').html(totalColumnR.toFixed(2));
+    if ($('#total-cat-{{category.category_number}}-row-{{question.question_number}}').html() == '') {
+        $('.total-column-cat-{{c.category_number}}').html('');
+    }
+    else {
+        $('.total-column-cat-{{c.category_number}}').html(totalColumnR.toFixed(2));
+    }
     {% endfor %}
 
     var totalall = 0;
     {% for c in scorecard.category_list.all %}
-    totalall += +$('.total-column-cat-{{c.category_number}}').html();
+    if ($('#total-cat-{{category.category_number}}-row-{{question.question_number}}').html() == '') {
+        $('.total-column-cat-{{c.category_number}}').html('');
+    }
+    else {
+        totalall += +$('.total-column-cat-{{c.category_number}}').html();
+    }
     {% endfor %}
-    $('.total-of-all').html(totalall.toFixed(2));
+    if ($('#total-cat-{{category.category_number}}-row-{{question.question_number}}').html() == '') {
+        $('.total-column-cat-{{c.category_number}}').html('');
+    }
+    else {
+        $('.total-of-all').html(totalall.toFixed(2));
+    }
 
     {% endfor %}
     {% endfor %}
@@ -69,25 +88,47 @@
         $('.weight-{{category.category_number}}-{{question.question_number}}').val(weightNA);
         $('.weight-{{category.category_number}}-{{question.question_number}}').html($('.weight-{{category.category_number}}-{{question.question_number}}').val());
 
+        if (!$('.cat-{{category.category_number}}-row-{{question.question_number}}:checked').val()) {
+            console.log('undefined');
+            $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').html('');
+        }
+        else {
+            $('.weight-{{category.category_number}}-{{question.question_number}}').val({{ question.multiplier }});
         $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').val(
             ($('.weight-{{category.category_number}}-{{question.question_number}}').val() / 5 *
                 $('.cat-{{category.category_number}}-row-{{question.question_number}}:checked').val()).toFixed(2));
         $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').html(
             $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').val());
+    }
 
-        {% for c in scorecard.category_list.all %}
-        var totalColumnR = 0;
-        $('.total-cat-{{c.category_number}}').each(function () {
-            totalColumnR += +(this.value);
-        });
+    {% for c in scorecard.category_list.all %}
+    var totalColumnR = 0;
+    $('.total-cat-{{c.category_number}}').each(function () {
+        totalColumnR += +(this.value);
+    });
+    if ($('#total-cat-{{category.category_number}}-row-{{question.question_number}}').html() == '') {
+        $('.total-column-cat-{{c.category_number}}').html('');
+    }
+    else {
         $('.total-column-cat-{{c.category_number}}').html(totalColumnR.toFixed(2));
-        {% endfor %}
+    }
+    {% endfor %}
 
-        var totalall = 0;
-        {% for c in scorecard.category_list.all %}
+    var totalall = 0;
+    {% for c in scorecard.category_list.all %}
+    if ($('#total-cat-{{category.category_number}}-row-{{question.question_number}}').html() == '') {
+        $('.total-column-cat-{{c.category_number}}').html('');
+    }
+    else {
         totalall += +$('.total-column-cat-{{c.category_number}}').html();
-        {% endfor %}
+    }
+    {% endfor %}
+    if ($('#total-cat-{{category.category_number}}-row-{{question.question_number}}').html() == '') {
+        $('.total-column-cat-{{c.category_number}}').html('');
+    }
+    else {
         $('.total-of-all').html(totalall.toFixed(2));
+    }
     }
     else {
         if ($('.cat-{{category.category_number}}-row-{{question.question_number}}:checked').val() != 0) {
@@ -97,30 +138,52 @@
             $('.weight-{{category.category_number}}-{{question.question_number}}').val(currentweight);
             $('.weight-{{category.category_number}}-{{question.question_number}}').html($('.weight-{{category.category_number}}-{{question.question_number}}').val());
 
+            if (!$('.cat-{{category.category_number}}-row-{{question.question_number}}:checked').val()) {
+                console.log('undefined');
+                $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').html('');
+            }
+            else {
+                $('.weight-{{category.category_number}}-{{question.question_number}}').val({{ question.multiplier }});
             $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').val(
                 ($('.weight-{{category.category_number}}-{{question.question_number}}').val() / 5 *
                     $('.cat-{{category.category_number}}-row-{{question.question_number}}:checked').val()).toFixed(2));
             $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').html(
                 $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').val());
+        }
 
-            {% for c in scorecard.category_list.all %}
-            var totalColumnR = 0;
-            $('.total-cat-{{c.category_number}}').each(function () {
-                totalColumnR += +(this.value);
-            });
-            $('.total-column-cat-{{c.category_number}}').html(totalColumnR.toFixed(2));
-            {% endfor %}
-
-            var totalall = 0;
-            {% for c in scorecard.category_list.all %}
-            totalall += +$('.total-column-cat-{{c.category_number}}').html();
-            {% endfor %}
-            $('.total-of-all').html(totalall.toFixed(2));
-
+        {% for c in scorecard.category_list.all %}
+        var totalColumnR = 0;
+        $('.total-cat-{{c.category_number}}').each(function () {
+            totalColumnR += +(this.value);
+        });
+        if ($('#total-cat-{{category.category_number}}-row-{{question.question_number}}').html() == '') {
+            $('.total-column-cat-{{c.category_number}}').html('');
         }
         else {
-            $('.weight-{{category.category_number}}-{{question.question_number}}').html('0');
+            $('.total-column-cat-{{c.category_number}}').html(totalColumnR.toFixed(2));
         }
+        {% endfor %}
+
+        var totalall = 0;
+        {% for c in scorecard.category_list.all %}
+        if ($('#total-cat-{{category.category_number}}-row-{{question.question_number}}').html() == '') {
+            $('.total-column-cat-{{c.category_number}}').html('');
+        }
+        else {
+            totalall += +$('.total-column-cat-{{c.category_number}}').html();
+        }
+        {% endfor %}
+        if ($('#total-cat-{{category.category_number}}-row-{{question.question_number}}').html() == '') {
+            $('.total-column-cat-{{c.category_number}}').html('');
+        }
+        else {
+            $('.total-of-all').html(totalall.toFixed(2));
+        }
+
+    }
+        else {
+        $('.weight-{{category.category_number}}-{{question.question_number}}').html('0');
+    }
     }
     {% endfor %}
     {% endfor %}
@@ -133,16 +196,28 @@
     var weightNA = 0;
     {% for question in category.questions.all %}
     $('.cat-{{category.category_number}}-row-{{question.question_number}}').click(function () {
-        $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').val(
-            ($('.weight-{{category.category_number}}-{{question.question_number}}').val() / 5 *
-                $('.cat-{{category.category_number}}-row-{{question.question_number}}:checked').val()).toFixed(2));
-        $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').html(
-            $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').val());
+        if (!$('.cat-{{category.category_number}}-row-{{question.question_number}}:checked').val()) {
+            console.log('undefined');
+            $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').html('');
+        }
+        else {
+            $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').val(
+                ($('.weight-{{category.category_number}}-{{question.question_number}}').val() / 5 *
+                    $('.cat-{{category.category_number}}-row-{{question.question_number}}:checked').val()).toFixed(2));
+            $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').html(
+                $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').val());
+        }
+
         var totalColumn = 0;
         $('.total-cat-{{category.category_number}}').each(function () {
             totalColumn += +(this.value);
         });
-        $('.total-column-cat-{{category.category_number}}').html(totalColumn.toFixed(2));
+        if (!totalColumn) {
+            $('.total-column-cat-{{category.category_number}}').html('');
+        }
+        else {
+            $('.total-column-cat-{{category.category_number}}').html(totalColumn.toFixed(2));
+        }
 
         var totalall = 0;
         {% for c in scorecard.category_list.all %}
@@ -177,18 +252,29 @@
         $('.weight-{{category.category_number}}-{{question.question_number}}').val(weightNA);
         $('.weight-{{category.category_number}}-{{question.question_number}}').html($('.weight-{{category.category_number}}-{{question.question_number}}').val());
 
-        $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').val(
-            ($('.weight-{{category.category_number}}-{{question.question_number}}').val() / 5 *
-                $('.cat-{{category.category_number}}-row-{{question.question_number}}:checked').val()).toFixed(2));
-        $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').html(
-            $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').val());
+        if (!$('.cat-{{category.category_number}}-row-{{question.question_number}}:checked').val()) {
+            console.log('undefined');
+            $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').html('');
+        }
+        else {
+            $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').val(
+                ($('.weight-{{category.category_number}}-{{question.question_number}}').val() / 5 *
+                    $('.cat-{{category.category_number}}-row-{{question.question_number}}:checked').val()).toFixed(2));
+            $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').html(
+                $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').val());
+        }
 
         {% for c in scorecard.category_list.all %}
         var totalColumnR = 0;
         $('.total-cat-{{c.category_number}}').each(function () {
             totalColumnR += +(this.value);
         });
-        $('.total-column-cat-{{c.category_number}}').html(totalColumnR.toFixed(2));
+        if (!totalColumnR) {
+            $('.total-column-cat-{{c.category_number}}').html('');
+        }
+        else {
+            $('.total-column-cat-{{c.category_number}}').html(totalColumnR.toFixed(2));
+        }
         {% endfor %}
 
         var totalall = 0;
@@ -205,18 +291,29 @@
             $('.weight-{{category.category_number}}-{{question.question_number}}').val(currentweight);
             $('.weight-{{category.category_number}}-{{question.question_number}}').html($('.weight-{{category.category_number}}-{{question.question_number}}').val());
 
-            $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').val(
-                ($('.weight-{{category.category_number}}-{{question.question_number}}').val() / 5 *
-                    $('.cat-{{category.category_number}}-row-{{question.question_number}}:checked').val()).toFixed(2));
-            $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').html(
-                $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').val());
+            if (!$('.cat-{{category.category_number}}-row-{{question.question_number}}:checked').val()) {
+                console.log('undefined');
+                $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').html('');
+            }
+            else {
+                $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').val(
+                    ($('.weight-{{category.category_number}}-{{question.question_number}}').val() / 5 *
+                        $('.cat-{{category.category_number}}-row-{{question.question_number}}:checked').val()).toFixed(2));
+                $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').html(
+                    $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').val());
+            }
 
             {% for c in scorecard.category_list.all %}
             var totalColumnR = 0;
             $('.total-cat-{{c.category_number}}').each(function () {
                 totalColumnR += +(this.value);
             });
-            $('.total-column-cat-{{c.category_number}}').html(totalColumnR.toFixed(2));
+            if (!totalColumnR) {
+                $('.total-column-cat-{{c.category_number}}').html('');
+            }
+            else {
+                $('.total-column-cat-{{c.category_number}}').html(totalColumnR.toFixed(2));
+            }
             {% endfor %}
 
             var totalall = 0;
