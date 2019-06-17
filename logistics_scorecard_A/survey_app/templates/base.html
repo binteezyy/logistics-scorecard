@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html>
 
@@ -12,8 +13,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="/static/css/bootstrap4-business-tycoon.css">
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
         integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
         crossorigin="anonymous"></script>
@@ -25,12 +25,18 @@
         crossorigin="anonymous"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css">
-        {% block add_script %} {% endblock add_script %} </head> <body>
+        {% block add_script %} {% endblock add_script %} </head>
+        <body class="bg-primary">
+                {% if request.user.is_authenticated %}
+                <nav class="navbar navbar-dark bg-dark animated fadeIn">
+                        <a class="btn btn-outline-light border-0" href="{% url 'landing' %}">Home</a>
+                        <a class="btn btn-outline-light float-right" href={% url 'logout' %}>Logout</a>
+                      </nav>
+                {% endif %}      
     <div class="container-fluid m-0 p-0">
-
         {% block form %}
 
-        {% endblock form %}
+        {% endblock form %} 
 
 
     </div>

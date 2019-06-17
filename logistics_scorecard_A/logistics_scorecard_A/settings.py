@@ -26,39 +26,39 @@ SECRET_KEY = 'p5y#gxf7#2-zt8-z%@l%am38bl$dp9@ehkd2eo0g#qzc&ln%by'
 DEBUG = True
 
 ALLOWED_HOSTS = ['*',]
-LOGIN_REDIRECT_URL = 'latest_scorecard'
+LOGIN_REDIRECT_URL = 'landing'
 LOGIN_URL = 'login'
-# AUTHENTICATION_BACKENDS = (
-#     "django_python3_ldap.auth.LDAPBackend",
-# )
+AUTHENTICATION_BACKENDS = (
+    "django_python3_ldap.auth.LDAPBackend",
+)
 
-# # LDAP auth settings.
-# LDAP_AUTH_URL = "#"
+# LDAP auth settings.
+LDAP_AUTH_URL = "ldap://junesong.ecp.priv"
 
-# # Initiate TLS on connection.
-# LDAP_AUTH_USE_TLS = False
+# Initiate TLS on connection.
+LDAP_AUTH_USE_TLS = False
 
-# # The LDAP search base for looking up users.
-# LDAP_AUTH_SEARCH_BASE = "#"
+# The LDAP search base for looking up users.
+LDAP_AUTH_SEARCH_BASE = "OU=Users,OU=Accounts,OU=PHORT,OU=AP,OU=Embedded Power,DC=ecp,DC=priv"
 
-# # The LDAP class that represents a user.
-# LDAP_AUTH_OBJECT_CLASS = "#"
+# The LDAP class that represents a user.
+LDAP_AUTH_OBJECT_CLASS = "inetOrgPerson"
 
-# # User model fields mapped to the LDAP
-# # attributes that represent them.
-# LDAP_AUTH_USER_FIELDS = {
-#     "username": "#",
-#     "first_name": "#",
-#     "last_name": "#",
-#     "email": "#",
-# }
-# LDAP_AUTH_OBJECT_CLASS = "#"
+# User model fields mapped to the LDAP
+# attributes that represent them.
+LDAP_AUTH_USER_FIELDS = {
+    "username": "sAMAccountName",
+    "first_name": "givenName",
+    "last_name": "sn",
+    "email": "mail",
+}
+LDAP_AUTH_OBJECT_CLASS = "user"
 
-# LDAP_AUTH_FORMAT_USERNAME = "django_python3_ldap.utils.format_username_active_directory"
-# LDAP_AUTH_ACTIVE_DIRECTORY_DOMAIN = "#"
+LDAP_AUTH_FORMAT_USERNAME = "django_python3_ldap.utils.format_username_active_directory"
+LDAP_AUTH_ACTIVE_DIRECTORY_DOMAIN = "ECP"
 
-# LDAP_AUTH_CONNECTION_USERNAME = ""
-# LDAP_AUTH_CONNECTION_PASSWORD = ""
+LDAP_AUTH_CONNECTION_USERNAME = "JoshuaPascual"
+LDAP_AUTH_CONNECTION_PASSWORD = "@pqapq7p7p"
 
 
 # Application definition
@@ -110,17 +110,18 @@ WSGI_APPLICATION = 'logistics_scorecard_A.wsgi.application'
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
+   'default': {
+       'ENGINE': 'django.db.backends.sqlite3',
+       'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+   }
     # 'default': {
-    #     'ENGINE': 'sql_server.pyodbc',
-    #     'NAME': '#',
-    #     'USER': '#',
-    #     'PASSWORD': '#',
-    #     'HOST': '#',
-    #     'PORT': '',
+    #     'ENGINE': 'django.db.backends.oracle',
+    #     'NAME': 'DWHD',
+    #     'USER': 'DJANGO',
+    #     'PASSWORD': 'django123',
+    #     'HOST': 'dwhdev1.ecp.priv',
+    #     'PORT': '1521',
+    # }
 
     #     'OPTIONS': {
     #         'driver': 'ODBC Driver 13 for SQL Server',
@@ -167,9 +168,12 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'realtantan7@gmail.com'
 EMAIL_HOST_PASSWORD = 'vhiduponbrgnwhia'
 EMAIL_PORT = 587
+
+CRISPY_TEMPLATE_PACK='bootstrap4'

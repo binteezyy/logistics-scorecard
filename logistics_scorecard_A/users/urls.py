@@ -6,7 +6,7 @@ from users import views as user_views
 
 
 urlpatterns = [
-    path('login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
+    path('login/', auth_views.LoginView.as_view(template_name='login.html', redirect_authenticated_user=True), name='login'),
     path('logout/', views.logoutUser, name='logout'),
     path('scorecard/', views.latest_scorecard, name='latest_scorecard')
 ]
