@@ -60,7 +60,7 @@
     }
 
     var ctr = 0;
-    // $('.unchecked-radio').html('Unanswered: <br>');
+    $('.unchecked-radio').html('');
     {% for category in scorecard.category_list.all %}
     {% for question in category.questions.all %}
     if (!$('.cat-{{category.category_number}}-row-{{question.question_number}}').is(':checked')) {
@@ -220,7 +220,7 @@
         $('.total-of-all').html(totalall.toFixed(4));
 
         var ctr = 0;
-        // $('.unchecked-radio').html('Unanswered: <br>');
+        $('.unchecked-radio').html('');
         {% for category in scorecard.category_list.all %}
         {% for question in category.questions.all %}
         if (!$('.cat-{{category.category_number}}-row-{{question.question_number}}').is(':checked')) {
