@@ -486,13 +486,15 @@
                 <text name="rating-of-columns" class="rating-of-all"></text>
             </div>
             <div name="Unanswered" class="h3 unchecked-radio">
-                {{date_now.day}}Unanswered: <br>
+                Unanswered: <br>
                 <text name="unchecked-radio" class="unchecked-radio"></text>
             </div>
-            {% if date_now.day <= 30 %}
-            <button class="btn btn-white float-right submit" type="submit" id="submit-btn"
-                value="submit">Submit</button>
-            {% endif %}
+            <div>
+                {% if date_now.day <= 30 %}
+                <button class="btn btn-primary float-right submit" type="submit" id="submit-btn"
+                    value="submit">Submit</button>
+                {% endif %}
+            </div>
         </form>
     </div>
 </div>
