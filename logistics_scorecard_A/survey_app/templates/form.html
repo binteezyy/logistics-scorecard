@@ -243,8 +243,8 @@
 {% endblock add_script %}
 
 {% block form %}
-<div class="container">
-    <div class="card border-0 bg-light" name="scorecard">
+<div class="sc container bg-white animated bounceInLeft p-3 mt-4">
+    <div class="card border-0 bg-white mt-2" name="scorecard">
         <div class="card-body">
             <h4 class="card-title">Scorecard ID: {{scorecard.cid}} - {{ scorecard.date_released|date:'M-d-Y' }}</h4>
             <h5 class="card-title">
@@ -255,7 +255,7 @@
         </div>
     </div>
     <div class="container" name="form">
-        <form action="{% url 'latest_scorecard' %}" method="POST">
+        <form method="POST">
             {% csrf_token %}
             {% for category in scorecard.category_list.all %}
             <div class="h5" name="category-name">
@@ -272,7 +272,7 @@
                         <th>Feedback</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="bg-white">
                     {% for question in category.questions.all %}
                     <tr class="h6 text-center">
                         <th> {{ question.question_number }} </th>
@@ -356,13 +356,18 @@
                 </tbody>
             </table>
             {% endfor %}
+            <button class="btn btn-white float-right submit" type="submit" value="submit">Submit</button>
             <div name="total-of-form" class="h3">
                 Total:
                 <text name="total-of-columns" class="total-of-all"></text>
             </div>
-            <button class="btn btn-outline-primary" type="submit" value="submit"></button>
+            
         </form>
     </div>
 </div>
-<a href={% url 'logout' %}>Logout</a>
+<script>
+     $(".submit").click(function(){
+        $(".sc").removeClass("bounceInLeft").addClass("	zoomOutUp faster");
+     }); 
+</script>  
 {% endblock form %}

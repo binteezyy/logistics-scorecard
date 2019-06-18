@@ -9,3 +9,9 @@ class Account(models.Model):
     is_sent_sc = models.BooleanField(default=False)
     def __str__(self):
         return str(self.user)
+
+class Transactions(models.Model):
+    scorecard = models.ManyToManyField(Scorecard)
+
+    def __str__(self):
+        return str(self.scorecard)

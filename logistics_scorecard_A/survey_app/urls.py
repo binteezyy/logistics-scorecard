@@ -7,6 +7,9 @@ from django.conf.urls.static import static
 from users import views as user_views
 
 urlpatterns = [
-    path('scorecards/<cid>', views.index, name='index'),
+    path('home', views.landing, name='landing'),
+    path('scorecards/<cid>', views.index, name='scorecard'),
     path('email', views.email_view, name='email'),
+    path('scorecards/<cid>/view', views.view_scorecard, name='view_scorecard'),
+
 ]
