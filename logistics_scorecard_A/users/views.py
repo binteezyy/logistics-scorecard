@@ -32,6 +32,7 @@ def latest_scorecard(request):
         "scorecard": scorecard,
         "categories": categories,
         "ratings": ratings,
+        'date_now': datetime.datetime.now(),
     }
 
     if request.method == 'POST':
@@ -57,7 +58,7 @@ def latest_scorecard(request):
 
                 # return HttpResponse('old-%s new-%s' % (old_rate, new_rate))
         msg = MIMEMultipart()
-        msg['From'] = "alvinpanganiban@artesyn.com"
+        msg['From'] = "#"
         msg['To'] = scorecard.account_manager.email
         msg['Subject'] = "LOGISTICS MONTHLY SCORECARD"
 
@@ -69,10 +70,10 @@ def latest_scorecard(request):
         mailserver = smtplib.SMTP('smtp.office365.com',587)
         mailserver.ehlo()
         mailserver.starttls()
-        mailserver.login(msg['From'], 'Passwordmoto123')
+        mailserver.login(msg['From'], '#')
         mailserver.sendmail(msg['From'], msg['To'], msg.as_string())
         scorecard.is_applicable = True
         scorecard.save()
         return HttpResponse("OK")
     else:
-        return render(request, "form.html", context)
+        return render(request, "try.html", context)
