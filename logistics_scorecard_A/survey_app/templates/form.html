@@ -59,6 +59,25 @@
         $('.total-of-all').html(totalall.toFixed(4));
     }
 
+    var ctr = 0;
+    $('.unchecked-radio').html('');
+    {% for category in scorecard.category_list.all %}
+    {% for question in category.questions.all %}
+    if (!$('.cat-{{category.category_number}}-row-{{question.question_number}}').is(':checked')) {
+        $('.unchecked-radio').append("Category: {{category.category_number}} Question: {{question.question_number}}<br>");
+        $('#submit-btn').css('display', 'none');
+    }
+    else
+        ctr++;
+    {% endfor %}
+    {% endfor %}
+    console.log(ctr);
+    ctr *= 6;
+    if (ctr == $('input:radio').length) {
+        $('#submit-btn').css('display', 'block');
+        $('.unanswered-radio').css('display', 'none');
+    }
+
     //NA HERE
     var totalQ = 0;
     {% for question in category.questions.all %}
@@ -200,6 +219,25 @@
         {% endfor %}
         $('.total-of-all').html(totalall.toFixed(4));
 
+        var ctr = 0;
+        $('.unchecked-radio').html('');
+        {% for category in scorecard.category_list.all %}
+        {% for question in category.questions.all %}
+        if (!$('.cat-{{category.category_number}}-row-{{question.question_number}}').is(':checked')) {
+            $('.unchecked-radio').append("Category: {{category.category_number}} Question: {{question.question_number}}<br>");
+            $('#submit-btn').css('display', 'none');
+        }
+        else
+            ctr++;
+        {% endfor %}
+        {% endfor %}
+        console.log(ctr);
+        ctr *= 6;
+
+        if (ctr == $('input:radio').length) {
+            $('#submit-btn').css('display', 'block');
+            $('.unanswered-radio').css('display', 'none');
+        }
 
     });
     {% endfor %}
@@ -425,11 +463,12 @@
                             <text>Rating: </text>
                             <text name="rating-of-column" class="rating-column-cat-{{category.category_number}}">
                             </text>
-                        </td>
-                        <td>
                             <text>Total:</text>
                             <text name="total-of-column" class="total-column-cat-{{category.category_number}}">
                             </text>
+                        </td>
+                        <td>
+
                         </td>
                         <td>
 
@@ -446,7 +485,13 @@
                 Rating:
                 <text name="rating-of-columns" class="rating-of-all"></text>
             </div>
-            <button class="btn btn-outline-primary" type="submit" value="submit"></button>
+            <div name="Unanswered" class="h3 unchecked-radio">
+                Unanswered: <br>
+                <text name="unchecked-radio" class="unchecked-radio"></text>
+            </div>
+            {% if date_now.day <= 30 %}
+            <button class="btn btn-outline-primary" type="submit" id="submit-btn" value="submit">Submit</button>
+            {% endif %}
         </form>
     </div>
 </div>
