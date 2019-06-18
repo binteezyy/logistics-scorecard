@@ -76,4 +76,4 @@ def latest_scorecard(request):
         scorecard.save()
         return HttpResponse("OK")
     else:
-        return render(request, "try.html", context)
+        return render(request, "form.html", context)
