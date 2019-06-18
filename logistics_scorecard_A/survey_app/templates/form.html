@@ -60,7 +60,7 @@
     }
 
     var ctr = 0;
-    $('.unchecked-radio').html('Unanswered: <br>');
+    // $('.unchecked-radio').html('Unanswered: <br>');
     {% for category in scorecard.category_list.all %}
     {% for question in category.questions.all %}
     if (!$('.cat-{{category.category_number}}-row-{{question.question_number}}').is(':checked')) {
@@ -75,7 +75,7 @@
     ctr *= 6;
     if (ctr == $('input:radio').length) {
         $('#submit-btn').css('display', 'block');
-        $('.unanswered-radio').css('display', 'none');
+        $('.dropup').css('display', 'none');
     }
 
     //NA HERE
@@ -220,7 +220,7 @@
         $('.total-of-all').html(totalall.toFixed(4));
 
         var ctr = 0;
-        $('.unchecked-radio').html('Unanswered: <br>');
+        // $('.unchecked-radio').html('Unanswered: <br>');
         {% for category in scorecard.category_list.all %}
         {% for question in category.questions.all %}
         if (!$('.cat-{{category.category_number}}-row-{{question.question_number}}').is(':checked')) {
@@ -236,7 +236,7 @@
 
         if (ctr == $('input:radio').length) {
             $('#submit-btn').css('display', 'block');
-            $('.unanswered-radio').css('display', 'none');
+            $('.dropup').css('display', 'none');
         }
 
     });
@@ -485,9 +485,17 @@
                 Rating:
                 <text name="rating-of-columns" class="rating-of-all"></text>
             </div>
-            <div name="Unanswered" class="h3 unchecked-radio">
-                Unanswered: <br>
-                <text name="unchecked-radio" class="unchecked-radio"></text>
+            <div class="btn-group dropup">
+                <button type="button" class="btn btn-secondary">
+                    Please answer remaining questions
+                </button>
+                <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split"
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <span class="sr-only">Toggle Dropdown</span>
+                </button>
+                <div class="dropdown-menu unchecked-radio">
+
+                </div>
             </div>
             <div>
                 {% if date_now.day <= 30 %}
