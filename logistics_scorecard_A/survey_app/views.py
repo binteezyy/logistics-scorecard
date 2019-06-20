@@ -83,11 +83,13 @@ def index(request, cid):
 
                 # return HttpResponse('old-%s new-%s' % (old_rate, new_rate))
 
+        userCN = 'CN=' + str(current_user.last_name) + '\, ' + str(current_user.first_name)
+
         server_url = settings.LDAP_AUTH_URL
+        server = Server(server_url, get_info=ALL)
+
         connection_account = str(settings.LDAP_CN) + ',' + str(settings.LDAP_AUTH_SEARCH_BASE)
         connection_password = str(settings.LDAP_AUTH_CONNECTION_PASSWORD)
-
-        server = Server(server_url, get_info=ALL)
         
         conn = Connection(
         server,
@@ -96,7 +98,19 @@ def index(request, cid):
         auto_bind=True)
 
         conn.search(
-            search_base = current_user.last_name,
+            search_base = str(userCN) + ',' + str(settings.LDAP_AUTH_SEARCH_BASE),
+            search_filter = '(objectClass=user)',
+            search_scope = SUBTREE,
+            types_only=False,
+            attributes=['manager'],
+            get_operational_attributes=True,
+            size_limit=1,
+            )
+
+        manager_dn = conn.response[0]['attributes']['manager']
+
+        conn.search(
+            search_base = manager_dn,
             search_filter = '(objectClass=user)',
             search_scope = SUBTREE,
             types_only=False,
@@ -133,12 +147,13 @@ def index(request, cid):
 
 def email_view(request):
     current_user = request.user
+    userCN = 'CN=' + str(current_user.last_name) + '\, ' + str(current_user.first_name)
 
     server_url = settings.LDAP_AUTH_URL
+    server = Server(server_url, get_info=ALL)
+
     connection_account = str(settings.LDAP_CN) + ',' + str(settings.LDAP_AUTH_SEARCH_BASE)
     connection_password = str(settings.LDAP_AUTH_CONNECTION_PASSWORD)
-
-    server = Server(server_url, get_info=ALL)
     
     conn = Connection(
     server,
@@ -147,7 +162,19 @@ def email_view(request):
     auto_bind=True)
 
     conn.search(
-        search_base = current_user.last_name,
+        search_base = str(userCN) + ',' + str(settings.LDAP_AUTH_SEARCH_BASE),
+        search_filter = '(objectClass=user)',
+        search_scope = SUBTREE,
+        types_only=False,
+        attributes=['manager'],
+        get_operational_attributes=True,
+        size_limit=1,
+        )
+
+    manager_dn = conn.response[0]['attributes']['manager']
+
+    conn.search(
+        search_base = manager_dn,
         search_filter = '(objectClass=user)',
         search_scope = SUBTREE,
         types_only=False,
