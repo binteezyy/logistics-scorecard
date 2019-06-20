@@ -13,6 +13,10 @@ from email.mime.text import MIMEText
 from django.contrib.auth.decorators import login_required
 from users.models import *
 
+from ldap3 import Server, Connection, ALL, SUBTREE, ALL_ATTRIBUTES
+from django.conf import settings
+from django.contrib.auth.models import User
+
 # Create your views here.
 
 @login_required
@@ -45,7 +49,7 @@ def index(request, cid):
     user1 = scorecard.account_set.first()
     if str(user1) != str(current_user):
         return redirect('landing')
-    if datetime.datetime.now().day > 19:
+    if datetime.datetime.now().day > 21:
        return redirect('view_scorecard', cid)
     categories = scorecard.category_list.all()
     ratings = scorecard.rating.all()
@@ -78,30 +82,78 @@ def index(request, cid):
                     scorecard.rating.add(new_rate)
 
                 # return HttpResponse('old-%s new-%s' % (old_rate, new_rate))
-        msg = MIMEMultipart()
-        msg['From'] = "#"
-        msg['To'] = scorecard.account_manager.email
-        msg['Subject'] = "LOGISTICS MONTHLY SCORECARD"
 
-        message = "10.162.197.88/login"
+        server_url = settings.LDAP_AUTH_URL
+        connection_account = str(settings.LDAP_CN) + ',' + str(settings.LDAP_AUTH_SEARCH_BASE)
+        connection_password = str(settings.LDAP_AUTH_CONNECTION_PASSWORD)
 
-        # add in the message body
-        msg.attach(MIMEText(message, 'plain'))
+        server = Server(server_url, get_info=ALL)
+        
+        conn = Connection(
+        server,
+        connection_account,
+        connection_password,
+        auto_bind=True)
 
-        mailserver = smtplib.SMTP('smtp.office365.com',587)
-        mailserver.ehlo()
-        mailserver.starttls()
-        mailserver.login(msg['From'], '#')
-        mailserver.sendmail(msg['From'], msg['To'], msg.as_string())
-        scorecard.is_applicable = True
-        scorecard.save()
-        return HttpResponse("OK")
+        conn.search(
+            search_base = current_user.last_name,
+            search_filter = '(objectClass=user)',
+            search_scope = SUBTREE,
+            types_only=False,
+            attributes=['mail'],
+            get_operational_attributes=True,
+            size_limit=1,
+            )
+
+        logistics_manager_email = conn.response[0]['attributes']['mail']
+
+        return HttpResponse(logistics_manager_email)
+
+        # msg = MIMEMultipart()
+        # msg['From'] = "#"
+        # msg['To'] = scorecard.account_manager.email
+        # msg['Subject'] = "LOGISTICS MONTHLY SCORECARD"
+
+        # message = "10.162.197.88/login"
+
+        # # add in the message body
+        # msg.attach(MIMEText(message, 'plain'))
+
+        # mailserver = smtplib.SMTP('smtp.office365.com',587)
+        # mailserver.ehlo()
+        # mailserver.starttls()
+        # mailserver.login(msg['From'], '#')
+        # mailserver.sendmail(msg['From'], msg['To'], msg.as_string())
+        # scorecard.is_applicable = True
+        # scorecard.save()
+        # return HttpResponse("OK")
     else:
         return render(request, "form.html", context)
 
 
 def email_view(request):
+    current_user = request.user
 
-    send_mail('test', 'test', 'realtantan7@gmail.com',
-              ['Alvin.Panganiban@artesyn.com'])
-    return HttpResponse("OK")
+    server_url = settings.LDAP_AUTH_URL
+    connection_account = str(settings.LDAP_CN) + ',' + str(settings.LDAP_AUTH_SEARCH_BASE)
+    connection_password = str(settings.LDAP_AUTH_CONNECTION_PASSWORD)
+
+    server = Server(server_url, get_info=ALL)
+    
+    conn = Connection(
+    server,
+    connection_account,
+    connection_password,
+    auto_bind=True)
+
+    conn.search(
+        search_base = current_user.last_name,
+        search_filter = '(objectClass=user)',
+        search_scope = SUBTREE,
+        types_only=False,
+        attributes=['mail'],
+        get_operational_attributes=True,
+        size_limit=1,
+        )
+    
+    return HttpResponse(conn.response[0]['attributes']['mail'])
