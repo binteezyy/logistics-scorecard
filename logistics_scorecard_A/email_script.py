@@ -89,7 +89,7 @@ while True:
 
     sleep(2)
 
-    server.quit()
+mailserver.quit()
 
 # if __name__ == "__main__":
 #     main()
