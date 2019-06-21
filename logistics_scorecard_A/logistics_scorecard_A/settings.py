@@ -22,13 +22,13 @@ AUTHENTICATION_BACKENDS = (
 )
 
 # LDAP auth settings.
-LDAP_AUTH_URL = "#"
+LDAP_AUTH_URL = "ldap://junesong.ecp.priv"
 
 # Initiate TLS on connection.
 LDAP_AUTH_USE_TLS = False
 
 # The LDAP search base for looking up users.
-LDAP_AUTH_SEARCH_BASE = "#"
+LDAP_AUTH_SEARCH_BASE = "OU=Users,OU=Accounts,OU=PHORT,OU=AP,OU=Embedded Power,DC=ecp,DC=priv"
 
 # The LDAP class that represents a user.
 LDAP_AUTH_OBJECT_CLASS = "inetOrgPerson"
@@ -44,24 +44,30 @@ LDAP_AUTH_USER_FIELDS = {
 LDAP_AUTH_OBJECT_CLASS = "user"
 
 LDAP_AUTH_FORMAT_USERNAME = "django_python3_ldap.utils.format_username_active_directory"
-LDAP_AUTH_ACTIVE_DIRECTORY_DOMAIN = "#"
+LDAP_AUTH_ACTIVE_DIRECTORY_DOMAIN = "ECP"
 
-LDAP_AUTH_CONNECTION_USERNAME = "#"
-LDAP_AUTH_CONNECTION_PASSWORD = "#"
+LDAP_AUTH_CONNECTION_USERNAME = "JoshuaPascual"
+LDAP_AUTH_CONNECTION_PASSWORD = "@pqapq7p7p"
+
+
 
 
 # Application definition
 INSTALLED_APPS = [
+    #'scheduler_app.apps.SchedulerAppConfig',
+    'survey_app.apps.SurveyAppConfig',
+    'users.apps.UsersConfig',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
     'crispy_forms',
-    'users',
-    'survey_app',
     'django_python3_ldap',
+
 ]
 
 MIDDLEWARE = [

@@ -1,48 +1,95 @@
 import datetime
 import requests
+import smtplib
 from time import sleep
 import sys, os
+import datetime
+from getpass import getpass
+
+from jinja2 import Environment        # Jinja2 templating
+
 import django
-
-
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "logistics_scorecard_A.settings")
 django.setup()
-# From now onwards start your script..
-from survey_app.models import Scorecard
-from survey_app.models import Account_manager
 
-import smtplib
+from survey_app.models import *
+from users.models import *
+
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
+def clear():
+    os.system('cls' if os.name == 'nt' else 'clear')
+
 msg = MIMEMultipart()
+mailserver = smtplib.SMTP('')
+with open('email.html', 'r', encoding='utf-8') as t:
+    template = t.read()
 
-msg['From'] = "from@email.com"
-msg['To'] = "to@email.com"
-msg['Subject'] = "LOGISTICS MONTHLY SCORECARD"
 
-message = "MenRTrashMenRTrashMenRTrashMenRTrashMenRTrash"
+print("(1)365.OUTLOOK\t(2)fakeSMTP")
+selection=input("Please Select:")
+if selection =='1':
+    print("365.OUTLOOK")
 
-# add in the message body
-msg.attach(MIMEText(message, 'plain'))
+    msg['From'] = input("EMAIL:")
+    msg['PWD'] = getpass()
 
-mailserver = smtplib.SMTP('smtp.office365.com',587)
-mailserver.ehlo()
-mailserver.starttls()
-mailserver.login(msg['From'], 'password')
+    mailserver = smtplib.SMTP('smtp.office365.com',587)
+    mailserver.ehlo()
+    mailserver.starttls()
+    mailserver.login(msg['From'],msg['PWD'])
+
+elif selection == '2':
+    print("fakeSMTP")
+    mailserver = smtplib.SMTP('localhost',25)
+    mailserver.ehlo()
+
+
+
+else:
+    print("INVALID SELECTION")
+
 
 while True:
-    mailserver.sendmail(msg['From'], msg['To'], msg.as_string())
-    print("sent")
-    sleep(5)
+    # PARSE ACCOUNTS
+    accounts = Account.objects.all()
 
-server.quit()
-#Add
-# for x in Account_manager.objects.all():
-#    print (datetime.datetime.now().second)
-#    time.sleep(1)
-#    data = {'email':str(x.email), 'subject':'Logistic Scorecard', 'body':'http://localhost:8000/login/'}
-#    # if datetime.datetime.now().second == 30:
-#    #     requests.post('https://prod-23.southeastasia.logic.azure.com:443/workflows/3e1c9c57e9714d59b2a735a4fb4493a3/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=ZJJl-dVZLdRhlV5kDALwT98fkSwEcPWPqOr6GWjp_og',
-#    #                 json=data)
-#    requests.post('https://prod-23.southeastasia.logic.azure.com:443/workflows/3e1c9c57e9714d59b2a735a4fb4493a3/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=ZJJl-dVZLdRhlV5kDALwT98fkSwEcPWPqOr6GWjp_og', json=data)
+    for i in accounts:
+        print(i.user)
+        if i.is_active == True:
+
+            for sc in AppraiserList.objects.filter(account=i.pk):
+                if sc.is_sent_sc == False:
+
+                    print("SENDING TO:\t",i.user.email,"\n")
+
+                    msg['Subject'] = "LOGISTICS MONTHLY SCORECARD"
+                    msg = MIMEText(
+                        Environment().from_string(template).render(
+                            title='ARTESYN LOGISTIC SCORECARD',
+                            sc_categories=sc.scorecard.category_list.all(),
+                        ), "html"
+                    )
+
+                    mailserver.sendmail('email', str(i.user.email), msg.as_string())
+                    sc.is_sent_sc = True
+                    sc.save()
+
+                    sleep(1)
+                    print(sc.scorecard,"\t",sc.is_sent_sc)
+
+                    # c = len(i.scorecard.all()) + 1
+                    # s = Scorecard.objects.create(cid="SCORECARD%d" % (c),date_released=datetime.datetime.now(),)
+                    # s.save()
+                    # al = AppraiserList.objects.create(account=sc.account,
+                    #                             is_sent_sc=True,
+                    #                             scorecard=s)
+                    # al.save()
+
+    sleep(2)
+
+    server.quit()
+
+# if __name__ == "__main__":
+#     main()
