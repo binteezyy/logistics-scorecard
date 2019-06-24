@@ -14,8 +14,6 @@
         {% endfor %}
         {% endfor %}
 
-
-
         {% for category in scorecard.category_list.all %}
         {% for question in category.questions.all %}
         if (!$('.cat-{{category.category_number}}-row-{{question.question_number}}:checked').val()) {
@@ -75,10 +73,9 @@
     ctr *= 6;
     if (ctr == $('input:radio').length) {
         $('#submit-btn').css('display', 'block');
-        $('.unanswered-radio').css('display', 'none');
+        $('.dropup').css('display', 'none');
     }
 
-    //NA HERE
     var totalQ = 0;
     {% for question in category.questions.all %}
     totalQ++;
@@ -174,9 +171,11 @@
         $('.weight-{{category.category_number}}-{{question.question_number}}').html('0');
     }
     {% endfor %}
+    //NA END
 
     {% endfor %}
     {% endfor %}
+
 
     var ratingall = 0;
     var categoryN = 0;
@@ -236,7 +235,7 @@
 
         if (ctr == $('input:radio').length) {
             $('#submit-btn').css('display', 'block');
-            $('.unanswered-radio').css('display', 'none');
+            $('.dropup').css('display', 'none');
         }
 
     });
@@ -360,8 +359,8 @@
 {% endblock add_script %}
 
 {% block form %}
-<div class="container">
-    <div class="card border-0 bg-light" name="scorecard">
+<div class="sc container bg-white animated bounceInLeft p-3 mt-4">
+    <div class="card border-0 bg-white mt-2" name="scorecard">
         <div class="card-body">
             <h4 class="card-title">Scorecard ID: {{scorecard.cid}} - {{ scorecard.date_released|date:'M-d-Y' }}</h4>
             <h5 class="card-title">
@@ -372,7 +371,7 @@
         </div>
     </div>
     <div class="container" name="form">
-        <form action="{% url 'latest_scorecard' %}" method="POST">
+        <form method="POST">
             {% csrf_token %}
             {% for category in scorecard.category_list.all %}
             <div class="h5" name="category-name">
@@ -389,7 +388,7 @@
                         <th>Feedback</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="bg-white">
                     {% for question in category.questions.all %}
                     <tr class="h6 text-center">
                         <th> {{ question.question_number }} </th>
@@ -463,9 +462,9 @@
                             <text>Rating: </text>
                             <text name="rating-of-column" class="rating-column-cat-{{category.category_number}}">
                             </text>
-                            <text>Total:</text>
+                            <!-- <text>Total:</text>
                             <text name="total-of-column" class="total-column-cat-{{category.category_number}}">
-                            </text>
+                            </text> -->
                         </td>
                         <td>
 
@@ -477,23 +476,37 @@
                 </tbody>
             </table>
             {% endfor %}
-            <div name="total-of-form" class="h3">
+            <!-- <div name="total-of-form" class="h3">
                 Total:
                 <text name="total-of-columns" class="total-of-all"></text>
-            </div>
+            </div> -->
             <div name="rating-of-form" class="h3">
                 Rating:
                 <text name="rating-of-columns" class="rating-of-all"></text>
             </div>
-            <div name="Unanswered" class="h3 unchecked-radio">
-                Unanswered: <br>
-                <text name="unchecked-radio" class="unchecked-radio"></text>
+            <div class="btn-group dropup">
+                <button type="button" class="btn btn-secondary">
+                    Please answer remaining questions
+                </button>
+                <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split"
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <span class="sr-only">Toggle Dropdown</span>
+                </button>
+                <div class="dropdown-menu unchecked-radio">
+
+                </div>
             </div>
-            {% if date_now.day <= 30 %}
-            <button class="btn btn-outline-primary" type="submit" id="submit-btn" value="submit">Submit</button>
-            {% endif %}
+            <div>
+                {% if date_now.day <= 30 %}
+                <button class="btn btn-primary submit" type="submit" id="submit-btn" value="submit">Submit</button>
+                {% endif %}
+            </div>
         </form>
     </div>
 </div>
-<a href={% url 'logout' %}>Logout</a>
+<script>
+    $(".submit").click(function () {
+        $(".sc").removeClass("bounceInLeft").addClass("	zoomOutUp faster");
+    }); 
+</script>
 {% endblock form %}

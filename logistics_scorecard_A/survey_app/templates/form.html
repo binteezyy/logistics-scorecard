@@ -1,6 +1,11 @@
 {% extends "base.html" %}
 
 {% block add_script %}
+<style>
+    div:target {
+        border: 1px solid blue;
+    }
+</style>
 <script>
     $(document).ready(function () {
 
@@ -14,20 +19,18 @@
         {% endfor %}
         {% endfor %}
 
-
-
         {% for category in scorecard.category_list.all %}
         {% for question in category.questions.all %}
         if (!$('.cat-{{category.category_number}}-row-{{question.question_number}}:checked').val()) {
-            // console.log('undefined');
             $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').html('');
         }
         else {
             $('.weight-{{category.category_number}}-{{question.question_number}}').val({{ question.multiplier }});
     $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').val(
-        $('.cat-{{category.category_number}}-row-{{question.question_number}}:checked').val());
-    $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').html(
-        $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').val() * 20 + '%');
+        $('.cat-{{category.category_number}}-row-{{question.question_number}}:checked').val()
+        * $('.weight-{{category.category_number}}-{{question.question_number}}').val());
+    var totalR = parseFloat($('#total-cat-{{category.category_number}}-row-{{question.question_number}}').val());
+    $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').html(parseFloat(totalR.toFixed(4)));
          }
 
     {% for c in scorecard.category_list.all %}
@@ -39,7 +42,7 @@
         $('.total-column-cat-{{c.category_number}}').html('');
     }
     else {
-        $('.total-column-cat-{{c.category_number}}').html(totalColumnR.toFixed(4));
+        $('.total-column-cat-{{c.category_number}}').html(parseFloat(totalColumnR.toFixed(4)));
     }
     {% endfor %}
 
@@ -56,15 +59,16 @@
         $('.total-column-cat-{{c.category_number}}').html('');
     }
     else {
-        $('.total-of-all').html(totalall.toFixed(4));
+        $('.total-of-all').html(parseFloat(totalall.toFixed(4)));
     }
 
     var ctr = 0;
-    $('.unchecked-radio').html('');
+
     {% for category in scorecard.category_list.all %}
+    $('.unchecked-radio-{{category.category_number}}').html('');
     {% for question in category.questions.all %}
     if (!$('.cat-{{category.category_number}}-row-{{question.question_number}}').is(':checked')) {
-        $('.unchecked-radio').append("Category: {{category.category_number}} Question: {{question.question_number}}<br>");
+        $('.unchecked-radio-{{category.category_number}}').append("Category: {{category.category_number}} Question: {{question.question_number}}<br>");
         $('#submit-btn').css('display', 'none');
     }
     else
@@ -78,7 +82,6 @@
         $('.dropup').css('display', 'none');
     }
 
-    //NA HERE
     var totalQ = 0;
     {% for question in category.questions.all %}
     totalQ++;
@@ -137,7 +140,7 @@
         var currentweight = parseFloat($('.weight-{{category.category_number}}-{{question.question_number}}').val());
         currentweight += parseFloat(weightd);
         // console.log(currentweight);
-        $('.weight-{{category.category_number}}-{{question.question_number}}').val(currentweight.toFixed(4));
+        $('.weight-{{category.category_number}}-{{question.question_number}}').val(parseFloat(currentweight.toFixed(4)));
         $('.weight-{{category.category_number}}-{{question.question_number}}').html($('.weight-{{category.category_number}}-{{question.question_number}}').val());
 
         if (!$('.cat-{{category.category_number}}-row-{{question.question_number}}:checked').val()) {
@@ -146,9 +149,11 @@
         }
         else {
             $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').val(
-                $('.cat-{{category.category_number}}-row-{{question.question_number}}:checked').val());
-            $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').html(
-                $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').val() * 20 + '%');
+                $('.cat-{{category.category_number}}-row-{{question.question_number}}:checked').val()
+                * $('.weight-{{category.category_number}}-{{question.question_number}}').val());
+            var totalR = parseFloat($('#total-cat-{{category.category_number}}-row-{{question.question_number}}').val());
+            console.log(totalR.toFixed(4));
+            $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').html(parseFloat(totalR.toFixed(4)));
         }
 
         {% for c in scorecard.category_list.all %}
@@ -160,7 +165,7 @@
             $('.total-column-cat-{{c.category_number}}').html('');
         }
         else {
-            $('.total-column-cat-{{c.category_number}}').html(totalColumnR.toFixed(4));
+            $('.total-column-cat-{{c.category_number}}').html(parseFloat(totalColumnR.toFixed(4)));
         }
         {% endfor %}
 
@@ -168,15 +173,17 @@
         {% for c in scorecard.category_list.all %}
         totalall += +$('.total-column-cat-{{c.category_number}}').html();
         {% endfor %}
-        $('.total-of-all').html(totalall.toFixed(4));
+        $('.total-of-all').html(parseFloat(totalall.toFixed(4)));
     }
     else {
         $('.weight-{{category.category_number}}-{{question.question_number}}').html('0');
     }
     {% endfor %}
+    //NA END
 
     {% endfor %}
     {% endfor %}
+
 
     var ratingall = 0;
     var categoryN = 0;
@@ -197,9 +204,10 @@
         }
         else {
             $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').val(
-                $('.cat-{{category.category_number}}-row-{{question.question_number}}:checked').val());
-            $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').html(
-                $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').val() * 20 + '%');
+                $('.cat-{{category.category_number}}-row-{{question.question_number}}:checked').val()
+                * $('.weight-{{category.category_number}}-{{question.question_number}}').val());
+            var totalR = parseFloat($('#total-cat-{{category.category_number}}-row-{{question.question_number}}').val());
+            $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').html(parseFloat(totalR.toFixed(4)));
         }
 
         var totalColumn = 0;
@@ -210,21 +218,21 @@
             $('.total-column-cat-{{category.category_number}}').html('');
         }
         else {
-            $('.total-column-cat-{{category.category_number}}').html(totalColumn.toFixed(4));
+            $('.total-column-cat-{{category.category_number}}').html(parseFloat(totalColumn.toFixed(4)));
         }
 
         var totalall = 0;
         {% for c in scorecard.category_list.all %}
         totalall += +$('.total-column-cat-{{c.category_number}}').html();
         {% endfor %}
-        $('.total-of-all').html(totalall.toFixed(4));
+        $('.total-of-all').html(parseFloat(totalall.toFixed(4)));
 
         var ctr = 0;
-        $('.unchecked-radio').html('');
         {% for category in scorecard.category_list.all %}
+        $('.unchecked-radio-{{category.category_number}}').html('');
         {% for question in category.questions.all %}
         if (!$('.cat-{{category.category_number}}-row-{{question.question_number}}').is(':checked')) {
-            $('.unchecked-radio').append("Category: {{category.category_number}} Question: {{question.question_number}}<br>");
+            $('.unchecked-radio-{{category.category_number}}').append("Category: {{category.category_number}} Question: {{question.question_number}}<br>");
             $('#submit-btn').css('display', 'none');
         }
         else
@@ -302,7 +310,7 @@
         var currentweight = parseFloat($('.weight-{{category.category_number}}-{{question.question_number}}').val());
         currentweight += parseFloat(weightd);
         // console.log(currentweight);
-        $('.weight-{{category.category_number}}-{{question.question_number}}').val(currentweight.toFixed(4));
+        $('.weight-{{category.category_number}}-{{question.question_number}}').val(parseFloat(currentweight.toFixed(4)));
         $('.weight-{{category.category_number}}-{{question.question_number}}').html($('.weight-{{category.category_number}}-{{question.question_number}}').val());
 
         if (!$('.cat-{{category.category_number}}-row-{{question.question_number}}:checked').val()) {
@@ -311,9 +319,10 @@
         }
         else {
             $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').val(
-                $('.cat-{{category.category_number}}-row-{{question.question_number}}:checked').val());
-            $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').html(
-                $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').val() * 20 + '%');
+                $('.cat-{{category.category_number}}-row-{{question.question_number}}:checked').val()
+                * $('.weight-{{category.category_number}}-{{question.question_number}}').val());
+            var totalR = parseFloat($('#total-cat-{{category.category_number}}-row-{{question.question_number}}').val());
+            $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').html(parseFloat(totalR.toFixed(4)));
         }
 
         {% for c in scorecard.category_list.all %}
@@ -325,7 +334,7 @@
             $('.total-column-cat-{{c.category_number}}').html('');
         }
         else {
-            $('.total-column-cat-{{c.category_number}}').html(totalColumnR.toFixed(4));
+            $('.total-column-cat-{{c.category_number}}').html(parseFloat(totalColumnR.toFixed(4)));
         }
         {% endfor %}
 
@@ -333,7 +342,7 @@
         {% for c in scorecard.category_list.all %}
         totalall += +$('.total-column-cat-{{c.category_number}}').html();
         {% endfor %}
-        $('.total-of-all').html(totalall.toFixed(4));
+        $('.total-of-all').html(parseFloat(totalall.toFixed(4)));
     }
     else {
         $('.weight-{{category.category_number}}-{{question.question_number}}').html('0');
@@ -375,7 +384,7 @@
         <form method="POST">
             {% csrf_token %}
             {% for category in scorecard.category_list.all %}
-            <div class="h5" name="category-name">
+            <div class="h5" name="category-name" id="{{ category.category_number }}">
                 {{ category.category_number }}. {{category.category_name}}
             </div>
             <table class="table table-striped table-hover table-bordered">
@@ -387,6 +396,7 @@
                         <th>Rating</th>
                         <th>Value</th>
                         <th>Feedback</th>
+                        <!-- <th>Feedback</th> -->
                     </tr>
                 </thead>
                 <tbody class="bg-white">
@@ -453,39 +463,53 @@
                                 class="feedback-cat-{{category.category_number}}">
                             </text>
                         </td>
+                        <!-- <td>
+
+                        </td> -->
                     </tr>
                     {% endfor %}
-                    <tr class="h6 text-center" name="total-column">
-                        <td></td>
+                    <tr class="h5 text-center" name="total-column">
+                        <td>
+                            <text>Total:</text>
+                            <text name="total-of-column" class="total-column-cat-{{category.category_number}}">
+                            </text>
+                        </td>
                         <td></td>
                         <td></td>
                         <td>
-                            <text>Rating: </text>
+                            <!-- <text>Rating: </text>
                             <text name="rating-of-column" class="rating-column-cat-{{category.category_number}}">
-                            </text>
-                            <!-- <text>Total:</text>
-                            <text name="total-of-column" class="total-column-cat-{{category.category_number}}">
                             </text> -->
                         </td>
                         <td>
-
                         </td>
                         <td>
 
                         </td>
+                        <!-- <td>
+
+                        </td> -->
                     </tr>
+                    <div class="dropup">
+                        <div class="alert alert-danger" role="alert">
+                            <h4 class="alert-heading">Please answer the remaining questions:</h4>
+                            <div class="unchecked-radio-{{category.category_number}}">
+
+                            </div>
+                        </div>
+                    </div>
                 </tbody>
             </table>
             {% endfor %}
-            <!-- <div name="total-of-form" class="h3">
+            <div name="total-of-form" class="h3">
                 Total:
                 <text name="total-of-columns" class="total-of-all"></text>
-            </div> -->
-            <div name="rating-of-form" class="h3">
+            </div>
+            <!-- <div name="rating-of-form" class="h3">
                 Rating:
                 <text name="rating-of-columns" class="rating-of-all"></text>
-            </div>
-            <div class="btn-group dropup">
+            </div> -->
+            <!-- <div class="btn-group dropup">
                 <button type="button" class="btn btn-secondary">
                     Please answer remaining questions
                 </button>
@@ -496,10 +520,18 @@
                 <div class="dropdown-menu unchecked-radio">
 
                 </div>
-            </div>
+            </div> -->
+            <!-- <div class="dropup">
+                <div class="alert alert-danger" role="alert">
+                    <h4 class="alert-heading">Please answer the remaining questions:</h4>
+                    <div class="unchecked-radio">
+
+                    </div>
+                </div>
+            </div> -->
             <div>
                 {% if date_now.day <= 30 %}
-                <button class="btn btn-primary submit" type="submit" id="submit-btn" value="submit">Submit</button>
+                <button class=" btn btn-primary submit" type="submit" id="submit-btn" value="submit">Submit</button>
                 {% endif %}
             </div>
         </form>
