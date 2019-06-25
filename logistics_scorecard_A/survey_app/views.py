@@ -39,7 +39,7 @@ def view_scorecard(request,cid):
         "categories": categories,
         "ratings": ratings,
     }
-    return render(request, 'form.html', context)
+    return render(request, 'view.html', context)
 
 
 @login_required
@@ -47,10 +47,6 @@ def index(request, cid):
     current_user = request.user
     scorecard = Scorecard.objects.get(cid=cid)
     user1 = scorecard.account_set.first()
-    if str(user1) != str(current_user):
-        return redirect('landing')
-    if datetime.datetime.now().day > 21:
-       return redirect('view_scorecard', cid)
     categories = scorecard.category_list.all()
     ratings = scorecard.rating.all()
     context = {
@@ -120,7 +116,8 @@ def index(request, cid):
             )
 
         logistics_manager_email = conn.response[0]['attributes']['mail']
-
+        scorecard.is_applicable = True
+        scorecard.save()
         return HttpResponse(logistics_manager_email)
 
         # msg = MIMEMultipart()
@@ -142,7 +139,14 @@ def index(request, cid):
         # scorecard.save()
         # return HttpResponse("OK")
     else:
-        return render(request, "form.html", context)
+        if str(user1) != str(current_user):
+            return redirect('landing')
+        if datetime.datetime.now().day > 15 and not scorecard.is_applicable:
+            return redirect('view_scorecard', cid)
+        elif datetime.datetime.now().day > 30:
+            return redirect('view_scorecard', cid)
+        else:   
+            return render(request, 'form.html', context)
 
 
 def email_view(request):
