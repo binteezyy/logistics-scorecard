@@ -45,7 +45,7 @@ def index(request, cid):
     user1 = scorecard.account_set.first()
     if str(user1) != str(current_user):
         return redirect('landing')
-    if datetime.datetime.now().day > 19:
+    if datetime.datetime.now().day > 30:
        return redirect('view_scorecard', cid)
     categories = scorecard.category_list.all()
     ratings = scorecard.rating.all()
@@ -78,21 +78,21 @@ def index(request, cid):
                     scorecard.rating.add(new_rate)
 
                 # return HttpResponse('old-%s new-%s' % (old_rate, new_rate))
-        msg = MIMEMultipart()
-        msg['From'] = "#"
-        msg['To'] = scorecard.account_manager.email
-        msg['Subject'] = "LOGISTICS MONTHLY SCORECARD"
-
-        message = "10.162.197.88/login"
-
-        # add in the message body
-        msg.attach(MIMEText(message, 'plain'))
-
-        mailserver = smtplib.SMTP('smtp.office365.com',587)
-        mailserver.ehlo()
-        mailserver.starttls()
-        mailserver.login(msg['From'], '#')
-        mailserver.sendmail(msg['From'], msg['To'], msg.as_string())
+        # msg = MIMEMultipart()
+        # msg['From'] = "#"
+        # msg['To'] = scorecard.account_manager.email
+        # msg['Subject'] = "LOGISTICS MONTHLY SCORECARD"
+        #
+        # message = "10.162.197.88/login"
+        #
+        # # add in the message body
+        # msg.attach(MIMEText(message, 'plain'))
+        #
+        # mailserver = smtplib.SMTP('smtp.office365.com',587)
+        # mailserver.ehlo()
+        # mailserver.starttls()
+        # mailserver.login(msg['From'], '#')
+        # mailserver.sendmail(msg['From'], msg['To'], msg.as_string())
         scorecard.is_applicable = True
         scorecard.save()
         return HttpResponse("OK")

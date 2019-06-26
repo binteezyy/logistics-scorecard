@@ -6,6 +6,8 @@ import sys, os
 import datetime
 from getpass import getpass
 
+import base64
+
 from jinja2 import Environment        # Jinja2 templating
 
 import django
@@ -68,17 +70,32 @@ while True:
                     msg = MIMEText(
                         Environment().from_string(template).render(
                             title='ARTESYN LOGISTIC SCORECARD',
-                            sc_categories=sc.scorecard.category_list.all(),
+                            scorecard=sc.scorecard,
+                            ratings=sc.scorecard.rating.all(),
                         ), "html"
                     )
+                    from pprint import pprint
+                    pprint(sc.scorecard.rating.all())
+                    # SAMPLE OUTPUT
+                    with open("test.html","w",encoding='utf-8') as test:
+                        test.write(
+                            Environment().from_string(template).render(
+                                title='ARTESYN LOGISTIC SCORECARD',
+                                scorecard=sc.scorecard,
+                                ratings=sc.scorecard.rating.all(),
+                            )
+                        )
+                        test.close()
+
 
                     mailserver.sendmail('email', str(i.user.email), msg.as_string())
                     sc.is_sent_sc = True
                     sc.save()
 
+
                     sleep(1)
                     print(sc.scorecard,"\t",sc.is_sent_sc)
-
+                    exit()
                     # c = len(i.scorecard.all()) + 1
                     # s = Scorecard.objects.create(cid="SCORECARD%d" % (c),date_released=datetime.datetime.now(),)
                     # s.save()

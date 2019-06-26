@@ -46,6 +46,13 @@
   			<p class="text-center lead" style="line-height: 24px; font-size: 16px; margin: 0;" align="center">
   				Kindly fill in the feedback below
   			</p>
+        <table border="0" cellpadding="0" cellspacing="0" style="font-family: Helvetica, Arial, sans-serif; mso-table-lspace: 0pt; mso-table-rspace: 0pt; border-spacing: 0px; border-collapse: collapse;">
+          <tbody class="text-center" style="text-align: center !important;">
+            <tr>
+              <td class="text-center" id="scorecardcid" name="scorecardcid" style="border-spacing: 0px; border-collapse: collapse; line-height: 24px; font-size: 16px; margin: 0;" align="center"><p class="text-center" style="line-height: 24px; font-size: 16px; margin: 0;" align="center">{{ scorecard.cid }}</p></td>
+            </tr>
+          </tbody>
+        </table>
       </div>
       </td>
     </tr>
@@ -70,14 +77,15 @@
 
 
 
-    {% for i in sc_categories %}
+    {% for i in scorecard.category_list.all() %}
+
     <table class="card " border="0" cellpadding="0" cellspacing="0" style="font-family: Helvetica, Arial, sans-serif; mso-table-lspace: 0pt; mso-table-rspace: 0pt; border-spacing: 0px; border-collapse: separate !important; border-radius: 4px; width: 100%; overflow: hidden; border: 1px solid #dee2e6;" bgcolor="#ffffff">
   <tbody>
     <tr>
       <td style="border-spacing: 0px; border-collapse: collapse; line-height: 24px; font-size: 16px; width: 100%; margin: 0;" align="left">
         <div style="border-top-width: 5px; border-top-color: #ff00bf; border-top-style: solid;">
       <h4 style="margin-top: 0; margin-bottom: 0; font-weight: 500; color: inherit; vertical-align: baseline; font-size: 24px; line-height: 28.8px;" align="left">{{ i.category_name }}</h4>
-      <table id="table{{ loop.index }}" class="cattable table table-striped table-hover table-bordered" border="0" cellpadding="0" cellspacing="0" style="font-family: Helvetica, Arial, sans-serif; mso-table-lspace: 0pt; mso-table-rspace: 0pt; border-spacing: 0px; border-collapse: collapse; width: 100%; max-width: 100%; border: 1px solid #e9ecef;" bgcolor="#ffffff">
+      <table name="cattable" class="table table-striped table-hover table-bordered" border="0" cellpadding="0" cellspacing="0" style="font-family: Helvetica, Arial, sans-serif; mso-table-lspace: 0pt; mso-table-rspace: 0pt; border-spacing: 0px; border-collapse: collapse; width: 100%; max-width: 100%; border: 1px solid #e9ecef;" bgcolor="#ffffff">
         <thead class="thead-dark text-center h5" style="margin-top: 0; margin-bottom: 0; font-weight: 500; color: inherit; text-align: center !important; vertical-align: baseline; font-size: 20px; line-height: 24px;">
           <tr>
             <th style="line-height: 24px; font-size: 16px; margin: 0; padding: 12px; border-color: #e9ecef; border-style: solid; border-width: 1px 1px 2px;" align="left" valign="top">#</th>
@@ -90,16 +98,14 @@
           {% for q in i.questions.all() %}
           <tr style="" bgcolor="#f2f2f2">
             <td style="border-spacing: 0px; border-collapse: collapse; line-height: 24px; font-size: 16px; margin: 0; padding: 12px; border: 1px solid #e9ecef;" align="left" valign="top">{{ q.question_number }}</td>
+            <td style="border-spacing: 0px; border-collapse: collapse; line-height: 24px; font-size: 16px; margin: 0; padding: 12px; border: 1px solid #e9ecef;" align="left" valign="top">{{ q.question_string }}</td>
+            <td style="border-spacing: 0px; border-collapse: collapse; line-height: 24px; font-size: 16px; margin: 0; padding: 12px; border: 1px solid #e9ecef;" align="left" valign="top">
+              {% for r in ratings %}{% if r.question.question_string == q.question_string %}
+                {{r.rate}}
+              {% endif %}{% endfor %}
 
-            <td style="border-spacing: 0px; border-collapse: collapse; line-height: 24px; font-size: 16px; margin: 0; padding: 12px; border: 1px solid #e9ecef;" align="left" valign="top"></td>
-            <td id="feedback{{ q.question_number }}" style="border-spacing: 0px; border-collapse: collapse; line-height: 24px; font-size: 16px; margin: 0; padding: 12px; border: 1px solid #e9ecef;" align="left" valign="top">
-              {% for r in ratings %}
-              {% if r.question.question_string == q.question_string %}
-              {{r.rate}}
-              {% endif %}
-              {% endfor %}
             </td>
-            <td style="border-spacing: 0px; border-collapse: collapse; line-height: 24px; font-size: 16px; margin: 0; padding: 12px; border: 1px solid #e9ecef;" align="left" valign="top"></td>
+            <td value="cat{{i.category_number}}" id=":cat{{i.category_number}}-q{{ q.question_number }}" name="feedback" style="border-spacing: 0px; border-collapse: collapse; line-height: 24px; font-size: 16px; margin: 0; padding: 12px; border: 1px solid #e9ecef;" align="left" valign="top">wow ang laki buts</td>
           </tr>
           {% endfor %}
         </tbody>
