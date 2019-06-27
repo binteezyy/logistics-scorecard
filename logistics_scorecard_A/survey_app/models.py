@@ -49,7 +49,7 @@ class Category(models.Model):
 
 class Feedback(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
-    feedback = models.TextField()
+    feedback = models.TextField(default="")
 
     def __str__(self):
         return str(self.question.question_number) + str(self.feedback)

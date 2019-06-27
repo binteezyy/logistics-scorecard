@@ -4,9 +4,9 @@ from bs4 import BeautifulSoup
 import re
 import os
 import django
-
+import getpass
 user = 'ButchPaoloMadahan@artesyn.com'
-password = ''
+password = getpass.getpass()
 url = 'outlook.office365.com'
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "logistics_scorecard_A.settings")
