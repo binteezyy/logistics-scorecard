@@ -3,8 +3,9 @@
 <html>
 
 <head>
+        <link rel="icon" href="/static/test.png" type="image/gif" sizes="32x32">
     <title>
-
+        Artesyn
         {% block title %}
 
         {% endblock title %}
@@ -14,6 +15,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="/static/css/bootstrap4-business-tycoon.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/all.css">
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
         integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
         crossorigin="anonymous"></script>
@@ -29,9 +31,12 @@
         <body class="bg-primary">
                 {% if request.user.is_authenticated %}
                 <nav class="navbar navbar-dark bg-dark animated fadeIn">
-                        <a class="btn btn-outline-light border-0" href="{% url 'landing' %}">Home</a>
-                        <a class="btn btn-outline-light float-right" href={% url 'logout' %}>Logout</a>
-                      </nav>
+                    <div class="container d-flex">
+                        <a class="btn btn-outline-light border-0 text-white" href="{% url 'landing' %}">Home</a>
+                        <h6 class="text-white ml-auto mb-0"><i class="fas fa-user mr-2"></i>{{ request.user.first_name }} {{ request.user.last_name }}</h6>
+                        <a class="btn btn-outline-light border-0 text-white ml-4" href={% url 'logout' %}>Logout</a>                        
+                    </div>  
+                    </nav>
                 {% endif %}      
     <div class="container-fluid m-0 p-0">
         {% block form %}
@@ -40,6 +45,6 @@
 
 
     </div>
-    </body>
+
 
 </html>

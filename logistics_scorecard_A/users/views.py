@@ -10,10 +10,30 @@ from django.http import JsonResponse
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from django.contrib.auth.models import User
 # Create your views here.
 
 
 
+def verify(request):
+    verify=False
+    userstore = ""
+    if request.method == 'POST':
+        username = request.POST['username']
+        if username is not None:
+            try:
+                userstore = User.objects.get(username=username)
+            except:
+                pass
+            if userstore:
+                print(userstore)
+                verify=True
+            
+
+    status = {
+        "verified": verify,
+    }
+    return JsonResponse(status)
 
 def get_latest():
     prev = datetime.datetime.today() - datetime.timedelta(30)

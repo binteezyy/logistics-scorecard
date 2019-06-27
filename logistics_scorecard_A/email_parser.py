@@ -77,6 +77,8 @@ for specific_id in email_ids:
                                 category = scorecard.category_list.get(category_number = category_num)
                                 question = category.questions.get(question_number = question_num)
                                 scorecard.feedback.get_or_create(question=Question(question.id), feedback=feedback)
+                                scorecard.is_locked = True
+                                scorecard.save()
                                 # print(scorecard_feedback)
                                 
                                 # rating.feedback = feedback
