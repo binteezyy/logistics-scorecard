@@ -34,10 +34,12 @@ def view_scorecard(request,cid):
     scorecard = Scorecard.objects.get(cid=cid)
     categories = scorecard.category_list.all()
     ratings = scorecard.rating.all()
+    feedbacks = scorecard.feedback.all()
     context = {
         "scorecard": scorecard,
         "categories": categories,
         "ratings": ratings,
+        "feedbacks": feedbacks,
     }
     return render(request, 'view.html', context)
 
@@ -49,11 +51,13 @@ def index(request, cid):
     user1 = scorecard.account_set.first()
     categories = scorecard.category_list.all()
     ratings = scorecard.rating.all()
+    feedbacks = scorecard.feedback.all()
     context = {
         "scorecard": scorecard,
         "categories": categories,
         "ratings": ratings,
         'date_now': datetime.datetime.now(),
+        "feedbacks": feedbacks,
     }
 
     if request.method == 'POST':
@@ -142,7 +146,7 @@ def index(request, cid):
         if str(user1) != str(current_user):
             return redirect('landing')
         if datetime.datetime.now().day > 15 and not scorecard.is_applicable:
-            return redirect('view_scorecard', cid)
+            return redirect('landing')
         elif datetime.datetime.now().day > 30:
             return redirect('view_scorecard', cid)
         else:   

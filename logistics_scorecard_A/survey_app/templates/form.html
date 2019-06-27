@@ -9,11 +9,16 @@
 <script>
     $(document).ready(function () {
 
-        {% for category in scorecard.category_list.all %}
+        {% for category in categories %}
         {% for question in category.questions.all %}
-        {% for rating in scorecard.rating.all %}
+        {% for rating in ratings %}
         {% if rating.question.question_string == question.question_string %}
         $('input[name=cat-{{category.category_number}}-row-{{question.question_number}}][value={{rating.rate}}]').prop('checked', 'checked');
+        {% endif %}
+        {% endfor %}
+        {% for feedback in feedbacks %}
+        {% if feedback.question.question_string == question.question_string %}
+        $('#feedback-cat-{{category.category_number}}-row-{{question.question_number}}').html('{{ feedback.feedback }}');
         {% endif %}
         {% endfor %}
         {% endfor %}
@@ -459,8 +464,7 @@
                         </td>
                         <td>
                             <text name="feedback"
-                                id="feedback-cat-{{category.category_number}}-row-{{question.question_number}}"
-                                class="feedback-cat-{{category.category_number}}">
+                                id="feedback-cat-{{category.category_number}}-row-{{question.question_number}}">
                             </text>
                         </td>
                         <!-- <td>
