@@ -8,11 +8,21 @@
 </style>
 <script>
     $(document).ready(function () {
+<<<<<<< HEAD
         {% for category in scorecard.category_list.all %}
+=======
+
+        {% for category in categories %}
+>>>>>>> new-ldap
         {% for question in category.questions.all %}
-        {% for rating in scorecard.rating.all %}
+        {% for rating in ratings %}
         {% if rating.question.question_string == question.question_string %}
         $('input[name=cat-{{category.category_number}}-row-{{question.question_number}}][value={{rating.rate}}]').prop('checked', 'checked');
+        {% endif %}
+        {% endfor %}
+        {% for feedback in feedbacks %}
+        {% if feedback.question.question_string == question.question_string %}
+        $('#feedback-cat-{{category.category_number}}-row-{{question.question_number}}').html('{{ feedback.feedback }}');
         {% endif %}
         {% endfor %}
         {% endfor %}
@@ -69,7 +79,7 @@
         ctr++;
     {% endfor %}
     {% endfor %}
-    console.log(ctr);
+    // console.log(ctr);
     ctr *= 6;
     if (ctr == $('input:radio').length) {
         $('#submit-btn').css('display', 'block');
@@ -137,7 +147,7 @@
                 $('.cat-{{category.category_number}}-row-{{question.question_number}}:checked').val()
                 * $('.weight-{{category.category_number}}-{{question.question_number}}').val());
             var totalR = parseFloat($('#total-cat-{{category.category_number}}-row-{{question.question_number}}').val());
-            console.log(totalR.toFixed(4));
+            // console.log(totalR.toFixed(4));
             $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').html(parseFloat(totalR.toFixed(4)));
         }
         {% for c in scorecard.category_list.all %}
@@ -215,7 +225,7 @@
             ctr++;
         {% endfor %}
         {% endfor %}
-        console.log(ctr);
+        // console.log(ctr);
         ctr *= 6;
         if (ctr == $('input:radio').length) {
             $('#submit-btn').css('display', 'block');
@@ -226,13 +236,24 @@
     {% endfor %}
     //NA HERE
     {% for category in scorecard.category_list.all %}
+<<<<<<< HEAD
+=======
+    {% for question in category.questions.all %}
+    $('.cat-{{category.category_number}}-row-{{question.question_number}}').click(function () {
+        $('.weight-{{category.category_number}}-{{question.question_number}}').val({{ question.multiplier }});
+
+>>>>>>> new-ldap
     var totalQ = 0;
     {% for question in category.questions.all %}
     totalQ++;
     {% endfor %}
+<<<<<<< HEAD
     {% for question in category.questions.all %}
     $('.cat-{{category.category_number}}-row-{{question.question_number}}').click(function () {
         $('.weight-{{category.category_number}}-{{question.question_number}}').val({{ question.multiplier }});
+=======
+
+>>>>>>> new-ldap
     var totalNA = 1;
     var weightNA = 0;
     {% for question in category.questions.all %}
@@ -322,6 +343,10 @@
     {% endfor %}
     {% endfor %}
     // NA end here
+<<<<<<< HEAD
+=======
+    // NA END HERE
+>>>>>>> new-ldap
 });
 </script>
 
@@ -418,8 +443,7 @@
                         </td>
                         <td>
                             <text name="feedback"
-                                id="feedback-cat-{{category.category_number}}-row-{{question.question_number}}"
-                                class="feedback-cat-{{category.category_number}}">
+                                id="feedback-cat-{{category.category_number}}-row-{{question.question_number}}">
                             </text>
                         </td>
                         <!-- <td>
