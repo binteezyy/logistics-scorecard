@@ -16,6 +16,7 @@ from users.models import *
 from ldap3 import Server, Connection, ALL, SUBTREE, ALL_ATTRIBUTES
 from django.conf import settings
 from django.contrib.auth.models import User
+from . import tp
 
 # Create your views here.
 
@@ -192,3 +193,121 @@ def email_view(request):
         )
     
     return HttpResponse(conn.response[0]['attributes']['mail'])
+
+def create_template(request):
+    #C1
+    create_cat = Category(version=1, category_number=tp.C1_Cn, category_name=tp.C1_C)
+    create_cat.save()
+    cat = Category.objects.get(version=1, category_number=tp.C1_Cn, category_name=tp.C1_C)
+
+    create_question = Question(question_number=tp.C1_Q1_N, question_string=tp.C1_Q1_S, multiplier=tp.C1_Q1_W)
+    create_question.save()
+    add_question = Question.objects.get(question_number=tp.C1_Q1_N, question_string=tp.C1_Q1_S, multiplier=tp.C1_Q1_W)
+    cat.questions.add(add_question)
+
+    create_question = Question(question_number=tp.C1_Q2_N, question_string=tp.C1_Q2_S, multiplier=tp.C1_Q2_W)
+    create_question.save()
+    add_question = Question.objects.get(question_number=tp.C1_Q2_N, question_string=tp.C1_Q2_S, multiplier=tp.C1_Q2_W)
+    cat.questions.add(add_question)
+
+    #C2
+    create_cat = Category(version=1, category_number=tp.C2_Cn, category_name=tp.C2_C)
+    create_cat.save()
+    cat = Category.objects.get(version=1, category_number=tp.C2_Cn, category_name=tp.C2_C)
+
+    create_question = Question(question_number=tp.C2_Q1_N, question_string=tp.C2_Q1_S, multiplier=tp.C2_Q1_W)
+    create_question.save()
+    add_question = Question.objects.get(question_number=tp.C2_Q1_N, question_string=tp.C2_Q1_S, multiplier=tp.C2_Q1_W)
+    cat.questions.add(add_question)
+
+    create_question = Question(question_number=tp.C2_Q2_N, question_string=tp.C2_Q2_S, multiplier=tp.C2_Q2_W)
+    create_question.save()
+    add_question = Question.objects.get(question_number=tp.C2_Q2_N, question_string=tp.C2_Q2_S, multiplier=tp.C2_Q2_W)
+    cat.questions.add(add_question)
+
+    create_question = Question(question_number=tp.C2_Q3_N, question_string=tp.C2_Q3_S, multiplier=tp.C2_Q3_W)
+    create_question.save()
+    add_question = Question.objects.get(question_number=tp.C2_Q3_N, question_string=tp.C2_Q3_S, multiplier=tp.C2_Q3_W)
+    cat.questions.add(add_question)
+
+    create_question = Question(question_number=tp.C2_Q4_N, question_string=tp.C2_Q4_S, multiplier=tp.C2_Q4_W)
+    create_question.save()
+    add_question = Question.objects.get(question_number=tp.C2_Q4_N, question_string=tp.C2_Q4_S, multiplier=tp.C2_Q4_W)
+    cat.questions.add(add_question)
+
+    #c3
+    create_cat = Category(version=1, category_number=tp.C3_Cn, category_name=tp.C3_C)
+    create_cat.save()
+    cat = Category.objects.get(version=1, category_number=tp.C3_Cn, category_name=tp.C3_C)
+
+    create_question = Question(question_number=tp.C3_Q1_N, question_string=tp.C3_Q1_S, multiplier=tp.C3_Q1_W)
+    create_question.save()
+    add_question = Question.objects.get(question_number=tp.C3_Q1_N, question_string=tp.C3_Q1_S, multiplier=tp.C3_Q1_W)
+    cat.questions.add(add_question)
+
+    create_question = Question(question_number=tp.C3_Q2_N, question_string=tp.C3_Q2_S, multiplier=tp.C3_Q2_W)
+    create_question.save()
+    add_question = Question.objects.get(question_number=tp.C3_Q2_N, question_string=tp.C3_Q2_S, multiplier=tp.C3_Q2_W)
+    cat.questions.add(add_question)
+
+    #C4
+    create_cat = Category(version=1, category_number=tp.C4_Cn, category_name=tp.C4_C)
+    create_cat.save()
+    cat = Category.objects.get(version=1, category_number=tp.C4_Cn, category_name=tp.C4_C)
+
+    create_question = Question(question_number=tp.C4_Q1_N, question_string=tp.C4_Q1_S, multiplier=tp.C4_Q1_W)
+    create_question.save()
+    add_question = Question.objects.get(question_number=tp.C4_Q1_N, question_string=tp.C4_Q1_S, multiplier=tp.C4_Q1_W)
+    cat.questions.add(add_question)
+
+    #C5
+    create_cat = Category(version=1, category_number=tp.C5_Cn, category_name=tp.C5_C)
+    create_cat.save()
+    cat = Category.objects.get(version=1, category_number=tp.C5_Cn, category_name=tp.C5_C)
+
+    create_question = Question(question_number=tp.C5_Q1_N, question_string=tp.C5_Q1_S, multiplier=tp.C5_Q1_W)
+    create_question.save()
+    add_question = Question.objects.get(question_number=tp.C5_Q1_N, question_string=tp.C5_Q1_S, multiplier=tp.C5_Q1_W)
+    cat.questions.add(add_question)
+
+    create_question = Question(question_number=tp.C5_Q2_N, question_string=tp.C5_Q2_S, multiplier=tp.C5_Q2_W)
+    create_question.save()
+    add_question = Question.objects.get(question_number=tp.C5_Q2_N, question_string=tp.C5_Q2_S, multiplier=tp.C5_Q2_W)
+    cat.questions.add(add_question)
+
+    create_question = Question(question_number=tp.C5_Q3_N, question_string=tp.C5_Q3_S, multiplier=tp.C5_Q3_W)
+    create_question.save()
+    add_question = Question.objects.get(question_number=tp.C5_Q3_N, question_string=tp.C5_Q3_S, multiplier=tp.C5_Q3_W)
+    cat.questions.add(add_question)
+
+    create_question = Question(question_number=tp.C5_Q4_N, question_string=tp.C5_Q4_S, multiplier=tp.C5_Q4_W)
+    create_question.save()
+    add_question = Question.objects.get(question_number=tp.C5_Q4_N, question_string=tp.C5_Q4_S, multiplier=tp.C5_Q4_W)
+    cat.questions.add(add_question)
+    
+    create_question = Question(question_number=tp.C5_Q5_N, question_string=tp.C5_Q5_S, multiplier=tp.C5_Q5_W)
+    create_question.save()
+    add_question = Question.objects.get(question_number=tp.C5_Q5_N, question_string=tp.C5_Q5_S, multiplier=tp.C5_Q5_W)
+    cat.questions.add(add_question)
+
+    #C6
+    create_cat = Category(version=1, category_number=tp.C6_Cn, category_name=tp.C6_C)
+    create_cat.save()
+    cat = Category.objects.get(version=1, category_number=tp.C6_Cn, category_name=tp.C6_C)
+
+    create_question = Question(question_number=tp.C6_Q1_N, question_string=tp.C6_Q1_S, multiplier=tp.C6_Q1_W)
+    create_question.save()
+    add_question = Question.objects.get(question_number=tp.C6_Q1_N, question_string=tp.C6_Q1_S, multiplier=tp.C6_Q1_W)
+    cat.questions.add(add_question)
+
+    create_question = Question(question_number=tp.C6_Q2_N, question_string=tp.C6_Q2_S, multiplier=tp.C6_Q2_W)
+    create_question.save()
+    add_question = Question.objects.get(question_number=tp.C6_Q2_N, question_string=tp.C6_Q2_S, multiplier=tp.C6_Q2_W)
+    cat.questions.add(add_question)
+
+    create_question = Question(question_number=tp.C6_Q3_N, question_string=tp.C6_Q3_S, multiplier=tp.C6_Q3_W)
+    create_question.save()
+    add_question = Question.objects.get(question_number=tp.C6_Q3_N, question_string=tp.C6_Q3_S, multiplier=tp.C6_Q3_W)
+    cat.questions.add(add_question)
+
+    return HttpResponse("OK")

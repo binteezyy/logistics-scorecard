@@ -80,7 +80,7 @@
         ctr++;
     {% endfor %}
     {% endfor %}
-    console.log(ctr);
+    // console.log(ctr);
     ctr *= 6;
     if (ctr == $('input:radio').length) {
         $('#submit-btn').css('display', 'block');
@@ -157,7 +157,7 @@
                 $('.cat-{{category.category_number}}-row-{{question.question_number}}:checked').val()
                 * $('.weight-{{category.category_number}}-{{question.question_number}}').val());
             var totalR = parseFloat($('#total-cat-{{category.category_number}}-row-{{question.question_number}}').val());
-            console.log(totalR.toFixed(4));
+            // console.log(totalR.toFixed(4));
             $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').html(parseFloat(totalR.toFixed(4)));
         }
 
@@ -244,7 +244,7 @@
             ctr++;
         {% endfor %}
         {% endfor %}
-        console.log(ctr);
+        // console.log(ctr);
         ctr *= 6;
 
         if (ctr == $('input:radio').length) {
@@ -259,15 +259,14 @@
 
     //NA HERE
     {% for category in scorecard.category_list.all %}
-    var totalQ = 0;
-
-    {% for question in category.questions.all %}
-    totalQ++;
-    {% endfor %}
-
     {% for question in category.questions.all %}
     $('.cat-{{category.category_number}}-row-{{question.question_number}}').click(function () {
         $('.weight-{{category.category_number}}-{{question.question_number}}').val({{ question.multiplier }});
+
+    var totalQ = 0;
+    {% for question in category.questions.all %}
+    totalQ++;
+    {% endfor %}
 
     var totalNA = 1;
     var weightNA = 0;
@@ -367,7 +366,7 @@
     {% endfor %}
     {% endfor %}
     // NA end here
-
+    // NA END HERE
 });
 </script>
 
