@@ -47,6 +47,14 @@ class Category(models.Model):
     def __str__(self):
         return str(self.category_number) + ". " + str(self.category_name) + " v" +  str(self.version)
 
+class Feedback(models.Model):
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    feedback = models.TextField(default="")
+
+    def __str__(self):
+        return str(self.question.question_number) + str(self.feedback)
+
+
 class Rating(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     rate = models.IntegerField(blank=True)
@@ -66,6 +74,8 @@ class Scorecard(models.Model):
     rating = models.ManyToManyField(Rating, blank=True)
     category_list = models.ManyToManyField(Category, blank=True)
     is_applicable = models.BooleanField(default=False)
+    is_locked = models.BooleanField(default=False)
+    feedback = models.ManyToManyField(Feedback, blank=True)
 
     def save(self, *args, **kwargs):
         self.month_covered = self.date_released - datetime.timedelta(30)
