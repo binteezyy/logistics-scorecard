@@ -3,8 +3,14 @@ from django.contrib.auth.models import User
 
 from survey_app.models import *
 
+class Template(models.Model):
+    name = models.CharField(max_length=32)
+    category = models.ManyToManyField(Category)
+    def __str__(self):
+        return f'{self.name}'
 class Account(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    template = models.ForeignKey(Template, on_delete=models.CASCADE, null=True)
     service = models.ForeignKey(Service, on_delete=models.CASCADE, null=True)
     manager = models.ForeignKey(Account_manager, on_delete=models.CASCADE, null=True)
     is_active = models.BooleanField(default=True)

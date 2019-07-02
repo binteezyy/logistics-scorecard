@@ -13,3 +13,4 @@ class PostAccount(admin.ModelAdmin):
     ]
 
 admin.site.register(Account,PostAccount)
+admin.site.register(Template)

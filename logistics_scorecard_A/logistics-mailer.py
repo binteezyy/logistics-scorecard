@@ -91,22 +91,29 @@ while True:
                         test.close()
 
                     mailserver.sendmail('email', str(i.user.email), msg.as_string())
-                    sc.is_sent_sc = True
-                    sc.save()
 
                     print(sc.scorecard,"\t",sc.is_sent_sc)
+                    t = i.template.category
+                    print(t)
+                    # CREATE SCORECARD
                     c = len(i.scorecard.all()) + 1
                     s = Scorecard.objects.create(cid="SCORECARD%d" % (c),
                                                 date_released=datetime.datetime.now(),
                                                 account_manager=i.manager,
+                                                category = t.catergory
                                                 )
                     s.save()
+
+
+                    # UPDATE APPRAISER'S LIST
                     al = AppraiserList.objects.create(account=sc.account,
                                                 is_sent_sc=True,
                                                 scorecard=s,
                                                 )
                     al.save()
 
+                    sc.is_sent_sc = True
+                    sc.save()
 
     sleep(2)
 
