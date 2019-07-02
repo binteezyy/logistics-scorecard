@@ -11,5 +11,5 @@ urlpatterns = [
     path('scorecards/<cid>', views.index, name='scorecard'),
     path('email', views.email_view, name='email'),
     path('scorecards/<cid>/view', views.view_scorecard, name='view_scorecard'),
-
+    path('create', views.create_template, name='create_template'),
 ]

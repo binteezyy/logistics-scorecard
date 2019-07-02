@@ -13,3 +13,5 @@ local_settings.py
 logistics_scorecard_A/db.sqlite3
 *.sqlite3
 *.sqlite3-journal
+
+*tp.py
