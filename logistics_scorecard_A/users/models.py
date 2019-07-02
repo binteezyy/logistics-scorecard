@@ -8,6 +8,7 @@ class Template(models.Model):
     category = models.ManyToManyField(Category)
     def __str__(self):
         return f'{self.name}'
+
 class Account(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     template = models.ForeignKey(Template, on_delete=models.CASCADE, null=True)
@@ -25,7 +26,7 @@ class AppraiserList(models.Model):
     account = models.ForeignKey(Account, on_delete=models.CASCADE, null=True)
     is_sent_sc = models.BooleanField(default=False)
     scorecard = models.ForeignKey(Scorecard, on_delete=models.CASCADE, null=True)
-
+    is_notified = models.DateTimeField(null=True)
     class Meta:
         unique_together = ('account','scorecard',)
 

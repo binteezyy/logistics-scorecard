@@ -70,7 +70,7 @@ class Rating(models.Model):
         return "Question: " + str(self.question.question_number) + " Rating: " + str(self.rate)
 
 class Scorecard(models.Model):
-    cid = models.CharField(max_length=15, unique=True)
+    cid = models.CharField(max_length=64, unique=True)
     service = models.ForeignKey(Service, on_delete=models.CASCADE, null=True)
     month_covered = models.DateTimeField(blank=True)
     date_released = models.DateTimeField()
@@ -82,7 +82,10 @@ class Scorecard(models.Model):
     feedback = models.ManyToManyField(Feedback, blank=True)
 
     def save(self, *args, **kwargs):
+        self.cid = str(self.cid).upper()
         self.month_covered = self.date_released - datetime.timedelta(30)
+
+        # GOOD2HAVE: CHECK IF THERE IS ALREADY A SCORECARD THIS MONTH
         super(Scorecard, self).save(*args, **kwargs)
 
     def __str__(self):
