@@ -8,12 +8,8 @@
 </style>
 <script>
     $(document).ready(function () {
-<<<<<<< HEAD
-        {% for category in scorecard.category_list.all %}
-=======
-
         {% for category in categories %}
->>>>>>> new-ldap
+
         {% for question in category.questions.all %}
         {% for rating in ratings %}
         {% if rating.question.question_string == question.question_string %}
@@ -236,24 +232,10 @@
     {% endfor %}
     //NA HERE
     {% for category in scorecard.category_list.all %}
-<<<<<<< HEAD
-=======
-    {% for question in category.questions.all %}
-    $('.cat-{{category.category_number}}-row-{{question.question_number}}').click(function () {
-        $('.weight-{{category.category_number}}-{{question.question_number}}').val({{ question.multiplier }});
-
->>>>>>> new-ldap
     var totalQ = 0;
     {% for question in category.questions.all %}
     totalQ++;
     {% endfor %}
-<<<<<<< HEAD
-    {% for question in category.questions.all %}
-    $('.cat-{{category.category_number}}-row-{{question.question_number}}').click(function () {
-        $('.weight-{{category.category_number}}-{{question.question_number}}').val({{ question.multiplier }});
-=======
-
->>>>>>> new-ldap
     var totalNA = 1;
     var weightNA = 0;
     {% for question in category.questions.all %}
@@ -342,11 +324,8 @@
     });
     {% endfor %}
     {% endfor %}
-    // NA end here
-<<<<<<< HEAD
-=======
+
     // NA END HERE
->>>>>>> new-ldap
 });
 </script>
 
@@ -358,7 +337,7 @@
         <div class="card-body">
             <h4 class="card-title">Scorecard ID: {{scorecard.cid}} - {{ scorecard.date_released|date:'M-d-Y' }}</h4>
             <h5 class="card-title">
-                {{ scorecard.provider }}{% for z in scorecard.provider.services.all %}-{{z.name}}{%endfor%}</h5>
+                {{ scorecard.service }}</h5>
             <h6 class="card-subtitle mb-2 text-primary">Account Manager: {{ scorecard.account_manager }}</h6>
             <h6 class="card-subtitle mb-2">Email: {{ scorecard.account_manager.email }}</h6>
             <h6 class="card-subtitle mb-2">Month Covered: {{ scorecard.month_covered|date:'F' }}</h6>
@@ -519,6 +498,6 @@
 <script>
     $(".submit").click(function () {
         $(".sc").removeClass("bounceInLeft").addClass("	zoomOutUp faster");
-    }); 
+    });
 </script>
 {% endblock form %}

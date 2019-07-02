@@ -4,11 +4,14 @@ from django.contrib.auth.models import User
 from survey_app.models import *
 
 class Account(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    provider = models.ForeignKey(Provider, on_delete=models.CASCADE, null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    service = models.ForeignKey(Service, on_delete=models.CASCADE, null=True)
+    manager = models.ForeignKey(Account_manager, on_delete=models.CASCADE, null=True)
     is_active = models.BooleanField(default=True)
     scorecard = models.ManyToManyField(Scorecard, through='AppraiserList')
 
+    class Meta:
+        unique_together = ('user','service',)
     def __str__(self):
         return f'{self.user}'
 

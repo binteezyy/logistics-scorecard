@@ -2,18 +2,22 @@ from django.db import models
 import datetime
 
 # Create your models here.
-class Service(models.Model):
-    name = models.CharField(max_length=30)
-
-    def __str__(self):
-        return str(self.name)
 
 class Provider(models.Model):
     provider_name = models.CharField(max_length=50)
-    services = models.ManyToManyField(Service)
 
     def __str__(self):
-        return str(self.provider_name)
+        return f'{self.provider_name}'
+
+class Service(models.Model):
+    name = models.CharField(max_length=30)
+    provider = models.ForeignKey(Provider, on_delete=models.CASCADE, null=True)
+
+    class Meta:
+        unique_together = ('provider','name',)
+
+    def __str__(self):
+        return f'{self.provider}—{self.name}'
 
 class Account_manager(models.Model):
     name = models.CharField(max_length=50)
@@ -26,10 +30,10 @@ class Question(models.Model):
     question_number = models.IntegerField(default=0)
     question_string = models.TextField(unique=True)
     multiplier = models.DecimalField(max_digits=3, decimal_places=2, default=0)
-    
+
     class Meta:
         ordering = ['question_number']
-        
+
     def __str__(self):
         return str(self.question_number) + ". " + str(self.question_string)
 
@@ -43,7 +47,7 @@ class Category(models.Model):
     class Meta:
         unique_together = (('version','category_name','category_number'),)
         ordering = ['category_number']
-    
+
     def __str__(self):
         return str(self.category_number) + ". " + str(self.category_name) + " v" +  str(self.version)
 
@@ -67,7 +71,7 @@ class Rating(models.Model):
 
 class Scorecard(models.Model):
     cid = models.CharField(max_length=15, unique=True)
-    provider = models.ForeignKey(Provider, on_delete=models.CASCADE)
+    service = models.ForeignKey(Service, on_delete=models.CASCADE, null=True)
     month_covered = models.DateTimeField(blank=True)
     date_released = models.DateTimeField()
     account_manager = models.ForeignKey(Account_manager, on_delete=models.CASCADE)

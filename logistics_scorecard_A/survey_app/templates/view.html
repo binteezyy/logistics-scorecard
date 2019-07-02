@@ -138,7 +138,7 @@
         <div class="card-body">
             <h4 class="card-title">Scorecard ID: {{scorecard.cid}} - {{ scorecard.date_released|date:'M-d-Y' }}</h4>
             <h5 class="card-title">
-                {{ scorecard.provider }}{% for z in scorecard.provider.services.all %}-{{z.name}}{%endfor%}</h5>
+                {{ scorecard.service }}</h5>
             <h6 class="card-subtitle mb-2 text-primary">Account Manager: {{ scorecard.account_manager }}</h6>
             <h6 class="card-subtitle mb-2">Email: {{ scorecard.account_manager.email }}</h6>
             <h6 class="card-subtitle mb-2">Month Covered: {{ scorecard.month_covered|date:'F' }}</h6>

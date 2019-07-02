@@ -59,7 +59,7 @@ while True:
     accounts = Account.objects.all()
 
     for i in accounts:
-        print(i.user, '——', i.provider)
+        print(i.user, '——', i.service)
         ## CHECK EXISTING SCORECARD THIS MONTH
             ## INSERT CONDITION
 
@@ -96,11 +96,15 @@ while True:
 
                     print(sc.scorecard,"\t",sc.is_sent_sc)
                     c = len(i.scorecard.all()) + 1
-                    s = Scorecard.objects.create(cid="SCORECARD%d" % (c),date_released=datetime.datetime.now(),)
+                    s = Scorecard.objects.create(cid="SCORECARD%d" % (c),
+                                                date_released=datetime.datetime.now(),
+                                                account_manager=i.manager,
+                                                )
                     s.save()
                     al = AppraiserList.objects.create(account=sc.account,
                                                 is_sent_sc=True,
-                                                scorecard=s)
+                                                scorecard=s,
+                                                )
                     al.save()
 
 
