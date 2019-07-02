@@ -19,7 +19,7 @@ class Account(models.Model):
     class Meta:
         unique_together = ('user','service',)
     def __str__(self):
-        return f'{self.user}'
+        return f'{self.user} - {self.service}'
 
 class AppraiserList(models.Model):
     account = models.ForeignKey(Account, on_delete=models.CASCADE, null=True)

@@ -12,4 +12,5 @@ urlpatterns = [
     path('email', views.email_view, name='email'),
     path('scorecards/<cid>/view', views.view_scorecard, name='view_scorecard'),
     path('create', views.create_template, name='create_template'),
+    path('settings', views.date_settings_view, name='date_settings'),
 ]

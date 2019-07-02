@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block form %}
+<div class="container" name="form">
+    <form method="post">
+        {% csrf_token %}
+        <input class="form-control form-control-lg" type="number" value="{{today.dev_month}}" name='month'>
+        <input class="form-control form-control-lg" type="number" value="{{today.dev_day}}" name='day'>
+        <button class=" btn btn-primary submit" type="submit" id="submit-btn" value="submit">Submit</button>
+    </form>
+</div>
+{% endblock %}

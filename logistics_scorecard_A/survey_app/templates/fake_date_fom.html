@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<form method="post">
+    {% csrf_token %}
+    Month<input type=number name='month'>
+    Day<input type=number name='day'>
+    <button type="submit" class="btn btn-primary">Save</button>
+</form>
+{% endblock content %}
