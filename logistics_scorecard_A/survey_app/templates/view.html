@@ -12,14 +12,11 @@
         $('.rate-{{category.category_number}}-{{question.question_number}}').html($('.rate-{{category.category_number}}-{{question.question_number}}').val());
         {% endif %}
         {% endfor %}
-<<<<<<< HEAD
-=======
         {% for feedback in feedbacks %}
         {% if feedback.question.question_string == question.question_string %}
         $('#feedback-cat-{{category.category_number}}-row-{{question.question_number}}').html('{{ feedback.feedback }}');
         {% endif %}
         {% endfor %}
->>>>>>> development
         {% endfor %}
         {% endfor %}
 
@@ -32,13 +29,6 @@
         else {
             $('.weight-{{category.category_number}}-{{question.question_number}}').val({{ question.multiplier }});
     $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').val(
-<<<<<<< HEAD
-        $('.rate-{{category.category_number}}-{{question.question_number}}').val());
-    $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').html(
-        $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').val() * 20 + '%');
-         }
-
-=======
         $('.rate-{{category.category_number}}-{{question.question_number}}').val()
         * $('.weight-{{category.category_number}}-{{question.question_number}}').val());
     var totalR = parseFloat($('#total-cat-{{category.category_number}}-row-{{question.question_number}}').val());
@@ -62,7 +52,6 @@
     {% endfor %}
     $('.total-of-all').html(parseFloat(totalall.toFixed(4)));
 
->>>>>>> development
     var totalQ = 0;
     {% for question in category.questions.all %}
     totalQ++;
@@ -114,16 +103,10 @@
         }
         else {
             $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').val(
-<<<<<<< HEAD
-                $('.rate-{{category.category_number}}-{{question.question_number}}').val());
-            $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').html(
-                $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').val() * 20 + '%');
-=======
                 $('.rate-{{category.category_number}}-{{question.question_number}}').val()
                 * $('.weight-{{category.category_number}}-{{question.question_number}}').val());
             var totalR = parseFloat($('#total-cat-{{category.category_number}}-row-{{question.question_number}}').val());
             $('#total-cat-{{category.category_number}}-row-{{question.question_number}}').html(parseFloat(totalR.toFixed(4)));
->>>>>>> development
         }
     }
     else {
@@ -143,7 +126,7 @@
     {% endfor %}
     {% endfor %}
 
-    
+
     });
 </script>
 {% endblock add_script %}
@@ -201,18 +184,6 @@
                 </tr>
                 {% endfor %}
                 <tr class="h6 text-center" name="total-column">
-<<<<<<< HEAD
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td>
-                        <text>Rating: </text>
-                        <text name="rating-of-column" class="rating-column-cat-{{category.category_number}}">
-                        </text>
-                        <!-- <text>Total:</text>
-                            <text name="total-of-column" class="total-column-cat-{{category.category_number}}">
-                            </text> -->
-=======
                     <td>
                         <!-- <text>Rating: </text>
                         <text name="rating-of-column" class="rating-column-cat-{{category.category_number}}">
@@ -224,7 +195,6 @@
                     <td></td>
                     <td></td>
                     <td>
->>>>>>> development
                     </td>
                     <td>
 
@@ -236,15 +206,6 @@
             </tbody>
         </table>
         {% endfor %}
-<<<<<<< HEAD
-        <!-- <div name="total-of-form" class="h3">
-                Total:
-                <text name="total-of-columns" class="total-of-all"></text>
-            </div> -->
-        <div name="rating-of-form" class="h3">
-            Rating:
-            <text name="rating-of-columns" class="rating-of-all"></text>
-=======
         <!-- <div name="rating-of-form" class="h3">
             Rating:
             <text name="rating-of-columns" class="rating-of-all"></text>
@@ -252,7 +213,6 @@
         <div name="total-of-form" class="h3">
             Total:
             <text name="total-of-columns" class="total-of-all"></text>
->>>>>>> development
         </div>
     </div>
 </div>
