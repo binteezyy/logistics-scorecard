@@ -11,8 +11,8 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from django.contrib.auth.models import User
+import time
 # Create your views here.
-
 
 
 def verify(request):

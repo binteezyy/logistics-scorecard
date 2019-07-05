@@ -11,5 +11,4 @@ urlpatterns = [
     path('scorecards/<cid>', views.index, name='scorecard'),
     path('email', views.email_view, name='email'),
     path('scorecards/<cid>/view', views.view_scorecard, name='view_scorecard'),
-
 ]

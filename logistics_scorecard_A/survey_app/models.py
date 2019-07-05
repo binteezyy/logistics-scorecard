@@ -31,7 +31,9 @@ class Question(models.Model):
         ordering = ['question_number']
         
     def __str__(self):
-        return str(self.question_number) + ". " + str(self.question_string)
+        return str(self.question_number) + ". " + str(self.question_string) 
+
+
 
 class Category(models.Model):
     version = models.IntegerField(default=1)
@@ -39,13 +41,18 @@ class Category(models.Model):
     category_name = models.CharField(max_length=40)
     questions = models.ManyToManyField(Question)
 
-
     class Meta:
         unique_together = (('version','category_name','category_number'),)
         ordering = ['category_number']
     
     def __str__(self):
         return str(self.category_number) + ". " + str(self.category_name) + " v" +  str(self.version)
+
+        
+        
+
+
+         
 
 class Feedback(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)

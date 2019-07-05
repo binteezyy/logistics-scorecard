@@ -3,8 +3,11 @@ import clipboard
 from bs4 import BeautifulSoup
 import re
 import os
+import smtplib
 import django
 import getpass
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 user = 'ButchPaoloMadahan@artesyn.com'
 password = getpass.getpass()
 url = 'outlook.office365.com'
@@ -74,18 +77,29 @@ for specific_id in email_ids:
                                 category_num = new_id[0][3:]
                                 question_num = new_id[1][1:]
                                 feedback = str(each1.getText())
+                                print(category_num)
                                 category = scorecard.category_list.get(category_number = category_num)
                                 question = category.questions.get(question_number = question_num)
                                 scorecard.feedback.get_or_create(question=Question(question.id), feedback=feedback)
                                 scorecard.is_locked = True
                                 scorecard.save()
-                                # print(scorecard_feedback)
-                                
-                                # rating.feedback = feedback
-                                # rating.save()
-                                # print(rating.feedback)
-                                #print(rating.question.question_string)
-                                #print("original id: " + each1["id"])
-                                #print(new_id[0][3:] + str(each1.getText()))
+
                         else:
-                            print(str(each1.gettext()))    
+                            print(str(each1.gettext())) 
+                for i in User.objects.all():
+                    for u in i.account.scorecard.all():
+                        if u == scorecard:           
+                            msg = MIMEMultipart()
+                            msg['From'] = "ButchPaoloMadahan@artesyn.com"
+                            msg['To'] = i.email
+                            msg['Subject'] = "LOGISTICS MONTHLY SCORECARD"
+
+                            message = "Testing!"
+
+                            msg.attach(MIMEText(message, 'plain'))
+
+                            mailserver = smtplib.SMTP('smtp.office365.com',587)
+                            mailserver.ehlo()
+                            mailserver.starttls()
+                            mailserver.login(msg['From'], password)
+                            mailserver.sendmail(msg['From'], msg['To'], msg.as_string())                   
