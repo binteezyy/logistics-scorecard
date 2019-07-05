@@ -105,6 +105,7 @@ class Scorecard(models.Model):
     feedback = models.ManyToManyField(Feedback, blank=True)
 
     def save(self, *args, **kwargs):
+        self.cid = str(self.cid).upper()
         self.month_covered = self.date_released - datetime.timedelta(30)
         super(Scorecard, self).save(*args, **kwargs)
 

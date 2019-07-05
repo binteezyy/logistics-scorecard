@@ -11,6 +11,7 @@ class Template(models.Model):
     category = models.ManyToManyField(Category)
     def __str__(self):
         return f'{self.name}'
+        
 class Account(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     user_manager_email = models.EmailField(blank=True)
@@ -19,6 +20,7 @@ class Account(models.Model):
     manager = models.ForeignKey(Account_manager, on_delete=models.CASCADE, null=True)
     is_active = models.BooleanField(default=True)
     scorecard = models.ManyToManyField(Scorecard, through='AppraiserList')
+    is_notified = models.DateTimeField(null=True)
 
     class Meta:
         unique_together = ('user','service',)
