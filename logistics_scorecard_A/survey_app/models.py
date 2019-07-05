@@ -100,6 +100,7 @@ class Scorecard(models.Model):
     rating = models.ManyToManyField(Rating, blank=True)
     category_list = models.ManyToManyField(Category, blank=True)
     is_applicable = models.BooleanField(default=False)
+    is_rated = models.BooleanField(default=False)
     is_locked = models.BooleanField(default=False)
     feedback = models.ManyToManyField(Feedback, blank=True)
 
