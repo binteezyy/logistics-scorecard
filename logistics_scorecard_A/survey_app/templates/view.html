@@ -214,6 +214,11 @@
             Total:
             <text name="total-of-columns" class="total-of-all"></text>
         </div>
+        {% if is_manager and not scorecard.is_approved %}
+        <div>
+            <button class=" btn btn-primary submit" type="submit" id="submit-btn" value="submit">Approve</button>
+        </div>
+        {% endif %}
     </div>
 </div>
 {% endblock form %}

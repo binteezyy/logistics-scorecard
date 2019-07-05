@@ -4,13 +4,13 @@ from django import forms
 
 # Create your models here.
 class Dev_month(models.Model):
-    month = models.IntegerField(default=0)
+    month = models.IntegerField(default=1)
 
     def __str__(self):
         return str(self.month)
 
 class Dev_day(models.Model):
-    day = models.IntegerField(default=0)
+    day = models.IntegerField(default=1)
 
     def __str__(self):
         return str(self.day)
@@ -24,6 +24,14 @@ class Dev_date(models.Model):
 
     class Meta:
         unique_together = ('dev_month', 'dev_day')
+
+class Trigger(models.Model):
+    create_scorecards = models.IntegerField(default=1)
+    set_applicable_to_no = models.IntegerField(default=1)
+    send_to_providers = models.IntegerField(default=1)
+    extract_feedbacks = models.IntegerField(default=1)
+    end_of_month_lock = models.IntegerField(default=1)
+
 
 class Provider(models.Model):
     provider_name = models.CharField(max_length=50)
@@ -102,10 +110,11 @@ class Scorecard(models.Model):
     is_applicable = models.BooleanField(default=False)
     is_rated = models.BooleanField(default=False)
     is_locked = models.BooleanField(default=False)
+    is_approved = models.BooleanField(default=False)
     feedback = models.ManyToManyField(Feedback, blank=True)
 
     def save(self, *args, **kwargs):
-        self.cid = str(self.cid).upper()
+        # self.cid = str(self.cid).upper()
         self.month_covered = self.date_released - datetime.timedelta(30)
         super(Scorecard, self).save(*args, **kwargs)
 

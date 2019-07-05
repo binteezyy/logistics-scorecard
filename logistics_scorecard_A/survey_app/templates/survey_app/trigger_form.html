@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+
+{% block form %}
+<form method="POST">
+    {% csrf_token %}
+    <fieldset class="form-group">
+        {{ form|crispy }}
+    </fieldset>
+    <div class="form-group">
+        <button class="login btn btn-outline-primary border-0 mt-0 mb-4 animated zoomOut fast"
+            type="submit">Submit</button>
+    </div>
+</form>
+{% endblock form %}

@@ -17,7 +17,9 @@
             Month Covered: {{ x.month_covered|date:'F' }}<br>
             Date Released: {{ x.date_released|date:'M-d-Y' }}
           </p>
-          {% if x.is_applicable and day <= 30 and month == x.date_released.month and not x.is_rated %}
+          {% if is_manager %}
+          <a class="btn btn-outline-primary" href="{% url 'view_scorecard' x.cid %}" class="card-link">View</a>
+          {% elif x.is_applicable and day <= 30 and month == x.date_released.month and not x.is_rated %}
           <a class="btn btn-outline-primary" href="{% url 'scorecard' x.cid %}" class="card-link">Edit</a>
           {% elif not x.is_applicable and day <= 15 and month == x.date_released.month and not x.is_rated %}
           <a class="btn btn-outline-primary" href="{% url 'scorecard' x.cid %}" class="card-link">Rate</a>

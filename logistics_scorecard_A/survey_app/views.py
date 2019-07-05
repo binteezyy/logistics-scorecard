@@ -18,40 +18,29 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from . import tp
 
-from django.db.models import Q
-from itertools import chain
-
-from django.views.generic.edit import CreateView 
+from django.views.generic import CreateView
+from .admin import * 
 # Create your views here.
 
 @login_required
 def landing(request):
     current_user = request.user
     accounts = Account.objects.filter(user__username=current_user.username)
+    is_manager = False
+    if not accounts:
+        accounts = Account.objects.filter(user_manager_email=current_user.email)
+        is_manager = True
+        context = {
+            'accounts':accounts,
+            # 'day':datetime.datetime.now().day,
+            # 'month': datetime.datetime.now().month,
+            'day': Dev_date.objects.get(pk=1).dev_day.day,
+            'month': Dev_date.objects.get(pk=1).dev_month.month,
+            'is_manager': is_manager,
+        }
 
-          
-    # if not accounts:
-        # string1 = "JoshuaPascual"
-        # string2 = "ButchPaoloMadahan"
-        # accounts = Account.objects.filter(Q(user__username=string1))
+        return render(request, 'landing.html', context)
 
-        # accounts = Account.objects.all()
-        # for account in accounts:
-        #         return HttpResponse(account.user)
-
-        # mylist = ["JoshuaPascual", "ButchPaoloMadahan"]
-        # for i in mylist:
-        #     accounts = Account.objects.filter(Q(user__username=string1))
-
-        # result_list = chain(
-        #     Account.objects.filter(Q(user__username="JoshuaPascual")), 
-        #     Account.objects.filter(Q(user__username="ButchPaoloMadahan")),
-        #     )
-        # accounts = Account.objects.all()
-        # usernames = [account.user.username for account in accounts]
-        
-        # accounts = Account.objects.filter(user__username=usernames)
-        # return HttpResponse(accounts)
     context = {
             'accounts':accounts,
             # 'day':datetime.datetime.now().day,
@@ -62,6 +51,7 @@ def landing(request):
 
     return render(request, 'landing.html', context)
 
+@login_required
 def view_scorecard(request,cid):
     scorecard = Scorecard.objects.get(cid=cid)
     categories = scorecard.category_list.all()
@@ -73,7 +63,15 @@ def view_scorecard(request,cid):
         "ratings": ratings,
         "feedbacks": feedbacks,
     }
-    return render(request, 'view.html', context)
+    user1 = Account.objects.get(scorecard__cid=cid).user
+    user2 = Account.objects.get(scorecard__cid=cid).user_manager_email
+    current_user = request.user
+    if str(user1) == str(current_user):
+        return render(request, 'view.html', context)
+    elif str(user2) == str(current_user.email):
+        context.update({"is_manager": True})
+        return render(request, 'view.html', context)
+    return HttpResponse("Not ur scorecard")
 
 
 @login_required
@@ -154,6 +152,10 @@ def index(request, cid):
             return redirect('view_scorecard', cid)
         else:
             return render(request, 'form.html', context)
+
+class TriggerFormView(CreateView):
+    model = Trigger
+    form_class = TriggerForm
 
 def date_settings_view(request):
     today = Dev_date.objects.get(pk=1)
