@@ -18,16 +18,47 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from . import tp
 
+from django.db.models import Q
+from itertools import chain
+
+from django.views.generic.edit import CreateView 
 # Create your views here.
 
 @login_required
 def landing(request):
     current_user = request.user
-    user = Account.objects.get(user=current_user)
+    accounts = Account.objects.filter(user__username=current_user.username)
+
+          
+    # if not accounts:
+        # string1 = "JoshuaPascual"
+        # string2 = "ButchPaoloMadahan"
+        # accounts = Account.objects.filter(Q(user__username=string1))
+
+        # accounts = Account.objects.all()
+        # for account in accounts:
+        #         return HttpResponse(account.user)
+
+        # mylist = ["JoshuaPascual", "ButchPaoloMadahan"]
+        # for i in mylist:
+        #     accounts = Account.objects.filter(Q(user__username=string1))
+
+        # result_list = chain(
+        #     Account.objects.filter(Q(user__username="JoshuaPascual")), 
+        #     Account.objects.filter(Q(user__username="ButchPaoloMadahan")),
+        #     )
+        # accounts = Account.objects.all()
+        # usernames = [account.user.username for account in accounts]
+        
+        # accounts = Account.objects.filter(user__username=usernames)
+        # return HttpResponse(accounts)
     context = {
-         'user':user,
-         'day':datetime.datetime.now().day,
-     }
+            'accounts':accounts,
+            # 'day':datetime.datetime.now().day,
+            # 'month': datetime.datetime.now().month,
+            'day': Dev_date.objects.get(pk=1).dev_day.day,
+            'month': Dev_date.objects.get(pk=1).dev_month.month,
+    }
 
     return render(request, 'landing.html', context)
 
@@ -49,15 +80,17 @@ def view_scorecard(request,cid):
 def index(request, cid):
     current_user = request.user
     scorecard = Scorecard.objects.get(cid=cid)
-    user1 = scorecard.account_set.first()
+    user1 = Account.objects.get(scorecard__cid=cid).user
     categories = scorecard.category_list.all()
     ratings = scorecard.rating.all()
     feedbacks = scorecard.feedback.all()
+    released = scorecard.date_released
     context = {
         "scorecard": scorecard,
         "categories": categories,
         "ratings": ratings,
-        'date_now': datetime.datetime.now(),
+        # 'date_now': datetime.datetime.now(),
+        'date_now': Dev_date.objects.get(pk=1),
         "feedbacks": feedbacks,
     }
 
@@ -82,52 +115,16 @@ def index(request, cid):
                 except Rating.DoesNotExist:
                     scorecard.rating.add(new_rate)
 
-                # return HttpResponse('old-%s new-%s' % (old_rate, new_rate))
-
-        userCN = 'CN=' + str(current_user.last_name) + '\, ' + str(current_user.first_name)
-
-        server_url = settings.LDAP_AUTH_URL
-        server = Server(server_url, get_info=ALL)
-
-        connection_account = str(settings.LDAP_CN) + ',' + str(settings.LDAP_AUTH_SEARCH_BASE)
-        connection_password = str(settings.LDAP_AUTH_CONNECTION_PASSWORD)
-
-        conn = Connection(
-        server,
-        connection_account,
-        connection_password,
-        auto_bind=True)
-
-        conn.search(
-            search_base = str(userCN) + ',' + str(settings.LDAP_AUTH_SEARCH_BASE),
-            search_filter = '(objectClass=user)',
-            search_scope = SUBTREE,
-            types_only=False,
-            attributes=['manager'],
-            get_operational_attributes=True,
-            size_limit=1,
-            )
-
-        manager_dn = conn.response[0]['attributes']['manager']
-
-        conn.search(
-            search_base = manager_dn,
-            search_filter = '(objectClass=user)',
-            search_scope = SUBTREE,
-            types_only=False,
-            attributes=['mail'],
-            get_operational_attributes=True,
-            size_limit=1,
-            )
-
-        logistics_manager_email = conn.response[0]['attributes']['mail']
+        logistics_manager_email = Account.objects.get(scorecard__cid=cid).user_manager_email 
+        scorecard.is_rated = True
         scorecard.is_applicable = True
         scorecard.save()
-        return HttpResponse(logistics_manager_email)
+        # return HttpResponse(logistics_manager_email)
+        return redirect('view_scorecard',cid)
 
         # msg = MIMEMultipart()
         # msg['From'] = "#"
-        # msg['To'] = scorecard.account_manager.email
+        # msg['To'] = logistics_manager_email
         # msg['Subject'] = "LOGISTICS MONTHLY SCORECARD"
 
         # message = "10.162.197.88/login"
@@ -141,18 +138,57 @@ def index(request, cid):
         # mailserver.login(msg['From'], '#')
         # mailserver.sendmail(msg['From'], msg['To'], msg.as_string())
         # scorecard.is_applicable = True
+        # scorecard.is_rated = True
         # scorecard.save()
-        # return HttpResponse("OK")
+        # return redirect('view_scorecard',cid)
     else:
         if str(user1) != str(current_user):
+            return redirect('view_scorecard',cid)
+        # if (datetime.datetime.now().day > 15 or datetime.datetime.now().month > released.month) and not scorecard.is_applicable and not scorecard.is_rated:
+        if (Dev_date.objects.get(pk=1).dev_day.day > 15 or Dev_date.objects.get(pk=1).dev_month.month > released.month) and not scorecard.is_applicable and not scorecard.is_rated:
             return redirect('landing')
-        if datetime.datetime.now().day > 15 and not scorecard.is_applicable:
-            return redirect('landing')
-        elif datetime.datetime.now().day > 30:
+        # el# if (datetime.datetime.now().day > 15 or datetime.datetime.now().month > released.month) and scorecard.is_applicable and scorecard.is_rated:
+        elif (Dev_date.objects.get(pk=1).dev_day.day > 15 or Dev_date.objects.get(pk=1).dev_month.month > released.month) and scorecard.is_applicable and scorecard.is_rated:
+            return redirect('view_scorecard', cid)
+        elif scorecard.is_applicable and scorecard.is_rated:
             return redirect('view_scorecard', cid)
         else:
             return render(request, 'form.html', context)
 
+def date_settings_view(request):
+    today = Dev_date.objects.get(pk=1)
+    if request.method == 'GET':
+        context = {
+            "today": today,
+        }
+        return render(request, 'date_form.html', context)
+    else:
+        # month_now = Dev_month.objects.get(month=request.POST.get('month'))
+        # day_now = Dev_day.objects.get(day=request.POST.get('day'))
+        # date_now = Dev_date.objects.get(dev_month=month_now, dev_day=day_now)
+        # return HttpResponse(date_now)
+
+        try:
+            new_month = Dev_month.objects.get(month=request.POST.get('month'))
+        except Dev_month.DoesNotExist:
+            new_month = Dev_month(month=request.POST.get('month'))
+            new_month.save()
+            new_month = Dev_month.objects.get(month=request.POST.get('month'))
+        try:
+            new_day = Dev_day.objects.get(day=request.POST.get('day'))
+        except Dev_day.DoesNotExist:
+            new_day = Dev_day(day=request.POST.get('day'))
+            new_day.save()
+            new_day = Dev_day.objects.get(day=request.POST.get('day'))
+
+        if new_month.month != today.dev_month.month:
+            today.dev_month = new_month
+            today.save()
+        if new_day.day != today.dev_day.day:
+            today.dev_day = new_day
+            today.save()
+            
+        return redirect('date_settings')
 
 def email_view(request):
     current_user = request.user

@@ -4,7 +4,8 @@
 
 <div class="container mt-4">
   <div class="row">
-    {% for x in user.scorecard.all %}
+    {% for account in accounts %}
+    {% for x in account.scorecard.all %}
     <div class="col-4 animated bounceInUp">
       <div class="col-12 card">
         <div class="card-body">
@@ -16,16 +17,19 @@
             Month Covered: {{ x.month_covered|date:'F' }}<br>
             Date Released: {{ x.date_released|date:'M-d-Y' }}
           </p>
-          {% if x.is_applicable and day <= 30 %}
+          {% if x.is_applicable and day <= 30 and month == x.date_released.month and not x.is_rated %}
           <a class="btn btn-outline-primary" href="{% url 'scorecard' x.cid %}" class="card-link">Edit</a>
-          {% elif not x.is_applicable and day <= 15 %}
+          {% elif not x.is_applicable and day <= 15 and month == x.date_released.month and not x.is_rated %}
           <a class="btn btn-outline-primary" href="{% url 'scorecard' x.cid %}" class="card-link">Rate</a>
-          {% elif not x.is_applicable and day > 15 %}
+          {% elif not x.is_applicable and day > 15  and month == x.date_released.month%}
           <span class="btn btn-danger ">Not Applicable</span>
+          {% else %}
+          <a class="btn btn-outline-primary" href="{% url 'view_scorecard' x.cid %}" class="card-link">View</a>
           {% endif %}
         </div>
       </div>
     </div>
+    {% endfor %}
     {% endfor %}
   </div>
 </div>

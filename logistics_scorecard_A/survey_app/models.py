@@ -1,7 +1,29 @@
 from django.db import models
 import datetime
+from django import forms
 
 # Create your models here.
+class Dev_month(models.Model):
+    month = models.IntegerField(default=0)
+
+    def __str__(self):
+        return str(self.month)
+
+class Dev_day(models.Model):
+    day = models.IntegerField(default=0)
+
+    def __str__(self):
+        return str(self.day)
+
+class Dev_date(models.Model):
+    dev_month = models.ForeignKey(Dev_month, on_delete=models.CASCADE)
+    dev_day = models.ForeignKey(Dev_day, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'{self.dev_month} / {self.dev_day}'
+
+    class Meta:
+        unique_together = ('dev_month', 'dev_day')
 
 class Provider(models.Model):
     provider_name = models.CharField(max_length=50)
@@ -78,10 +100,12 @@ class Scorecard(models.Model):
     rating = models.ManyToManyField(Rating, blank=True)
     category_list = models.ManyToManyField(Category, blank=True)
     is_applicable = models.BooleanField(default=False)
+    is_rated = models.BooleanField(default=False)
     is_locked = models.BooleanField(default=False)
     feedback = models.ManyToManyField(Feedback, blank=True)
 
     def save(self, *args, **kwargs):
+        self.cid = str(self.cid).upper()
         self.month_covered = self.date_released - datetime.timedelta(30)
         super(Scorecard, self).save(*args, **kwargs)
 

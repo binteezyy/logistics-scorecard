@@ -4,7 +4,7 @@ from users.models import *
 
 class AppraiserListInline(admin.TabularInline):
     model = AppraiserList
-    #readonly_fields = ('item_total',)
+    readonly_fields = ('is_notified',)
 
 class PostAccount(admin.ModelAdmin):
     list_display = ('user','service','manager')
