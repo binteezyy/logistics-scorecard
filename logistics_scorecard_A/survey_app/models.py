@@ -1,6 +1,7 @@
 from django.db import models
 import datetime
 from django import forms
+from django.core.exceptions import ValidationError
 
 # Create your models here.
 class Dev_month(models.Model):
@@ -31,6 +32,13 @@ class Trigger(models.Model):
     send_to_providers = models.IntegerField(default=1)
     extract_feedbacks = models.IntegerField(default=1)
     end_of_month_lock = models.IntegerField(default=1)
+
+    def __str__(self):
+        return str('Trigger settings')
+    def save(self, *args, **kwargs):
+        if Trigger.objects.exists() and not self.pk:
+            raise ValidationError('There is can be only one Trigger instance')
+        return super(Trigger, self).save(*args, **kwargs)
 
 
 class Provider(models.Model):

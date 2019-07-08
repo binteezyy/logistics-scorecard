@@ -17,7 +17,7 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "logistics_scorecard_A.settings"
 django.setup()
 from survey_app.models import *
 from users.models import *
-
+trigger = Trigger.objects.last()
 mail = imaplib.IMAP4_SSL(url)
 mail.login(user,password)
 mail.select('INBOX')
@@ -31,7 +31,7 @@ scorecards = Scorecard.objects.filter(is_locked=False, is_rated=True, is_applica
 print(scorecards)
 last = email_ids[-1]
 # if datetime.datetime.now().day > 15:
-if Dev_date.objects.get(pk=1).dev_day.day > 15:
+if Dev_date.objects.get(pk=1).dev_day.day > trigger.set_applicable_to_no:
     for specific_id in email_ids:
         result, data = mail.fetch(specific_id, "(RFC822)")
         x = data[0][1]
