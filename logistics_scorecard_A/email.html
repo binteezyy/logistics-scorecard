@@ -98,14 +98,16 @@
           {% for q in i.questions.all() %}
           <tr style="" bgcolor="#f2f2f2">
             <td style="border-spacing: 0px; border-collapse: collapse; line-height: 24px; font-size: 16px; margin: 0; padding: 12px; border: 1px solid #e9ecef;" align="left" valign="top">{{ q.question_number }}</td>
-            <td style="border-spacing: 0px; border-collapse: collapse; line-height: 24px; font-size: 16px; margin: 0; padding: 12px; border: 1px solid #e9ecef;" align="left" valign="top">{{ q.question_string }}</td>
+            {% autoescape false %}
+            <td style="border-spacing: 0px; border-collapse: collapse; line-height: 24px; font-size: 16px; margin: 0; padding: 12px; border: 1px solid #e9ecef;" align="left" valign="top">{{ q.question_string| replace("\n", "<br>") }}</td>
+            {% endautoescape %}
             <td style="border-spacing: 0px; border-collapse: collapse; line-height: 24px; font-size: 16px; margin: 0; padding: 12px; border: 1px solid #e9ecef;" align="left" valign="top">
               {% for r in ratings %}{% if r.question.question_string == q.question_string %}
                 {{r.rate}}
               {% endif %}{% endfor %}
 
             </td>
-            <td value="cat{{i.category_number}}" id=":cat{{i.category_number}}-q{{ q.question_number }}" name="feedback" style="border-spacing: 0px; border-collapse: collapse; line-height: 24px; font-size: 16px; margin: 0; padding: 12px; border: 1px solid #e9ecef;" align="left" valign="top">wow ang laki buts</td>
+            <td value="cat{{i.category_number}}" id=":cat{{i.category_number}}-q{{ q.question_number }}" name="feedback" style="border-spacing: 0px; border-collapse: collapse; line-height: 24px; font-size: 16px; margin: 0; padding: 12px; border: 1px solid #e9ecef;" align="left" valign="top"></td>
           </tr>
           {% endfor %}
         </tbody>
