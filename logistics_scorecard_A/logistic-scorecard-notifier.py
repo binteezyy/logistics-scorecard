@@ -21,18 +21,30 @@ django.setup()
 from survey_app.models import *
 from users.models import *
 
-TIME_TRIGGER = '%#S' if os.name == 'nt' else '%-S'
-TIME_TO_UPDATE_LOG = '0' # DEPENDS ON TIME TRIGGER
 def clear():
     os.system('cls' if os.name == 'nt' else 'clear')
 
+def update():
+    schedule_trigger = Trigger.objects.get(pk=1)
+    TIME_TRIGGER = f'{schedule_trigger.notify_sc_trigger}'
+    # TIME_TRIGGER = '%#S' if os.name == 'nt' else '%-S'
+    TIME_UPDATE_LOG = f'{schedule_trigger.notify_sc_value}' # DEPENDS ON TIME TRIGGER
+
+    TIME_RESET_TRIGGER = f'{schedule_trigger.notify_sc_reset_trigger}'
+    TIME_RESET_VALUE = f'{schedule_trigger.notify_sc_reset_value}'
+    return {'TIME_TRIGGER':TIME_TRIGGER,
+            'TIME_UPDATE_LOG': TIME_UPDATE_LOG,
+            'TIME_RESET_TRIGGER': TIME_RESET_TRIGGER,
+            'TIME_RESET_VALUE': TIME_RESET_VALUE
+            }
 def main():
+    schedule_trigger = Trigger.objects.get(pk=1)
+    smpt_set = schedule_trigger.use_fake_smtp
     msg = MIMEMultipart('alternative')
     mailserver = smtplib.SMTP('')
 
     print("(1)365.OUTLOOK\t(2)fakeSMTP")
-    selection=input("Please Select:")
-    if selection =='1':
+    if smpt_set == False:
         print("365.OUTLOOK")
 
         msg['From'] = input("EMAIL:")
@@ -43,22 +55,27 @@ def main():
         mailserver.starttls()
         mailserver.login(msg['From'],msg['PWD'])
 
-    elif selection == '2':
+    elif smpt_set == True:
         print("fakeSMTP")
+        msg['From'] = 'tester@artesyn.com'
         mailserver = smtplib.SMTP('localhost',25)
         mailserver.ehlo()
 
     else:
-        print("INVALID SELECTION")
+        print("INVALID smpt_set")
 
 
     clear()
     while True:
-        print( datetime.datetime.now().strftime(TIME_TRIGGER))
+        SETTINGS = update()
+        print(f'LOGISTICS SCORCARD NOTIFIER || {datetime.datetime.now().strftime("%Y-%m-%d %I:%M:%S %p")}')
         accounts = Account.objects.all()
-        for i in accounts:
-            if i.is_active == True:
-                if datetime.datetime.now().strftime(TIME_TRIGGER) == TIME_TO_UPDATE_LOG:
+
+        ### UPDATE LOG AND SEND NOTIFICATION
+        if ((datetime.datetime.now().strftime(SETTINGS['TIME_TRIGGER']) == SETTINGS['TIME_UPDATE_LOG'])
+            and (SETTINGS['TIME_RESET_TRIGGER'] != SETTINGS['TIME_RESET_VALUE'])):
+            for i in accounts:
+                if i.is_active == True:
                     print(f'CHECKING SCORECARD STATUS (ACTIVE) {str(i.user).upper()} — {i.service} @ {(datetime.datetime.now()).strftime("%Y-%m-%d %I:%M:%S %p")}')
                     for sc in AppraiserList.objects.filter(account=i.pk):
                         if ((sc.is_notified == None or datetime.datetime.now().day == sc.is_notified.day+1)
@@ -66,7 +83,6 @@ def main():
                             print(f'SENDING TO:\t{i.user.email} @ {(datetime.datetime.now()).strftime("%Y-%m-%d %I:%M:%S %p")}')
                             msg = MIMEMultipart('alternative')
                             msg['To'] = i.user.email
-                            msg['From'] = 'tester@artesyn.com'
                             msg['Subject'] = "DAILY REMINDER: LOGISTICS MONTHLY SCORECARD"
 
                             EMAIL_BODY = """<h1>{{title}}</h1>
@@ -99,8 +115,11 @@ def main():
                             sc.is_notified = timezone.now();
                             sc.save()
                             print(f"{i.user}'s NOTIF FLAG HAS BEEN RESET TO {('True' if sc.is_notified != None else 'False')}")
-                if datetime.datetime.now().strftime(TIME_TRIGGER) == '0':
-                    print(f'RESETTING SCORECARDS {datetime.datetime.now()}')
+
+        if (datetime.datetime.now().strftime(SETTINGS['TIME_RESET_TRIGGER']) == SETTINGS['TIME_RESET_VALUE']): #
+            print(f'RESETTING SCORECARDS {datetime.datetime.now()}')
+            for i in accounts:
+                if i.is_active == True:
                     for sc in AppraiserList.objects.filter(account=i.pk):
                         if sc.is_notified != None and sc.is_sent_sc == True and sc.scorecard.is_applicable == False:
                             sc.is_notified = None;

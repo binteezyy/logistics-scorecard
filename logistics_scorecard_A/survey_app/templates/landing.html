@@ -1,29 +1,29 @@
-{% extends "base.html" %}
-{% load crispy_forms_tags %}
-{% block form %}
+{% extends "base.html" %} {% load crispy_forms_tags %} {% block form %}
 
 <div class="container mt-4">
   <div class="row">
-    {% for account in accounts %}
-    {% for x in account.scorecard.all %}
+    {% for account in accounts %} {% for x in account.scorecard.all %}
     <div class="col-4 animated bounceInUp">
       <div class="col-12 card">
         <div class="card-body">
           <h4 class="card-title">{{ x.cid }}</h4>
-          <h6 class="card-subtitle mb-2 text-muted"><strong>{{ x.service.provider }}</strong>
-            <ul>{{ x.service.name }}</ul>
+          <h6 class="card-subtitle mb-2 text-muted">
+            <strong>{{ x.service.provider }}</strong>
+            <ul>
+              {{ x.service.name }}
+            </ul>
           </h6>
           <p class="card-text">
-            Month Covered: {{ x.month_covered|date:'F' }}<br>
+            Month Covered: {{ x.month_covered|date:'F' }}<br />
             Date Released: {{ x.date_released|date:'M-d-Y' }}
           </p>
           {% if is_manager %}
           <a class="btn btn-outline-primary" href="{% url 'view_scorecard' x.cid %}" class="card-link">View</a>
-          {% elif x.is_applicable and day <= 30 and month == x.date_released.month and not x.is_rated %}
-          <a class="btn btn-outline-primary" href="{% url 'scorecard' x.cid %}" class="card-link">Edit</a>
-          {% elif not x.is_applicable and day <= 15 and month == x.date_released.month and not x.is_rated %}
+          {% elif not x.is_applicable and day <= trigger.end_of_month_lock and day <= trigger.set_applicable_to_no and month == x.date_released.month and not x.is_rated %}
           <a class="btn btn-outline-primary" href="{% url 'scorecard' x.cid %}" class="card-link">Rate</a>
-          {% elif not x.is_applicable and day > 15  and month == x.date_released.month%}
+          {% elif x.is_applicable and day <= trigger.end_of_month_lock and month == x.date_released.month and not x.is_rated %}
+          <a class="btn btn-outline-primary" href="{% url 'scorecard' x.cid %}" class="card-link">Edit</a>
+          {% elif not x.is_applicable and day > trigger.set_applicable_to_no and month == x.date_released.month%}
           <span class="btn btn-danger ">Not Applicable</span>
           {% else %}
           <a class="btn btn-outline-primary" href="{% url 'view_scorecard' x.cid %}" class="card-link">View</a>
@@ -31,8 +31,7 @@
         </div>
       </div>
     </div>
-    {% endfor %}
-    {% endfor %}
+    {% endfor %} {% endfor %}
   </div>
 </div>
 {% endblock form %}

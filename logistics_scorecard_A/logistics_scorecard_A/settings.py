@@ -49,8 +49,7 @@ LDAP_AUTH_ACTIVE_DIRECTORY_DOMAIN = "ECP"
 LDAP_AUTH_CONNECTION_USERNAME = "JoshuaPascual"
 LDAP_AUTH_CONNECTION_PASSWORD = "@pqapq7p7p"
 
-
-
+LDAP_CN = "CN=Pascual\, Joshua"
 
 # Application definition
 INSTALLED_APPS = [

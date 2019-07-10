@@ -42,14 +42,16 @@
           {% for q in i.questions.all() %}
           <tr>
             <td>{{ q.question_number }}</td>
-            <td>{{ q.question_string }}</td>
+            {% autoescape false %}
+            <td>{{ q.question_string| replace("\n", "<br/>") }}</td>
+            {% endautoescape %}
             <td>
               {% for r in ratings %}{% if r.question.question_string == q.question_string %}
                 {{r.rate}}
               {% endif %}{% endfor %}
 
             </td>
-            <td value="cat{{i.category_number}}" id=":cat{{i.category_number}}-q{{ q.question_number }}" name="feedback">wow ang laki buts</td>
+            <td value="cat{{i.category_number}}" id=":cat{{i.category_number}}-q{{ q.question_number }}" name="feedback"></td>
           </tr>
           {% endfor %}
         </tbody>

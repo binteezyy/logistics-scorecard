@@ -64,10 +64,10 @@ class Account(models.Model):
 
 class AppraiserList(models.Model):
     account = models.ForeignKey(Account, on_delete=models.CASCADE, null=True)
-    is_sent_sc = models.BooleanField(default=False)
     scorecard = models.ForeignKey(Scorecard, on_delete=models.CASCADE, null=True)
+    is_sent_sc = models.BooleanField(default=False)
     is_notified = models.DateTimeField(null=True)
-
+    feedback_sent = models.DateTimeField(null=True,blank=True)
     class Meta:
         unique_together = ('account','scorecard',)
 

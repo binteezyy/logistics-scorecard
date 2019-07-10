@@ -20,7 +20,7 @@ from django.contrib.auth.models import User
 from . import tp
 
 from django.views.generic import CreateView, UpdateView
-from survey_app.forms import *
+from survey_app.forms import * 
 # Create your views here.
 
 @login_required
@@ -33,23 +33,21 @@ def landing(request):
         is_manager = True
         context = {
             'accounts':accounts,
-            'day':datetime.datetime.now().day,
-            'month': datetime.datetime.now().month,
-            # 'day': Dev_date.objects.get(pk=1).dev_day.day,
-            # 'month': Dev_date.objects.get(pk=1).dev_month.month,
+            # 'day':datetime.datetime.now().day,
+            # 'month': datetime.datetime.now().month,
+            'day': Dev_date.objects.get(pk=1).dev_day.day,
+            'month': Dev_date.objects.get(pk=1).dev_month.month,
             'is_manager': is_manager,
-            'trigger': Trigger.objects.last(),
         }
 
         return render(request, 'landing.html', context)
 
     context = {
             'accounts':accounts,
-            'day': datetime.datetime.now().day,
-            'month': datetime.datetime.now().month,
-            'trigger': Trigger.objects.last(),
-            # 'day': Dev_date.objects.get(pk=1).dev_day.day,
-            # 'month': Dev_date.objects.get(pk=1).dev_month.month,
+            # 'day':datetime.datetime.now().day,
+            # 'month': datetime.datetime.now().month,
+            'day': Dev_date.objects.get(pk=1).dev_day.day,
+            'month': Dev_date.objects.get(pk=1).dev_month.month,
     }
 
     return render(request, 'landing.html', context)
@@ -66,21 +64,15 @@ def view_scorecard(request,cid):
         "ratings": ratings,
         "feedbacks": feedbacks,
     }
-    if request.method == 'POST':
-        provider_email = scorecard.account_manager.email
-        scorecard.is_approved = True
-        scorecard.save()
-        return redirect('landing')
-    else:
-        user1 = Account.objects.get(scorecard__cid=cid).user
-        user2 = Account.objects.get(scorecard__cid=cid).user_manager_email
-        current_user = request.user
-        if str(user1) == str(current_user):
-            return render(request, 'view.html', context)
-        elif str(user2) == str(current_user.email):
-            context.update({"is_manager": True})
-            return render(request, 'view.html', context)
-        return redirect('landing')
+    user1 = Account.objects.get(scorecard__cid=cid).user
+    user2 = Account.objects.get(scorecard__cid=cid).user_manager_email
+    current_user = request.user
+    if str(user1) == str(current_user):
+        return render(request, 'view.html', context)
+    elif str(user2) == str(current_user.email):
+        context.update({"is_manager": True})
+        return render(request, 'view.html', context)
+    return HttpResponse("Not ur scorecard")
 
 
 @login_required
@@ -93,14 +85,14 @@ def index(request, cid):
     ratings = scorecard.rating.all()
     feedbacks = scorecard.feedback.all()
     released = scorecard.date_released
-    trigger = Trigger.objects.last()
+    trigger = Trigger.objects.last()    
     context = {
         "trigger": trigger,
         "scorecard": scorecard,
         "categories": categories,
         "ratings": ratings,
-        'date_now': datetime.datetime.now(),
-        # 'date_now': Dev_date.objects.get(pk=1),
+        # 'date_now': datetime.datetime.now(),
+        'date_now': Dev_date.objects.get(pk=1),
         "feedbacks": feedbacks,
     }
 
@@ -125,56 +117,40 @@ def index(request, cid):
                 except Rating.DoesNotExist:
                     scorecard.rating.add(new_rate)
 
-        logistics_manager_email = Account.objects.get(scorecard__cid=cid).user_manager_email
+        logistics_manager_email = Account.objects.get(scorecard__cid=cid).user_manager_email 
         scorecard.is_rated = True
         scorecard.is_applicable = True
         scorecard.save()
+        # return HttpResponse(logistics_manager_email)
+        return redirect('view_scorecard',cid)
 
-        msg = MIMEMultipart()
-        msg['From'] = "joshuapascual@artesyn"
-        #msg['PWD'] = ""
-        msg['To'] = scorecard.account_manager.email
-        msg['Subject'] = "LOGISTICS MONTHLY SCORECARD"
+        # msg = MIMEMultipart()
+        # msg['From'] = "#"
+        # msg['To'] = logistics_manager_email
+        # msg['Subject'] = "LOGISTICS MONTHLY SCORECARD"
 
-        message = "10.162.197.88/login"
+        # message = "10.162.197.88/login"
 
         # # add in the message body
-        msg.attach(MIMEText(message, 'plain'))
+        # msg.attach(MIMEText(message, 'plain'))
 
-        set = Trigger.objects.get(pk=1)
-        smpt_set = set.use_fake_smtp
-
-        msg = MIMEMultipart('alternative')
-        mailserver = smtplib.SMTP('')
-
-        print("(1)365.OUTLOOK\t(2)fakeSMTP")
-        if smpt_set == False:
-            print("365.OUTLOOK")
-            mailserver = smtplib.SMTP('smtp.office365.com',587)
-            mailserver.ehlo()
-            mailserver.starttls()
-            mailserver.login(msg['From'],msg['PWD'])
-
-        elif smpt_set == True:
-            print("fakeSMTP")
-            mailserver = smtplib.SMTP('localhost',25)
-            mailserver.ehlo()
-
-        else:
-            print("INVALID smpt_set")
-
-        clear()
-
-        mailserver.sendmail(msg['From'], msg['To'], msg.as_string())
-        return redirect('view_scorecard',cid)
+        # mailserver = smtplib.SMTP('smtp.office365.com',587)
+        # mailserver.ehlo()
+        # mailserver.starttls()
+        # mailserver.login(msg['From'], '#')
+        # mailserver.sendmail(msg['From'], msg['To'], msg.as_string())
+        # scorecard.is_applicable = True
+        # scorecard.is_rated = True
+        # scorecard.save()
+        # return redirect('view_scorecard',cid)
     else:
         if str(user1) != str(current_user):
             return redirect('view_scorecard',cid)
-        if (datetime.datetime.now().day > trigger.set_applicable_to_no or datetime.datetime.now().month > released.month) and not scorecard.is_applicable and not scorecard.is_rated:
-        # if (Dev_date.objects.get(pk=1).dev_day.day > trigger.set_applicable_to_no or Dev_date.objects.get(pk=1).dev_month.month > released.month) and not scorecard.is_applicable and not scorecard.is_rated:
+        # if (datetime.datetime.now().day > 15 or datetime.datetime.now().month > released.month) and not scorecard.is_applicable and not scorecard.is_rated:
+        if (Dev_date.objects.get(pk=1).dev_day.day > trigger.set_applicable_to_no or Dev_date.objects.get(pk=1).dev_month.month > released.month) and not scorecard.is_applicable and not scorecard.is_rated:
             return redirect('landing')
-        elif (datetime.datetime.now().day > trigger.set_applicable_to_no or datetime.datetime.now().month > released.month) and scorecard.is_applicable and scorecard.is_rated:
-        # elif (Dev_date.objects.get(pk=1).dev_day.day > trigger.set_applicable_to_no or Dev_date.objects.get(pk=1).dev_month.month > released.month) and scorecard.is_applicable and scorecard.is_rated:
+        # el# if (datetime.datetime.now().day > 15 or datetime.datetime.now().month > released.month) and scorecard.is_applicable and scorecard.is_rated:
+        elif (Dev_date.objects.get(pk=1).dev_day.day > trigger.set_applicable_to_no or Dev_date.objects.get(pk=1).dev_month.month > released.month) and scorecard.is_applicable and scorecard.is_rated:
             return redirect('view_scorecard', cid)
         elif scorecard.is_applicable and scorecard.is_rated:
             return redirect('view_scorecard', cid)
@@ -188,13 +164,13 @@ def trigger_update(request):
         form = TriggerForm(request.POST, instance=settings)
         if form.is_valid():
             form.save()
-            return redirect('update_trigger')
+            return redirect('landing')
     else:
         form = TriggerForm(instance=settings)
 
 
     return render(request, 'survey_app/trigger_form.html', {"form":form})
-
+    
 
 
 def date_settings_view(request):
@@ -229,7 +205,7 @@ def date_settings_view(request):
         if new_day.day != today.dev_day.day:
             today.dev_day = new_day
             today.save()
-
+            
         return redirect('date_settings')
 
 def email_view(request):
