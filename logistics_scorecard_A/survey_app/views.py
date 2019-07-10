@@ -11,6 +11,7 @@ from django.core.exceptions import ObjectDoesNotExist
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from jinja2 import Environment # FOR HTML ATTACHMENT
 from django.contrib.auth.decorators import login_required
 from users.models import *
 
@@ -130,42 +131,69 @@ def index(request, cid):
         scorecard.is_applicable = True
         scorecard.save()
 
-        msg = MIMEMultipart()
-        msg['From'] = "joshuapascual@artesyn"
-        #msg['PWD'] = ""
+        # msg = MIMEMultipart('alternative')
+        # msg['From'] = "joshuapascual@artesyn.com"
+        # #msg['PWD'] = ""
+        # msg['To'] = scorecard.account_manager.email
+        # msg['Subject'] = "LOGISTICS MONTHLY SCORECARD"
+        #
+        # message = "10.162.197.88/login"
+        #
+        # # # add in the message body
+        # msg.attach(MIMEText(message, 'plain'))
+        msg = MIMEMultipart('alternative')
         msg['To'] = scorecard.account_manager.email
+        msg['From'] = 'service.account@artesyn.com'
         msg['Subject'] = "LOGISTICS MONTHLY SCORECARD"
 
-        message = "10.162.197.88/login"
 
-        # # add in the message body
-        msg.attach(MIMEText(message, 'plain'))
+        EMAIL_BODY = """<h1>{{title}}</h1>
+                        <p>
+                        Hi {{user}}, it's time to check your monthly scorecards:&nbsp;
+                        <a title="ARTESYN SCORECARD" href="{{url}}">CLICK HERE</a>
+                        </p>
+                        """
 
-        set = Trigger.objects.get(pk=1)
-        smpt_set = set.use_fake_smtp
+        EMAIL_BODY_LANDING_URL = 'http://10.162.197.79/login'
+        ## PLAIN TEXT BODY
+        msg_text = MIMEText("TEXT",'plain')
 
-        msg = MIMEMultipart('alternative')
+        ## HTML BODY
+        ## EDITOR https://html-online.com/editor/
+        msg_html = MIMEText(
+        Environment().from_string(EMAIL_BODY).render(
+            title='ARTESYN LOGISTIC SCORECARD',
+            user= current_user.username,
+            url= EMAIL_BODY_LANDING_URL,
+            )
+        ,"html" )
+
+        msg.attach(msg_text)
+        msg.attach(msg_html)
+
         mailserver = smtplib.SMTP('')
 
+        schedule_trigger = Trigger.objects.get(pk=1)
+        smtp_set = schedule_trigger.use_fake_smtp
+
         print("(1)365.OUTLOOK\t(2)fakeSMTP")
-        if smpt_set == False:
+        if smtp_set == False:
             print("365.OUTLOOK")
             mailserver = smtplib.SMTP('smtp.office365.com',587)
             mailserver.ehlo()
             mailserver.starttls()
             mailserver.login(msg['From'],msg['PWD'])
 
-        elif smpt_set == True:
+        elif smtp_set == True:
             print("fakeSMTP")
             mailserver = smtplib.SMTP('localhost',25)
             mailserver.ehlo()
 
         else:
-            print("INVALID smpt_set")
+            print("INVALID smtp_set")
 
-        clear()
 
-        mailserver.sendmail(msg['From'], msg['To'], msg.as_string())
+        mailserver.sendmail(str(msg['From']), str(msg['To']), msg.as_string())
         return redirect('view_scorecard',cid)
     else:
         if str(user1) != str(current_user):

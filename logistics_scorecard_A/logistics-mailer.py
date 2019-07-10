@@ -79,8 +79,7 @@ def main():
                 ## CREATE SCORECARD
                 if SETTINGS['TIME_TO_CREATE'] not in sc_dates: # FILTER DAY
                     print(f'CREATING SCORECARD @ {(datetime.datetime.now()).strftime("%Y-%m-%d %I:%M:%S %p")}')
-                    c = len(i.scorecard.all()) + 1
-                    s = Scorecard.objects.create(cid=f'{str(i.user).upper()}SCORECARD{c}',
+                    s = Scorecard.objects.create(cid=f'{str(i.service.provider.provider_name)}-{str(i.service.name)}-{datetime.datetime.now().strftime("%m-%Y")}',
                                                  service=i.service,
                                                  account_manager=i.manager,
                                                  date_released=timezone.now(),

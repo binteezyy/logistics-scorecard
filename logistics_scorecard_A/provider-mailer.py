@@ -107,11 +107,12 @@ def main():
                             EMAIL_BODY = ""
                             msg_text = MIMEText(EMAIL_BODY,'plain')
                             msg.attach(msg_html)
-
-                            mailserver.sendmail(str(msg['From']), msg['To'], msg.as_string())
-
-                            sc.feedback_sent = timezone.now()
-                            sc.save()
+                            try:
+                                mailserver.sendmail(str(msg['From']), msg['To'], msg.as_string())
+                                sc.feedback_sent = timezone.now()
+                                sc.save()
+                            except:
+                                print("ERROR")
         sleep(1)
 
     mailserver.quit()
