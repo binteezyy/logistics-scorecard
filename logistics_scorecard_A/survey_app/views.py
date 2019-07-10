@@ -33,21 +33,23 @@ def landing(request):
         is_manager = True
         context = {
             'accounts':accounts,
-            # 'day':datetime.datetime.now().day,
-            # 'month': datetime.datetime.now().month,
-            'day': Dev_date.objects.get(pk=1).dev_day.day,
-            'month': Dev_date.objects.get(pk=1).dev_month.month,
+            'day':datetime.datetime.now().day,
+            'month': datetime.datetime.now().month,
+            # 'day': Dev_date.objects.get(pk=1).dev_day.day,
+            # 'month': Dev_date.objects.get(pk=1).dev_month.month,
             'is_manager': is_manager,
+            'trigger': Trigger.objects.last(),
         }
 
         return render(request, 'landing.html', context)
 
     context = {
             'accounts':accounts,
-            # 'day':datetime.datetime.now().day,
-            # 'month': datetime.datetime.now().month,
-            'day': Dev_date.objects.get(pk=1).dev_day.day,
-            'month': Dev_date.objects.get(pk=1).dev_month.month,
+            'day': datetime.datetime.now().day,
+            'month': datetime.datetime.now().month,
+            'trigger': Trigger.objects.last(),
+            # 'day': Dev_date.objects.get(pk=1).dev_day.day,
+            # 'month': Dev_date.objects.get(pk=1).dev_month.month,
     }
 
     return render(request, 'landing.html', context)
@@ -64,15 +66,21 @@ def view_scorecard(request,cid):
         "ratings": ratings,
         "feedbacks": feedbacks,
     }
-    user1 = Account.objects.get(scorecard__cid=cid).user
-    user2 = Account.objects.get(scorecard__cid=cid).user_manager_email
-    current_user = request.user
-    if str(user1) == str(current_user):
-        return render(request, 'view.html', context)
-    elif str(user2) == str(current_user.email):
-        context.update({"is_manager": True})
-        return render(request, 'view.html', context)
-    return HttpResponse("Not ur scorecard")
+    if request.method == 'POST':
+        provider_email = scorecard.account_manager.email
+        scorecard.is_approved = True
+        scorecard.save()
+        return redirect('landing')
+    else:
+        user1 = Account.objects.get(scorecard__cid=cid).user
+        user2 = Account.objects.get(scorecard__cid=cid).user_manager_email
+        current_user = request.user
+        if str(user1) == str(current_user):
+            return render(request, 'view.html', context)
+        elif str(user2) == str(current_user.email):
+            context.update({"is_manager": True})
+            return render(request, 'view.html', context)
+        return redirect('landing')
 
 
 @login_required
@@ -91,8 +99,8 @@ def index(request, cid):
         "scorecard": scorecard,
         "categories": categories,
         "ratings": ratings,
-        # 'date_now': datetime.datetime.now(),
-        'date_now': Dev_date.objects.get(pk=1),
+        'date_now': datetime.datetime.now(),
+        # 'date_now': Dev_date.objects.get(pk=1),
         "feedbacks": feedbacks,
     }
 
@@ -162,11 +170,11 @@ def index(request, cid):
     else:
         if str(user1) != str(current_user):
             return redirect('view_scorecard',cid)
-        # if (datetime.datetime.now().day > 15 or datetime.datetime.now().month > released.month) and not scorecard.is_applicable and not scorecard.is_rated:
-        if (Dev_date.objects.get(pk=1).dev_day.day > trigger.set_applicable_to_no or Dev_date.objects.get(pk=1).dev_month.month > released.month) and not scorecard.is_applicable and not scorecard.is_rated:
+        if (datetime.datetime.now().day > trigger.set_applicable_to_no or datetime.datetime.now().month > released.month) and not scorecard.is_applicable and not scorecard.is_rated:
+        # if (Dev_date.objects.get(pk=1).dev_day.day > trigger.set_applicable_to_no or Dev_date.objects.get(pk=1).dev_month.month > released.month) and not scorecard.is_applicable and not scorecard.is_rated:
             return redirect('landing')
-        # el# if (datetime.datetime.now().day > 15 or datetime.datetime.now().month > released.month) and scorecard.is_applicable and scorecard.is_rated:
-        elif (Dev_date.objects.get(pk=1).dev_day.day > trigger.set_applicable_to_no or Dev_date.objects.get(pk=1).dev_month.month > released.month) and scorecard.is_applicable and scorecard.is_rated:
+        elif (datetime.datetime.now().day > trigger.set_applicable_to_no or datetime.datetime.now().month > released.month) and scorecard.is_applicable and scorecard.is_rated:
+        # elif (Dev_date.objects.get(pk=1).dev_day.day > trigger.set_applicable_to_no or Dev_date.objects.get(pk=1).dev_month.month > released.month) and scorecard.is_applicable and scorecard.is_rated:
             return redirect('view_scorecard', cid)
         elif scorecard.is_applicable and scorecard.is_rated:
             return redirect('view_scorecard', cid)
@@ -180,7 +188,7 @@ def trigger_update(request):
         form = TriggerForm(request.POST, instance=settings)
         if form.is_valid():
             form.save()
-            return redirect('landing')
+            return redirect('update_trigger')
     else:
         form = TriggerForm(instance=settings)
 
