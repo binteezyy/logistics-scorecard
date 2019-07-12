@@ -67,11 +67,11 @@ def main():
 
     while True:
         SETTINGS = update()
-        print(f'LOGISTICS SCORCARD MAILER || {datetime.datetime.now().strftime("%Y-%m-%d %I:%M:%S %p")}')
+        print(f'LOGISTICS SCORECARD MAILER || {datetime.datetime.now().strftime("%Y-%m-%d %I:%M:%S %p")}')
         accounts = Account.objects.all()
         for i in accounts:
-            print(f'CHECKING (ACTIVE) {str(i.user).upper()} — {i.service} @ {(datetime.datetime.now()).strftime("%Y-%m-%d %I:%M:%S %p")}')
             if i.is_active == True:
+                #print(f'CHECKING (ACTIVE) {str(i.user).upper()} — {i.service} @ {(datetime.datetime.now()).strftime("%Y-%m-%d %I:%M:%S %p")}')
                 ## CREATE SCORECARD
                 al_scorecards = AppraiserList.objects.filter(account=i.pk).values_list('scorecard',flat=True)
                 sc_dates = [x.strftime(SETTINGS['TRIGGER_TO_CREATE']) for x in list(Scorecard.objects.filter(id__in=al_scorecards).values_list('date_released',flat=True))] # QUERY DATES

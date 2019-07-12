@@ -15,11 +15,7 @@
         $('input[name=cat-{{category.category_number}}-row-{{question.question_number}}][value={{rating.rate}}]').prop('checked', 'checked');
         {% endif %}
         {% endfor %}
-        {% for feedback in feedbacks %}
-        {% if feedback.question.question_string == question.question_string %}
-        $('#feedback-cat-{{category.category_number}}-row-{{question.question_number}}').html('{{ feedback.feedback }}');
-        {% endif %}
-        {% endfor %}
+
         {% endfor %}
         {% endfor %}
         {% for category in scorecard.category_list.all %}
@@ -425,6 +421,11 @@
                         <td>
                             <text name="feedback"
                                 id="feedback-cat-{{category.category_number}}-row-{{question.question_number}}">
+                                {% for feedback in feedbacks %}
+                                {% if feedback.question.question_string == question.question_string %}
+                                {{ feedback.feedback }}
+                                {% endif %}
+                                {% endfor %}
                             </text>
                         </td>
                         <!-- <td>
@@ -498,6 +499,6 @@
 <script>
     $(".submit").click(function () {
         $(".sc").removeClass("bounceInLeft").addClass("	zoomOutUp faster");
-    }); 
+    });
 </script>
 {% endblock form %}

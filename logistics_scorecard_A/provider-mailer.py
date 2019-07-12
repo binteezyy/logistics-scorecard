@@ -69,7 +69,7 @@ def main():
         if (datetime.datetime.now().strftime(SETTINGS['PROVIDER_FEEDBACK_TRIGGER']) == SETTINGS['PROVIDER_FEEDBACK_TIME']): #
             for i in accounts:
                 if i.is_active == True:
-                    print(f'CHECKING (ACTIVE) {str(i.user).upper()} — {i.service} @ {(datetime.datetime.now()).strftime("%Y-%m-%d %I:%M:%S %p")}')
+                    #print(f'CHECKING (ACTIVE) {str(i.user).upper()} — {i.service} @ {(datetime.datetime.now()).strftime("%Y-%m-%d %I:%M:%S %p")}')
 
                     for sc in AppraiserList.objects.filter(account=i.pk):
                         if (sc.feedback_sent == None and sc.scorecard.is_applicable == True
@@ -94,8 +94,8 @@ def main():
                             # )
                             # test.close()
 
-                            with open('email_send.html', 'r', encoding='utf-8') as temp:
-                                soup = str(BeautifulSoup(temp))
+                            with open('email.html', 'r', encoding='utf-8') as temp:
+                                soup = str(BeautifulSoup(temp,"html.parser"))
                                 msg_html = MIMEText(
                                 Environment().from_string(soup).render(
                                     title='ARTESYN LOGISTIC SCORECARD: FEEDBACK FORM',

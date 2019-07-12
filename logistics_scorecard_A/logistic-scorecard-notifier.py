@@ -68,7 +68,7 @@ def main():
     clear()
     while True:
         SETTINGS = update()
-        print(f'LOGISTICS SCORCARD NOTIFIER || {datetime.datetime.now().strftime("%Y-%m-%d %I:%M:%S %p")}')
+        print(f'LOGISTICS SCORECARD NOTIFIER || {datetime.datetime.now().strftime("%Y-%m-%d %I:%M:%S %p")}')
         accounts = Account.objects.all()
 
         ### UPDATE LOG AND SEND NOTIFICATION

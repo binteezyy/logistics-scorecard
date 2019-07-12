@@ -12,11 +12,7 @@
         $('.rate-{{category.category_number}}-{{question.question_number}}').html($('.rate-{{category.category_number}}-{{question.question_number}}').val());
         {% endif %}
         {% endfor %}
-        {% for feedback in feedbacks %}
-        {% if feedback.question.question_string == question.question_string %}
-        $('#feedback-cat-{{category.category_number}}-row-{{question.question_number}}').html('{{ feedback.feedback }}');
-        {% endif %}
-        {% endfor %}
+
         {% endfor %}
         {% endfor %}
 
@@ -184,6 +180,12 @@
                             <text name="feedback"
                                 id="feedback-cat-{{category.category_number}}-row-{{question.question_number}}"
                                 class="feedback-cat-{{category.category_number}}">
+                                {% for feedback in feedbacks %}
+
+                                {% if feedback.question.question_string == question.question_string %}
+                                {{ feedback.feedback }}
+                                {% endif %}
+                                {% endfor %}
                             </text>
                         </td>
                     </tr>

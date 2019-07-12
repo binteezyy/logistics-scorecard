@@ -2,6 +2,7 @@ import imaplib, email
 from bs4 import BeautifulSoup
 import re
 import os
+import clipboard
 from time import sleep
 import smtplib
 import django
@@ -22,17 +23,18 @@ mail = imaplib.IMAP4_SSL(url)
 mail.login(user,password)
 mail.select('INBOX')
 
-result, data = mail.search(None, "ALL")
 
-ids = data[0]
-email_ids = ids.split()
-print(email_ids)
-scorecards = Scorecard.objects.filter(is_locked=False, is_rated=True, is_applicable=True)
-print(scorecards)
-last = email_ids[-1]
 while True:
+    result, data = mail.search(None, "ALL")
+
+    ids = data[0]
+    email_ids = ids.split()
+    print(email_ids[-1])
+    scorecards = Scorecard.objects.filter(is_locked=False, is_rated=True, is_applicable=True)
+    print(scorecards)
+    # last = email_ids[-1]
     # if datetime.datetime.now().day > 15:
-    if datetime.datetime.now().day > trigger.set_applicable_to_no:
+    if datetime.datetime.now().day > trigger.extract_feedbacks:
         for specific_id in email_ids:
             result, data = mail.fetch(specific_id, "(RFC822)")
             x = data[0][1]
@@ -61,7 +63,9 @@ while True:
                     # clipboard.copy(str(strtext))
                     # print("Copied!")
                     html = BeautifulSoup(str(strtext), 'html.parser')
+
                     tables = html.find_all('table', attrs={'name':'cattable'})
+                    # clipboard.copy(str(tables))
                     cid =""
                     cid = html.find('td', attrs={'name':'scorecardcid'})
                     if cid:
@@ -82,30 +86,40 @@ while True:
                                         category_num = new_id[0][3:]
                                         question_num = new_id[1][1:]
                                         feedback = str(each1.getText())
-                                        print(category_num)
+                                        print(category_num + feedback)
                                         category = scorecard.category_list.get(category_number = category_num)
                                         question = category.questions.get(question_number = question_num)
                                         scorecard.feedback.get_or_create(question=Question(question.id), feedback=feedback)
-                                        scorecard.is_locked = True
-                                        scorecard.save()
+
 
                                 else:
                                     print(str(each1.gettext()))
                         for i in User.objects.all():
-                            for u in i.account.scorecard.all():
-                                if u == scorecard:
-                                    msg = MIMEMultipart()
-                                    msg['From'] = "ButchPaoloMadahan@artesyn.com"
-                                    msg['To'] = i.email
-                                    msg['Subject'] = "LOGISTICS MONTHLY SCORECARD"
+                            try:
+                                for u in Account.objects.get(user=i).scorecard.all():
+                                        if u == scorecard:
+                                            msg = MIMEMultipart()
+                                            msg['From'] = "ButchPaoloMadahan@artesyn.com"
+                                            msg['To'] = i.email
+                                            msg['Subject'] = "LOGISTICS MONTHLY SCORECARD"
 
-                                    message = "Testing!"
+                                            message = "Testing!"
 
-                                    msg.attach(MIMEText(message, 'plain'))
+                                            msg.attach(MIMEText(message, 'plain'))
 
-                                    mailserver = smtplib.SMTP('smtp.office365.com',587)
-                                    mailserver.ehlo()
-                                    mailserver.starttls()
-                                    mailserver.login(msg['From'], password)
-                                    mailserver.sendmail(msg['From'], msg['To'], msg.as_string())
+                                            mailserver = smtplib.SMTP('smtp.office365.com',587)
+                                            mailserver.ehlo()
+                                            mailserver.starttls()
+                                            mailserver.login(msg['From'], password)
+                                            try:
+                                                mailserver.sendmail(msg['From'], msg['To'], msg.as_string())
+                                                scorecard.is_locked = True
+                                                scorecard.is_rated = False
+                                                scorecard.is_approved = False
+                                                scorecard.save()
+                                            except:
+                                                scorecard.is_locked = False
+                                                scorecard.save()
+                            except:
+                                pass
     sleep(1)

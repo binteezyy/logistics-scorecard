@@ -142,7 +142,7 @@ def index(request, cid):
         # # # add in the message body
         # msg.attach(MIMEText(message, 'plain'))
         msg = MIMEMultipart('alternative')
-        msg['To'] = scorecard.account_manager.email
+        msg['To'] = Account.objects.get(user=current_user).user_manager_email
         msg['From'] = 'service.account@artesyn.com'
         msg['Subject'] = "LOGISTICS MONTHLY SCORECARD"
 
