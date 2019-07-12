@@ -95,31 +95,30 @@ while True:
                                 else:
                                     print(str(each1.gettext()))
                         for i in User.objects.all():
-                            try:
-                                for u in Account.objects.get(user=i).scorecard.all():
-                                        if u == scorecard:
-                                            msg = MIMEMultipart()
-                                            msg['From'] = "ButchPaoloMadahan@artesyn.com"
-                                            msg['To'] = i.email
-                                            msg['Subject'] = "LOGISTICS MONTHLY SCORECARD"
+                            comp = i.username
+                            if Account.objects.filter(user__username=comp).first():
+                                for u in Account.objects.filter(user__username=comp).last().scorecard.all():
+                                    if u == scorecard:
+                                        msg = MIMEMultipart()
+                                        msg['From'] = "ButchPaoloMadahan@artesyn.com"
+                                        msg['To'] = i.email
+                                        msg['Subject'] = "LOGISTICS MONTHLY SCORECARD"
 
-                                            message = "Testing!"
+                                        message = "Testing!"
 
-                                            msg.attach(MIMEText(message, 'plain'))
-
-                                            mailserver = smtplib.SMTP('smtp.office365.com',587)
-                                            mailserver.ehlo()
-                                            mailserver.starttls()
-                                            mailserver.login(msg['From'], password)
-                                            try:
-                                                mailserver.sendmail(msg['From'], msg['To'], msg.as_string())
-                                                scorecard.is_locked = True
-                                                scorecard.is_rated = False
-                                                scorecard.is_approved = False
-                                                scorecard.save()
-                                            except:
-                                                scorecard.is_locked = False
-                                                scorecard.save()
-                            except:
-                                pass
+                                        msg.attach(MIMEText(message, 'plain'))
+                                        mailserver = smtplib.SMTP('localhost',25)
+                                        # mailserver = smtplib.SMTP('smtp.office365.com',587)
+                                        mailserver.ehlo()
+                                        # mailserver.starttls()
+                                        # mailserver.login(msg['From'], password)
+                                        try:
+                                            mailserver.sendmail(msg['From'], msg['To'], msg.as_string())
+                                            scorecard.is_locked = True
+                                            scorecard.is_rated = False
+                                            scorecard.is_approved =False
+                                            scorecard.save()
+                                        except:
+                                            scorecard.is_locked = False
+                                            scorecard.save()
     sleep(1)

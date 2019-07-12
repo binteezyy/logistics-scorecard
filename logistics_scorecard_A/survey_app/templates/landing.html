@@ -4,9 +4,9 @@
   <div class="row">
     {% for account in accounts %} {% for x in account.scorecard.all %}
     <div class="col-4 animated bounceInUp">
-      <div class="col-12 card">
+      <div class="col-12 card {% if not x.is_applicable and day <= trigger.end_of_month_lock and day <= trigger.set_applicable_to_no and month == x.date_released.month and not x.is_rated %} animated pulse infinite {% endif %}">
         <div class="card-body">
-          <h4 class="card-title">{{ x.cid }}</h4>
+          <h4 class="card-title">{{ x.cid }}></h4>
           <h6 class="card-subtitle mb-2 text-muted">
             <strong>{{ x.service.provider }}</strong>
             <ul>
@@ -20,7 +20,7 @@
           {% if is_manager %}
           <a class="btn btn-outline-primary" href="{% url 'view_scorecard' x.cid %}" class="card-link">View</a>
           {% elif not x.is_applicable and day <= trigger.end_of_month_lock and day <= trigger.set_applicable_to_no and month == x.date_released.month and not x.is_rated %}
-          <a class="btn btn-outline-primary" href="{% url 'scorecard' x.cid %}" class="card-link">Rate</a>
+          <a class="btn btn-outline-danger" href="{% url 'scorecard' x.cid %}" class="card-link">Rate</a>
           {% elif x.is_applicable and day <= trigger.end_of_month_lock and month == x.date_released.month and not x.is_rated %}
           <a class="btn btn-outline-primary" href="{% url 'scorecard' x.cid %}" class="card-link">Edit</a>
           {% elif not x.is_applicable and day > trigger.set_applicable_to_no and month == x.date_released.month%}

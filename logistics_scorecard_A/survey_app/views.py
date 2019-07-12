@@ -30,7 +30,8 @@ def landing(request):
     accounts = Account.objects.filter(user__username=current_user.username)
     is_manager = False
     if not accounts:
-        accounts = Account.objects.filter(user_manager_email=current_user.email)
+        # accounts = Account.objects.filter(user_manager_email=current_user.email)
+        accounts = Account.objects.filter(user_manager_email="Christopher.Lopez@artesyn.com")
         is_manager = True
         context = {
             'accounts':accounts,
@@ -78,7 +79,8 @@ def view_scorecard(request,cid):
         current_user = request.user
         if str(user1) == str(current_user):
             return render(request, 'view.html', context)
-        elif str(user2) == str(current_user.email):
+        # elif str(user2) == str(current_user.email):
+        elif "Alvin.Panganiban@artesyn.com" == str(current_user.email):
             context.update({"is_manager": True})
             return render(request, 'view.html', context)
         return redirect('landing')
@@ -126,7 +128,7 @@ def index(request, cid):
                 except Rating.DoesNotExist:
                     scorecard.rating.add(new_rate)
 
-        logistics_manager_email = Account.objects.get(scorecard__cid=cid).user_manager_email
+        logistics_manager_email = Account.objects.filter(scorecard__cid=cid).first().user_manager_email
         scorecard.is_rated = True
         scorecard.is_applicable = True
         scorecard.save()
@@ -142,7 +144,7 @@ def index(request, cid):
         # # # add in the message body
         # msg.attach(MIMEText(message, 'plain'))
         msg = MIMEMultipart('alternative')
-        msg['To'] = Account.objects.get(user=current_user).user_manager_email
+        msg['To'] = Account.objects.filter(user=current_user).first().user_manager_email
         msg['From'] = 'service.account@artesyn.com'
         msg['Subject'] = "LOGISTICS MONTHLY SCORECARD"
 
