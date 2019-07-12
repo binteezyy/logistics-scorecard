@@ -3,7 +3,7 @@
 <div class="container mt-4">
   <div class="row">
     {% for account in accounts %} {% for x in account.scorecard.all %}
-    <div class="col-4 animated bounceInUp">
+    <div class="col-12 col-xs-6 col-md-4 col-lg-4 mb-4 animated bounceInUp">
       <div class="col-12 card {% if not x.is_applicable and day <= trigger.end_of_month_lock and day <= trigger.set_applicable_to_no and month == x.date_released.month and not x.is_rated %} animated pulse infinite {% endif %}">
         <div class="card-body">
           <h4 class="card-title">{{ x.cid }}></h4>

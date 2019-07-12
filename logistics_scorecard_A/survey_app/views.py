@@ -30,8 +30,8 @@ def landing(request):
     accounts = Account.objects.filter(user__username=current_user.username)
     is_manager = False
     if not accounts:
-        # accounts = Account.objects.filter(user_manager_email=current_user.email)
-        accounts = Account.objects.filter(user_manager_email="Christopher.Lopez@artesyn.com")
+        accounts = Account.objects.filter(user_manager_email=current_user.email)
+        # accounts = Account.objects.filter(user_manager_email="Christopher.Lopez@artesyn.com")
         is_manager = True
         context = {
             'accounts':accounts,
@@ -79,8 +79,8 @@ def view_scorecard(request,cid):
         current_user = request.user
         if str(user1) == str(current_user):
             return render(request, 'view.html', context)
-        # elif str(user2) == str(current_user.email):
-        elif "Alvin.Panganiban@artesyn.com" == str(current_user.email):
+        elif str(user2) == str(current_user.email):
+        # elif "Alvin.Panganiban@artesyn.com" == str(current_user.email):
             context.update({"is_manager": True})
             return render(request, 'view.html', context)
         return redirect('landing')
