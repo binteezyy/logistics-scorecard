@@ -4,48 +4,49 @@
 <div class="d-flex justify-content-center text-center mt-4 animated fadeInDown faster">
     <div id="login_form" class="col-lg-4 col-sm-6 col-md-6 col-xl-4 bg-white shadow">
         <div class="d-flex justify-content-center">
-    <img class="img-fluid m-4 zoomIn animated fast" src="https://www.avnet.com/opasdata/d120001/derivates/3/072/351/Artesyn_logo_web.png">
+            <img class="img-fluid m-4 zoomIn animated fast"
+                src="https://www.avnet.com/opasdata/d120001/derivates/3/072/351/Artesyn_logo_web.png">
         </div>
-    <div class="content-section zoomIn animated fast">
+        <div class="content-section zoomIn animated fast">
 
-        <form method="POST">
-            {% csrf_token %}
-            <fieldset class="form-group">
-                {{ form|crispy }}
-            </fieldset>
-            <div class="form-group">
-                <button class="login btn btn-outline-primary border-0 mt-0 mb-4 animated zoomOut fast" type="submit">Login</button>
-            </div>
-        </form>
+            <form method="POST">
+                {% csrf_token %}
+                <fieldset class="form-group">
+                    {{ form|crispy }}
+                </fieldset>
+                <div class="form-group">
+                    <button class="login btn btn-outline-primary border-0 mt-0 mb-4 animated zoomOut fast"
+                        type="submit">Login</button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
-</div>
 <script>
-    $(document).submit(function() {
-    $("#login_form").addClass(' animated slideOutUp faster');
-});
-    $(".login").hover(function(){
+    $(document).submit(function () {
+        $("#login_form").addClass(' animated slideOutUp faster');
+    });
+    $(".login").hover(function () {
         $(this).toggleClass(' animated pulse infinite fast');
     })
 
-    $("#id_username").keyup(function(){
+    $("#id_username").keyup(function () {
         $.ajax({
-        type: 'POST',
-        url: '{% url "verify" %}',
-        data: {
-          username: $("#id_username").val(),
-          csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
-        },
-        success: function (data) {
-            if(data.verified){
-                $(".login").removeClass("animated zoomOut fast").addClass("animated zoomIn fast");
+            type: 'POST',
+            url: '{% url "verify" %}',
+            data: {
+                username: $("#id_username").val(),
+                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+            },
+            success: function (data) {
+                if (data.verified) {
+                    $(".login").removeClass("animated zoomOut fast").addClass("animated zoomIn fast");
+                }
+                else if (!data.verified) {
+                    $(".login").removeClass("animated zoomIn fast").addClass("animated zoomOut fast");
+                }
             }
-            else if (!data.verified)
-            {
-                $(".login").removeClass("animated zoomIn fast").addClass("animated zoomOut fast");
-            }
-        }
-      });
+        });
     });
 </script>
 {% endblock form %}

@@ -1,7 +1,8 @@
 from django.db import models
 import datetime
 from django import forms
-
+from django.core.exceptions import ValidationError
+import os
 # Create your models here.
 class Dev_month(models.Model):
     month = models.IntegerField(default=1)
@@ -25,12 +26,67 @@ class Dev_date(models.Model):
     class Meta:
         unique_together = ('dev_month', 'dev_day')
 
+s = '%#S' if os.name == 'nt' else '%-S'
+SCHEDULE_SELECT = [
+    ('%Y','YEAR'),
+    ('%m','MONTH'),
+    ('%w','DAY OF THE WEEK'), # Weekday as a decimal number, where 0 is Sunday and 6 is Saturday.
+    ('%d','DAY'),
+    ('%H','HOUR'),  # Hour (24-hour clock) as a zero-padded decimal number.
+    (s,'SECOND')
+]
+
 class Trigger(models.Model):
-    create_scorecards = models.IntegerField(default=1)
+    # USE FAKE
+    use_fake_smtp = models.BooleanField(default=False)
+
+    # CREATE SCORECARD
+    create_scorecards_trigger = models.CharField(
+        max_length=5,
+        choices=SCHEDULE_SELECT,
+        default='%d'
+    )
+    create_scorecards_value = models.IntegerField(default=1)
+
+    # SEND SCORECARD
+    send_scorecards_trigger = models.CharField(
+        max_length=5,
+        choices=SCHEDULE_SELECT,
+        default='%d'
+    )
+    send_scorecards_value = models.IntegerField(default=1)
+
+    # NOTIFY SCORECARD
+    notify_sc_trigger = models.CharField(
+        max_length=5,
+        choices=SCHEDULE_SELECT,
+        default='%d'
+    )
+    notify_sc_value = models.IntegerField(default=1)
+    notify_sc_reset_trigger = models.CharField(
+        max_length=5,
+        choices=SCHEDULE_SELECT,
+        default='%d'
+    )
+    notify_sc_reset_value = models.IntegerField(default=1)
+
+    send_to_providers_trigger = models.CharField(
+        max_length=5,
+        choices=SCHEDULE_SELECT,
+        default='%d'
+    )
+    send_to_providers_value = models.IntegerField(default=1)
     set_applicable_to_no = models.IntegerField(default=1)
-    send_to_providers = models.IntegerField(default=1)
     extract_feedbacks = models.IntegerField(default=1)
     end_of_month_lock = models.IntegerField(default=1)
+
+    def __str__(self):
+        return str('Trigger settings')
+
+    def save(self, *args, **kwargs):
+        if Trigger.objects.exists() and not self.pk:
+            raise ValidationError('THERE IS CAN BE ONLY ONE TRIGGER INSTANCE')
+        return super(Trigger, self).save(*args, **kwargs)
 
 
 class Provider(models.Model):
@@ -100,7 +156,7 @@ class Rating(models.Model):
         return "Question: " + str(self.question.question_number) + " Rating: " + str(self.rate)
 
 class Scorecard(models.Model):
-    cid = models.CharField(max_length=15, unique=True)
+    cid = models.CharField(max_length=64, unique=True)
     service = models.ForeignKey(Service, on_delete=models.CASCADE, null=True)
     month_covered = models.DateTimeField(blank=True)
     date_released = models.DateTimeField()

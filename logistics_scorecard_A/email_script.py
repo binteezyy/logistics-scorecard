@@ -25,7 +25,7 @@ def clear():
 
 msg = MIMEMultipart()
 mailserver = smtplib.SMTP('')
-with open('email.html', 'r', encoding='utf-8') as t:
+with open('C:\inetpub\wwwroot\logistics-scorecard\logistics_scorecard_A\email.html', 'r', encoding='utf-8') as t:
     template = t.read()
 
 

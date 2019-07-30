@@ -1,0 +1,132 @@
+{% load static %}
+{%csrf_token%}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="icon" href="/static/test.png" type="image/gif" sizes="32x32">
+    <title>
+        Artesyn
+        {% block title %}
+
+        {% endblock title %}
+
+    </title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="/static/css/bootstrap4-business-tycoon.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/all.css">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css">
+        {% block add_script %} {% endblock add_script %} </head> <body class="bg-primary h-100">
+    <div class="container-fluid d-flex p-0 d-flex justify-content-between">
+        <div class="col-4 col-sm-3 col-lg-2 col-md-3 h-100 bg-dark position-fixed animated slideInDown faster">
+            <div class="d-flex justify-content-center">
+                <img class="img-fluid m-4 zoomIn animated fast"
+                    src="https://www.avnet.com/opasdata/d120001/derivates/3/072/351/Artesyn_logo_web.png">
+            </div>
+            <input id="search" class="form-control mt-2" type="text" placeholder="Search">
+            <a class="btn btn-outline-light border-0 text-white fixed-bottom" href={% url 'logout' %}>Logout</a>
+            <!-- <div class="container-fluid mt-4 pl-0 pr-0">
+                    <ul class="list-group m-0">
+                            <li class="list-group-item"><a href=#>Latest Scorecard</a></li>
+                            <li class="list-group-item"><a href=#>Finished Scorecards</a></li>
+                            <li class="list-group-item"><a href=#>Not applicable Scorecards</a></li>
+                    </ul>
+                </div> -->
+        </div>
+        <div class="col-8 col-sm-9 col-md-9 col-lg-10 offset-4 offset-sm-3 offset-md-3 position-fixed offset-lg-2 p-0">
+            <div class="container m-0 p-0">
+                {% if request.user.is_authenticated %}
+                <nav class="navbar navbar-dark bg-dark animated slideInDown faster">
+                    <div class="container">
+                        <h6 class="text-white ml-auto mb-0"><i
+                                class="fas fa-user mr-2"></i>{{ request.user.first_name }} {{ request.user.last_name }}
+                        </h6>
+                    </div>
+                </nav>
+                {% endif %}
+                <div class="container p-4 animated slideInDown faster"
+                    style="overflow: scroll; overflow-y:hidden; overflow-x:auto">
+                    <table class="table table-bordered bg-white">
+                        <thead>
+                            <tr class="text-truncate">
+                                <th style="width:15%;" scope="col">Scorecard ID</th>
+                                <th style="width:10%;" scope="col">Month Covered</th>
+                                <th style="width:5%;" scope="col">Account Manager</th>
+                                <th style="width:15%;" scope="col">Service</th>
+                                <th style="width:15%;" scope="col">Service Provider Name</th>
+                            </tr>
+                        </thead>
+                        <tbody id="sc-data">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    </body>
+    <script>
+        $(document).ready(function (e) {
+            $.ajax({
+                type: 'POST',
+                data: {
+                    search: "",
+                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+                },
+                url: '{% url "sc_api" %}',
+                success: function (data) {
+                    var row = "";
+                    for (var i = 0; i < data.length; i++) {
+                        row = ""
+                        row += "<tr>";
+                        row += '<td ><a href=' + '"' + "scorecards/" + data[i]["cid"] + '">' + data[i]["cid"] + '</a>' + '</td>';
+                        row += '<td>' + data[i]["covered_month"] + '</td>';
+                        row += '<td>' + data[i]["account_manager"]["name"] + '</td>';
+                        row += '<td>' + data[i]["service"]["name"] + '</td>';
+                        row += '<td>' + data[i]["service"]["provider"]["provider_name"] + '</td>';
+                        row += "</tr>";
+                        $("#sc-data").append(row);
+                    }
+                },
+            });
+        });
+        $('#search').keyup(function () {
+            var search = $('#search').val();
+            $.ajax({
+                type: 'POST',
+                data: {
+                    search: search,
+                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+                },
+                url: '{% url "sc_api" %}',
+                success: function (data) {
+                    $('#sc-data').empty()
+                    var row = "";
+                    for (var i = 0; i < data.length; i++) {
+                        row = ""
+                        row += "<tr>";
+                        row += '<td ><a href=' + '"' + "scorecards/" + data[i]["cid"] + '">' + data[i]["cid"] + '</a>' + '</td>';
+                        row += '<td>' + data[i]["covered_month"] + '</td>';
+                        row += '<td>' + data[i]["account_manager"]["name"] + '</td>';
+                        row += '<td>' + data[i]["service"]["name"] + '</td>';
+                        row += '<td>' + data[i]["service"]["provider"]["provider_name"] + '</td>';
+                        row += "</tr>";
+                        $("#sc-data").append(row);
+                    }
+                },
+            });
+        });
+    </script>
+
+</html>

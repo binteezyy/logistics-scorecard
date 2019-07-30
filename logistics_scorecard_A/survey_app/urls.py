@@ -13,5 +13,7 @@ urlpatterns = [
     path('scorecards/<cid>/view', views.view_scorecard, name='view_scorecard'),
     path('create', views.create_template, name='create_template'),
     path('settings', views.date_settings_view, name='date_settings'),
-    path('triggers', views.TriggerFormView.as_view(), name='trigger')
+    path('trigger_settings', views.trigger_update, name='update_trigger'),
+    path('nl', views.new_landing, name='nlanding'),
+    path('api_sc', views.scorecards_api, name='sc_api')
 ]

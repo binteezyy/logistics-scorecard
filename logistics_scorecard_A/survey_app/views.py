@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from .models import *
+from django.urls import reverse_lazy
 
 from django.core.mail import EmailMessage
 from django.core.mail import send_mail
@@ -10,6 +11,7 @@ from django.core.exceptions import ObjectDoesNotExist
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from jinja2 import Environment # FOR HTML ATTACHMENT
 from django.contrib.auth.decorators import login_required
 from users.models import *
 
@@ -18,9 +20,57 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from . import tp
 
-from django.views.generic import CreateView
-from .admin import * 
+from django.views.generic import CreateView, UpdateView
+from survey_app.forms import *
 # Create your views here.
+
+def get_month(search):
+    search = search.lower()
+    months={
+        "january":1,
+        "february":2,
+        "march":3,
+        "april":4,
+        "may":5,
+        "june":6,
+        "july":7,
+        "august":8,
+        "september":9,
+        "october":10,
+        "november":11,
+        "december":12
+        }
+    x = ""
+    try:
+        x=months[search]
+    except:
+        x=0
+    return x
+    
+
+def scorecards_api(request):
+    current_user = request.user
+    scorecard = Scorecard.objects.filter(account__user__username=current_user)
+    if request.method == 'GET':
+        return redirect('landing')
+    elif request.method == 'POST':
+        if request.POST['search']:
+            search = request.POST['search']
+            print(search)
+            month_search = get_month(search)
+            print(month_search)
+            scorecard = Scorecard.objects.filter(account__user__username=current_user)
+            scorecard = scorecard.filter(Q(cid__icontains=search)
+                                        |Q(month_covered__month=month_search)
+                                        |Q(service__provider__provider_name__icontains=search)
+                                        |Q(account_manager__name__icontains=search)
+                                        |Q(service__name__icontains=search))
+    serializer = ScorecardSerializer(scorecard, many=True)  
+    return JsonResponse(serializer.data, safe=False)
+
+@login_required
+def new_landing(request):
+    return render(request, 'new_base.html', context=None)
 
 @login_required
 def landing(request):
@@ -29,24 +79,27 @@ def landing(request):
     is_manager = False
     if not accounts:
         accounts = Account.objects.filter(user_manager_email=current_user.email)
+        # accounts = Account.objects.filter(user_manager_email="Christopher.Lopez@artesyn.com")
         is_manager = True
         context = {
             'accounts':accounts,
-            # 'day':datetime.datetime.now().day,
-            # 'month': datetime.datetime.now().month,
-            'day': Dev_date.objects.get(pk=1).dev_day.day,
-            'month': Dev_date.objects.get(pk=1).dev_month.month,
+            'day':datetime.datetime.now().day,
+            'month': datetime.datetime.now().month,
+            # 'day': Dev_date.objects.get(pk=1).dev_day.day,
+            # 'month': Dev_date.objects.get(pk=1).dev_month.month,
             'is_manager': is_manager,
+            'trigger': Trigger.objects.last(),
         }
 
         return render(request, 'landing.html', context)
 
     context = {
             'accounts':accounts,
-            # 'day':datetime.datetime.now().day,
-            # 'month': datetime.datetime.now().month,
-            'day': Dev_date.objects.get(pk=1).dev_day.day,
-            'month': Dev_date.objects.get(pk=1).dev_month.month,
+            'day': datetime.datetime.now().day,
+            'month': datetime.datetime.now().month,
+            'trigger': Trigger.objects.last(),
+            # 'day': Dev_date.objects.get(pk=1).dev_day.day,
+            # 'month': Dev_date.objects.get(pk=1).dev_month.month,
     }
 
     return render(request, 'landing.html', context)
@@ -63,19 +116,27 @@ def view_scorecard(request,cid):
         "ratings": ratings,
         "feedbacks": feedbacks,
     }
-    user1 = Account.objects.get(scorecard__cid=cid).user
-    user2 = Account.objects.get(scorecard__cid=cid).user_manager_email
-    current_user = request.user
-    if str(user1) == str(current_user):
-        return render(request, 'view.html', context)
-    elif str(user2) == str(current_user.email):
-        context.update({"is_manager": True})
-        return render(request, 'view.html', context)
-    return HttpResponse("Not ur scorecard")
+    if request.method == 'POST':
+        provider_email = scorecard.account_manager.email
+        scorecard.is_approved = True
+        scorecard.save()
+        return redirect('landing')
+    else:
+        user1 = Account.objects.get(scorecard__cid=cid).user
+        user2 = Account.objects.get(scorecard__cid=cid).user_manager_email
+        current_user = request.user
+        if str(user1) == str(current_user):
+            return render(request, 'view.html', context)
+        elif str(user2) == str(current_user.email):
+        # elif "Alvin.Panganiban@artesyn.com" == str(current_user.email):
+            context.update({"is_manager": True})
+            return render(request, 'view.html', context)
+        return redirect('landing')
 
 
 @login_required
 def index(request, cid):
+    trigger = Trigger.objects.last()
     current_user = request.user
     scorecard = Scorecard.objects.get(cid=cid)
     user1 = Account.objects.get(scorecard__cid=cid).user
@@ -83,12 +144,14 @@ def index(request, cid):
     ratings = scorecard.rating.all()
     feedbacks = scorecard.feedback.all()
     released = scorecard.date_released
+    trigger = Trigger.objects.last()
     context = {
+        "trigger": trigger,
         "scorecard": scorecard,
         "categories": categories,
         "ratings": ratings,
-        # 'date_now': datetime.datetime.now(),
-        'date_now': Dev_date.objects.get(pk=1),
+        'date_now': datetime.datetime.now(),
+        # 'date_now': Dev_date.objects.get(pk=1),
         "feedbacks": feedbacks,
     }
 
@@ -113,49 +176,104 @@ def index(request, cid):
                 except Rating.DoesNotExist:
                     scorecard.rating.add(new_rate)
 
-        logistics_manager_email = Account.objects.get(scorecard__cid=cid).user_manager_email 
+        logistics_manager_email = Account.objects.filter(scorecard__cid=cid).first().user_manager_email
         scorecard.is_rated = True
         scorecard.is_applicable = True
         scorecard.save()
-        # return HttpResponse(logistics_manager_email)
-        return redirect('view_scorecard',cid)
 
-        # msg = MIMEMultipart()
-        # msg['From'] = "#"
-        # msg['To'] = logistics_manager_email
+        # msg = MIMEMultipart('alternative')
+        # msg['From'] = "joshuapascual@artesyn.com"
+        # #msg['PWD'] = ""
+        # msg['To'] = scorecard.account_manager.email
         # msg['Subject'] = "LOGISTICS MONTHLY SCORECARD"
-
+        #
         # message = "10.162.197.88/login"
-
-        # # add in the message body
+        #
+        # # # add in the message body
         # msg.attach(MIMEText(message, 'plain'))
+        msg = MIMEMultipart('alternative')
+        msg['To'] = Account.objects.filter(user=current_user).first().user_manager_email
+        msg['From'] = 'service.account@artesyn.com'
+        msg['Subject'] = "LOGISTICS MONTHLY SCORECARD"
 
-        # mailserver = smtplib.SMTP('smtp.office365.com',587)
-        # mailserver.ehlo()
-        # mailserver.starttls()
-        # mailserver.login(msg['From'], '#')
-        # mailserver.sendmail(msg['From'], msg['To'], msg.as_string())
-        # scorecard.is_applicable = True
-        # scorecard.is_rated = True
-        # scorecard.save()
-        # return redirect('view_scorecard',cid)
+
+        EMAIL_BODY = """<h1>{{title}}</h1>
+                        <p>
+                        Hi {{user}}, it's time to check your monthly scorecards:&nbsp;
+                        <a title="ARTESYN SCORECARD" href="{{url}}">CLICK HERE</a>
+                        </p>
+                        """
+
+        EMAIL_BODY_LANDING_URL = 'http://10.162.197.79/login'
+        ## PLAIN TEXT BODY
+        msg_text = MIMEText("TEXT",'plain')
+
+        ## HTML BODY
+        ## EDITOR https://html-online.com/editor/
+        msg_html = MIMEText(
+        Environment().from_string(EMAIL_BODY).render(
+            title='ARTESYN LOGISTIC SCORECARD',
+            user= current_user.username,
+            url= EMAIL_BODY_LANDING_URL,
+            )
+        ,"html" )
+
+        msg.attach(msg_text)
+        msg.attach(msg_html)
+
+        mailserver = smtplib.SMTP('')
+
+        schedule_trigger = Trigger.objects.get(pk=1)
+        smtp_set = schedule_trigger.use_fake_smtp
+
+        print("(1)365.OUTLOOK\t(2)fakeSMTP")
+        if smtp_set == False:
+            print("365.OUTLOOK")
+            mailserver = smtplib.SMTP('smtp.office365.com',587)
+            mailserver.ehlo()
+            mailserver.starttls()
+            mailserver.login(msg['From'],msg['PWD'])
+
+        elif smtp_set == True:
+            print("fakeSMTP")
+            mailserver = smtplib.SMTP('localhost',25)
+            mailserver.ehlo()
+
+        else:
+            print("INVALID smtp_set")
+
+
+        mailserver.sendmail(str(msg['From']), str(msg['To']), msg.as_string())
+        return redirect('view_scorecard',cid)
     else:
         if str(user1) != str(current_user):
             return redirect('view_scorecard',cid)
-        # if (datetime.datetime.now().day > 15 or datetime.datetime.now().month > released.month) and not scorecard.is_applicable and not scorecard.is_rated:
-        if (Dev_date.objects.get(pk=1).dev_day.day > 15 or Dev_date.objects.get(pk=1).dev_month.month > released.month) and not scorecard.is_applicable and not scorecard.is_rated:
+        if (datetime.datetime.now().day > trigger.set_applicable_to_no or datetime.datetime.now().month > released.month) and not scorecard.is_applicable and not scorecard.is_rated:
+        # if (Dev_date.objects.get(pk=1).dev_day.day > trigger.set_applicable_to_no or Dev_date.objects.get(pk=1).dev_month.month > released.month) and not scorecard.is_applicable and not scorecard.is_rated:
             return redirect('landing')
-        # el# if (datetime.datetime.now().day > 15 or datetime.datetime.now().month > released.month) and scorecard.is_applicable and scorecard.is_rated:
-        elif (Dev_date.objects.get(pk=1).dev_day.day > 15 or Dev_date.objects.get(pk=1).dev_month.month > released.month) and scorecard.is_applicable and scorecard.is_rated:
+        elif (datetime.datetime.now().day > trigger.set_applicable_to_no or datetime.datetime.now().month > released.month) and scorecard.is_applicable and scorecard.is_rated:
+        # elif (Dev_date.objects.get(pk=1).dev_day.day > trigger.set_applicable_to_no or Dev_date.objects.get(pk=1).dev_month.month > released.month) and scorecard.is_applicable and scorecard.is_rated:
             return redirect('view_scorecard', cid)
         elif scorecard.is_applicable and scorecard.is_rated:
             return redirect('view_scorecard', cid)
         else:
             return render(request, 'form.html', context)
 
-class TriggerFormView(CreateView):
-    model = Trigger
-    form_class = TriggerForm
+def trigger_update(request):
+    settings = Trigger.objects.last()
+    form = TriggerForm(instance=settings)
+    if request.method == 'POST':
+        form = TriggerForm(request.POST, instance=settings)
+        if form.is_valid():
+            form.save()
+            return redirect('update_trigger')
+    else:
+        form = TriggerForm(instance=settings)
+
+
+    return render(request, 'survey_app/trigger_form.html', {"form":form})
+
+
 
 def date_settings_view(request):
     today = Dev_date.objects.get(pk=1)
@@ -189,7 +307,7 @@ def date_settings_view(request):
         if new_day.day != today.dev_day.day:
             today.dev_day = new_day
             today.save()
-            
+
         return redirect('date_settings')
 
 def email_view(request):

@@ -1,16 +1,15 @@
-{% extends 'base.html' %}
-{% load crispy_forms_tags %}
-
-
-{% block form %}
-<form method="POST">
-    {% csrf_token %}
-    <fieldset class="form-group">
-        {{ form|crispy }}
-    </fieldset>
-    <div class="form-group">
-        <button class="login btn btn-outline-primary border-0 mt-0 mb-4 animated zoomOut fast"
-            type="submit">Submit</button>
+{% extends 'base.html' %} {% load crispy_forms_tags %} {% block form %}
+<div class="container mt-4">
+    <div class="col-4 bg-white p-4">
+        <form method="POST">
+            {% csrf_token %}
+            <fieldset class="form-group float">
+                {{ form.as_p }}
+            </fieldset>
+            <div class="form-group">
+                <button class="btn btn-info" type="submit">Set</button>
+            </div>
+        </form>
     </div>
-</form>
+</div>
 {% endblock form %}

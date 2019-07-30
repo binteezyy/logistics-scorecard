@@ -1,24 +1,29 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
- <head>
-   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-   <link rel="stylesheet" media="all" href="/assets/application-mailer-dbc5154d3c4160e8fa7ef52fa740fa402760c39b5d22c8f6d64ad5999499d263.css" />
- </head>
- <!-- Edit the code below this line -->
- <body class="bg-light">
-<div class="container">
-  	<div class="card mb-4" style="border-top: 5px solid #ff00bf;">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <link rel="stylesheet" media="all"
+    href="/assets/application-mailer-dbc5154d3c4160e8fa7ef52fa740fa402760c39b5d22c8f6d64ad5999499d263.css" />
+</head>
+<!-- Edit the code below this line -->
+
+<body class="bg-light">
+  <div class="container">
+    <div class="card mb-4" style="border-top: 5px solid #ff00bf;">
       <div class="card-body">
         <h3 class="text-center">
-  				ARTESYN MONTHLY SCORECARD
-  			</h3>
-  			<p class="text-center lead">
-  				Kindly fill in the feedback below
-  			</p>
+          ARTESYN MONTHLY SCORECARD
+        </h3>
+        <p class="text-center lead">
+          Kindly fill in the feedback below
+        </p>
         <table>
           <tbody class="text-center">
             <tr>
-              <td class="text-center" id="scorecardcid" name="scorecardcid"><p class="text-center">{{ scorecard.cid }}</p></td>
+              <td class="text-center" id="scorecardcid" name="scorecardcid">
+                <p class="text-center">{{ scorecard.cid }}</p>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -42,22 +47,26 @@
           {% for q in i.questions.all() %}
           <tr>
             <td>{{ q.question_number }}</td>
-            <td>{{ q.question_string }}</td>
+            {% autoescape false %}
+            <td>{{ q.question_string| replace("\n", "<br/>") }}</td>
+            {% endautoescape %}
             <td>
               {% for r in ratings %}{% if r.question.question_string == q.question_string %}
-                {{r.rate}}
+              {{r.rate}}
               {% endif %}{% endfor %}
 
             </td>
-            <td value="cat{{i.category_number}}" id=":cat{{i.category_number}}-q{{ q.question_number }}" name="feedback">wow ang laki buts</td>
+            <td value="cat{{i.category_number}}" id=":cat{{i.category_number}}-q{{ q.question_number }}"
+              name="feedback"></td>
           </tr>
           {% endfor %}
         </tbody>
-    </table>
+      </table>
     </div>
     {% endfor %}
 
 
-</div>
- </body>
+  </div>
+</body>
+
 </html>

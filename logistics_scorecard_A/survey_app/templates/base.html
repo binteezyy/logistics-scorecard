@@ -3,7 +3,7 @@
 <html>
 
 <head>
-        <link rel="icon" href="/static/test.png" type="image/gif" sizes="32x32">
+    <link rel="icon" href="/static/test.png" type="image/gif" sizes="32x32">
     <title>
         Artesyn
         {% block title %}
@@ -27,21 +27,21 @@
         crossorigin="anonymous"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css">
-        {% block add_script %} {% endblock add_script %} </head>
-        <body class="bg-primary">
-                {% if request.user.is_authenticated %}
-                <nav class="navbar navbar-dark bg-dark animated fadeIn">
-                    <div class="container d-flex">
-                        <a class="btn btn-outline-light border-0 text-white" href="{% url 'landing' %}">Home</a>
-                        <h6 class="text-white ml-auto mb-0"><i class="fas fa-user mr-2"></i>{{ request.user.first_name }} {{ request.user.last_name }}</h6>
-                        <a class="btn btn-outline-light border-0 text-white ml-4" href={% url 'logout' %}>Logout</a>                        
-                    </div>  
-                    </nav>
-                {% endif %}      
+        {% block add_script %} {% endblock add_script %} </head> <body class="bg-primary">
+    {% if request.user.is_authenticated %}
+    <nav class="navbar navbar-dark bg-dark animated fadeIn">
+        <div class="container d-flex">
+            <a class="btn btn-outline-light border-0 text-white" href="{% url 'landing' %}">Home</a>
+            <h6 class="text-white ml-auto mb-0"><i class="fas fa-user mr-2"></i>{{ request.user.first_name }}
+                {{ request.user.last_name }}</h6>
+            <a class="btn btn-outline-light border-0 text-white ml-4" href={% url 'logout' %}>Logout</a>
+        </div>
+    </nav>
+    {% endif %}
     <div class="container-fluid m-0 p-0">
         {% block form %}
 
-        {% endblock form %} 
+        {% endblock form %}
 
 
     </div>

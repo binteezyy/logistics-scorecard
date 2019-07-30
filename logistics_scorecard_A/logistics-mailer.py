@@ -21,20 +21,29 @@ django.setup()
 from survey_app.models import *
 from users.models import *
 
-TRIGGER_TO_CREATE = "%m"
-TO_CREATE_SCORECARD = datetime.datetime.now() # 1-30
-
-DAY_TO_SEND_TO_LOGISTICS = '' #
-
 def clear():
     os.system('cls' if os.name == 'nt' else 'clear')
 
-def main():
-    mailserver = smtplib.SMTP('')
+def update():
+    schedule_trigger = Trigger.objects.get(pk=1)
+    TRIGGER_TO_CREATE = f'{schedule_trigger.create_scorecards_trigger}'
+    TIME_TRIGGER_CREATE_SCORECARD = f'{schedule_trigger.create_scorecards_value}'
 
-    print("(1)365.OUTLOOK\t(2)fakeSMTP")
-    selection=input("Please Select:")
-    if selection =='1':
+    TIME_SEND_SCORECARD_TRIGGER = f'{schedule_trigger.send_scorecards_trigger}'
+    TIME_SEND_SCORECARD_VALUE = f'{schedule_trigger.send_scorecards_value}'
+
+    return {'TRIGGER_TO_CREATE': TRIGGER_TO_CREATE,
+            'TIME_TO_CREATE': TIME_TRIGGER_CREATE_SCORECARD,
+            'TIME_SEND_SCORECARD_TRIGGER': TIME_SEND_SCORECARD_TRIGGER,
+            'TIME_SEND_SCORECARD_VALUE': TIME_SEND_SCORECARD_VALUE,
+            }
+
+def main():
+    schedule_trigger = Trigger.objects.get(pk=1)
+    smpt_set = schedule_trigger.use_fake_smtp
+    msg = MIMEMultipart('alternative')
+    mailserver = smtplib.SMTP('')
+    if smpt_set == False:
         print("365.OUTLOOK")
 
         msg['From'] = input("EMAIL:")
@@ -45,31 +54,32 @@ def main():
         mailserver.starttls()
         mailserver.login(msg['From'],msg['PWD'])
 
-    elif selection == '2':
+    elif smpt_set == True:
         print("fakeSMTP")
         mailserver = smtplib.SMTP('localhost',25)
         mailserver.ehlo()
 
     else:
-        print("INVALID SELECTION")
+        print("INVALID smpt_set")
 
 
     clear()
+
     while True:
-        print(datetime.datetime.now().strftime("%Y-%m-%d"))
+        SETTINGS = update()
+        print(f'LOGISTICS SCORECARD MAILER || {datetime.datetime.now().strftime("%Y-%m-%d %I:%M:%S %p")}')
         accounts = Account.objects.all()
         for i in accounts:
-            print(f'CHECKING (ACTIVE) {str(i.user).upper()} — {i.service} @ {(datetime.datetime.now()).strftime("%Y-%m-%d %I:%M:%S %p")}')
             if i.is_active == True:
+                #print(f'CHECKING (ACTIVE) {str(i.user).upper()} — {i.service} @ {(datetime.datetime.now()).strftime("%Y-%m-%d %I:%M:%S %p")}')
                 ## CREATE SCORECARD
                 al_scorecards = AppraiserList.objects.filter(account=i.pk).values_list('scorecard',flat=True)
-                sc_dates = [x.strftime(TRIGGER_TO_CREATE) for x in list(Scorecard.objects.filter(id__in=al_scorecards).values_list('date_released',flat=True))] # QUERY DATES
+                sc_dates = [x.strftime(SETTINGS['TRIGGER_TO_CREATE']) for x in list(Scorecard.objects.filter(id__in=al_scorecards).values_list('date_released',flat=True))] # QUERY DATES
 
                 ## CREATE SCORECARD
-                if TO_CREATE_SCORECARD.strftime(TRIGGER_TO_CREATE) not in sc_dates: # FILTER DAY
+                if SETTINGS['TIME_TO_CREATE'] not in sc_dates: # FILTER DAY
                     print(f'CREATING SCORECARD @ {(datetime.datetime.now()).strftime("%Y-%m-%d %I:%M:%S %p")}')
-                    c = len(i.scorecard.all()) + 1
-                    s = Scorecard.objects.create(cid=f'{str(i.user).upper()}SCORECARD{c}',
+                    s = Scorecard.objects.create(cid=f'{str(i.service.provider.provider_name)}-{str(i.service.name)}-{datetime.datetime.now().strftime("%m-%Y")}',
                                                  service=i.service,
                                                  account_manager=i.manager,
                                                  date_released=timezone.now(),
@@ -116,7 +126,7 @@ def main():
                         msg.attach(msg_text)
                         msg.attach(msg_html)
 
-                        ## FOR FEEDBACK SENDER
+                        ## FOR FEEDBACK SENDER 2 BUTCH
                         # with open('email.html', 'r', encoding='utf-8') as t:
                         #     template = t.read()
                         # with open("test.html","w",encoding='utf-8') as test:
@@ -129,14 +139,13 @@ def main():
                         #     )
                         #     test.close()
 
-                        mailserver.sendmail('email', str(i.user.email), msg.as_string())
+                        mailserver.sendmail(msg['From'], str(i.user.email), msg.as_string())
 
                         sc.is_sent_sc = True
                         sc.save()
                         print(f'{sc.scorecard} is SENT to {i.user.email}')
 
-
-        sleep(2)
+        sleep(1)
 
     mailserver.quit()
 
