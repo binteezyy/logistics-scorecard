@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% block form %}
+
+<div class="container mt-4">
+<<<<<<< HEAD
+<div class="row">
+{% for x in user.scorecard.all %}
+<div class="col-6 col-sm-6 col-md-6 col-lg-3 animated bounceInUp">
+<div class="col-12 card">
+        <div class="card-body">
+          <h5 class="text-truncate"><strong>{{ x.cid }}</strong></h5>
+          <h6 class="card-subtitle mb-2 text-muted"><strong>{{ x.provider }}</strong><ul>{% for y in x.provider.services.all %}
+            <li>{{ y }}</li>{% endfor %}</ul></h6>
+          <p class="card-text text-truncate" title="{{ x.date_released|date:'M-d-Y' }}">
+            Month Covered: <strong>{{ x.month_covered|date:'F' }}</strong><br>
+            Date Released: <strong>{{ x.date_released|date:'M-d-Y' }}</strong>
+          </p>
+          {% if x.is_applicable and day > 15 %}
+          <a class="btn btn-outline-primary" href="{% url 'scorecard' x.cid %}" class="card-link"><i class="far fa-eye"></i>&nbsp;View</a>
+=======
+  <div class="row">
+    {% for x in user.scorecard.all %}
+    <div class="col-4 animated bounceInUp">
+      <div class="col-12 card">
+        <div class="card-body">
+          <h4 class="card-title">{{ x.cid }}</h4>
+          <h6 class="card-subtitle mb-2 text-muted"><strong>{{ x.provider }}</strong>
+            <ul>{% for y in x.provider.services.all %}
+              <li>{{ y }}</li>{% endfor %}</ul>
+          </h6>
+          <p class="card-text">
+            Month Covered: {{ x.month_covered|date:'F' }}<br>
+            Date Released: {{ x.date_released|date:'M-d-Y' }}
+          </p>
+          {% if x.is_applicable and day <= 30 %}
+          <a class="btn btn-outline-primary" href="{% url 'scorecard' x.cid %}" class="card-link">Edit</a>
+>>>>>>> new-ldap
+          {% elif not x.is_applicable and day <= 15 %}
+          <a class="btn btn-outline-primary" href="{% url 'scorecard' x.cid %}" class="card-link">Rate</a>
+          {% elif not x.is_applicable and day > 15 %}
+          <span class="btn btn-danger ">Not Applicable</span>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock form %}
